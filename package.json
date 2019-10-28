@@ -1,0 +1,24 @@
+{
+  "name": "geosoft2_ws19-20_huef_jaku_nier_nisk_sten",
+  "version": "1.0.0",
+  "description": "A project as part of the class \"Geosoftware 2\" in the winter term 2019/ 2020 at the Institute for Geoinformatics at the university of Muenster.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tnier01/Geosoft2_WS19-20_huef_jaku_nier_nisk_sten.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tnier01/Geosoft2_WS19-20_huef_jaku_nier_nisk_sten/issues"
+  },
+  "homepage": "https://github.com/tnier01/Geosoft2_WS19-20_huef_jaku_nier_nisk_sten#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.3.3"
+  }
+}
