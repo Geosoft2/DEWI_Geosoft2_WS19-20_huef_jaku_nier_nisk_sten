@@ -1,9 +1,28 @@
 const express = require('express');
 const app = express();
 var path = require('path');
+var OAuth2 = require('oauth').OAuth2;
+var Twitter = require('twitter-node-client').Twitter;
 
+var https = require("https");
+
+var server = require('http').createServer(app);
 
 const mongodb = require('mongodb');
+
+
+
+
+var config = require(path.join(__dirname , "../private/token.js")).token.twitter_config;
+
+
+var token = null;
+var oauth2 = new OAuth2(config.consumerKey, config.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
+oauth2.getOAuthAccessToken('', {
+    'grant_type': 'client_credentials'
+}, function (e, access_token) {
+    token = access_token;
+});
 
 function connectMongoDb() {
     // finish this block before the server starts,
@@ -40,6 +59,57 @@ function connectMongoDb() {
 connectMongoDb();
 
 app.use(express.static(path.join(__dirname, '../app')));
+
+app.use("/jquery", express.static(path.join(__dirname , "../node_modules/jquery/dist")));
+
+
+
+
+
+app.get("/twitter/search", (req,res) => {
+
+    var endpoint = 'https://api.twitter.com/1.1/search/tweets.json?q=rain';
+
+    const options = {
+        headers: {
+            Authorization: 'Bearer ' + token
+        }
+    };
+
+    https.get(endpoint, options, (httpResponse) => {
+        // concatenate updates from datastream
+
+        var body = "";
+        httpResponse.on("data", (chunk) => {
+            //console.log("chunk: " + chunk);
+            body += chunk;
+        });
+
+        httpResponse.on("end", () => {
+
+            try {
+                var weather = JSON.parse(body);
+            }
+            catch(err){
+                console.dir(err);
+                res.status(500).send({error: "no vaild study id"})
+                return;
+            }
+
+            res.json(weather);
+
+        });
+
+        httpResponse.on("error", (error) => {
+            JL().warn("Movebank Api not working" + error);
+            res.send("Movebank Api is not working")
+        });
+    });
+
+
+
+});
+
 
 app.listen(3000, function () {
     console.log('App listening on port 3000!');
