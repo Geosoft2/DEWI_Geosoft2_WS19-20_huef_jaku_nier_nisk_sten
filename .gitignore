@@ -23,5 +23,6 @@
 hs_err_pid*
 
 .idea/
-.node_modules/
-.private/
+node_modules/
+private/
+
