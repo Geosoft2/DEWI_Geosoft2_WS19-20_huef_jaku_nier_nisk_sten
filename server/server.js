@@ -2,16 +2,12 @@ const express = require('express');
 const app = express();
 var path = require('path');
 var OAuth2 = require('oauth').OAuth2;
-var Twitter = require('twitter-node-client').Twitter;
 
 var https = require("https");
 
 var server = require('http').createServer(app);
 
 const mongodb = require('mongodb');
-
-
-
 
 var config = require(path.join(__dirname , "../private/token.js")).token.twitter_config;
 
@@ -88,11 +84,10 @@ app.get("/twitter/search", (req,res) => {
         httpResponse.on("end", () => {
 
             try {
-                var weather = JSON.parse(body);
+                var twitterResponse = JSON.parse(body);
             }
             catch(err){
-                console.dir(err);
-                res.status(500).send({error: "no vaild study id"})
+                res.status(500).send({error: "requestFailed"});
                 return;
             }
 
@@ -101,8 +96,8 @@ app.get("/twitter/search", (req,res) => {
         });
 
         httpResponse.on("error", (error) => {
-            JL().warn("Movebank Api not working" + error);
-            res.send("Movebank Api is not working")
+            JL().warn("Twitter Api not working" + error);
+            res.status(500).send({error: "Twitter Api is not working"})
         });
     });
 

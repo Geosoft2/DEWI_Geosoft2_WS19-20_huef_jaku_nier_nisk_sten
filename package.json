@@ -22,6 +22,5 @@
     "jquery": "^3.4.1",
     "mongodb": "^3.3.3",
     "oauth": "^0.9.15",
-    "twitter-node-client": "0.0.6"
   }
 }
