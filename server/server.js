@@ -91,7 +91,7 @@ app.get("/twitter/search", (req,res) => {
                 return;
             }
 
-            res.json(weather);
+            res.json(twitterResponse);
 
         });
 
