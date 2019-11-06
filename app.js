@@ -14,6 +14,8 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
+var twitterRouter = require('./routes/twitter');
+
 
 
 function connectMongoDB() {
@@ -67,6 +69,8 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist')
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
 
 app.use('/', indexRouter);
+app.use('/twitter', twitterRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
