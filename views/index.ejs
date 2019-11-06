@@ -3,9 +3,29 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <link rel="stylesheet" href="/leaflet/leaflet.css"/>
+
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+    <div id="mapWFS" style = "width:700px; height:600px;"></div>
+    <br>
+    <div id="mapWMS" style = "width:700px; height:600px;"></div>
+    <textarea id="dwd"></textarea>
+    <button onClick="testDWD()">Aktuelle Warnungen in der Karte</button>
+
+
+
+
   </body>
 </html>
+
+<script src="/leaflet/leaflet.js"></script>
+<script src="/jquery/jquery.min.js"></script>
+
+<script src="javascripts/wfsDWD.js"></script>
+<script src="javascripts/warnmod_leaflet-betterwms.js"></script>
+<script src="javascripts/wmsDWD.js"></script>
