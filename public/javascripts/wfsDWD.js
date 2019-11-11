@@ -37,6 +37,7 @@ var baseLayers = {
     "OpenStreetMap": osmlayer.addTo(map)
 };
 
+var wfsLayers=[];
 var ajax = $.ajax({
     url : URL,
     dataType : 'json',
@@ -51,10 +52,13 @@ var ajax = $.ajax({
                 };
             },
             onEachFeature: function (feature, layer) {
+
               console.log(feature);
+              wfsLayers.push(feature);
               layer.bindPopup('<h1>'+feature.properties.HEADLINE+'</h1><p>'+feature.properties.NAME+'</p><p>'+feature.properties.DESCRIPTION+'</p>');
             }
       });
+        console.log(wfsLayers);
 
       var overLayers = {
           "<span title='Wetter- und Unwetterwarnungen einblenden'>Warnungen einblenden</span>": warnlayer.addTo(map)
@@ -63,3 +67,11 @@ var ajax = $.ajax({
       L.control.layers(baseLayers, overLayers).addTo(map);
     }
 });
+
+function twitterDatenInWfsLayer(){
+
+        console.log(wfsLayers);
+        console.log(JSON.stringify(wfsLayers));
+    document.getElementById("wfsJson").value= JSON.stringify(wfsLayers);
+
+}
