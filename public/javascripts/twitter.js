@@ -3,7 +3,8 @@ var socket = io();
 function testTwitter(){
 
     socket.on('tweet', function(tweet){
-        console.log(tweet)
+        console.log(tweet);
+        document.getElementById("twitter").value= JSON.stringify(tweet);
     });
     $.ajax({
         url: "/twitter/stream", // URL der Abfrage,
