@@ -1,7 +1,12 @@
+var socket = io();
+
 function testTwitter(){
 
+    socket.on('tweet', function(tweet){
+        console.log(tweet)
+    });
     $.ajax({
-        url: "/twitter/search", // URL der Abfrage,
+        url: "/twitter/stream", // URL der Abfrage,
         data: {},
         type: "get"
     })

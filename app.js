@@ -12,6 +12,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+var socket_io  = require( "socket.io" );
 
 var indexRouter = require('./routes/index');
 var twitterRouter = require('./routes/twitter');
@@ -52,6 +53,10 @@ connectMongoDB();
 
 
 var app = express();
+var io = socket_io();
+app.io = io;
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -67,9 +72,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
+app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io.js/lib'));
 
 app.use('/', indexRouter);
-app.use('/twitter', twitterRouter);
+app.use('/twitter', twitterRouter(app.io));
 
 
 // catch 404 and forward to error handler
@@ -87,5 +93,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;
