@@ -140,7 +140,7 @@ module.exports =  function(io) {
     function streamConnect(token, res) {
         // Listen to the stream
         const config = {
-            url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=compact',
+            url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed',
             auth: {
                 bearer: token,
             },
@@ -171,7 +171,8 @@ module.exports =  function(io) {
         console.log('test');
         let  currentRules;
         const rules = [
-                {"value": "rain has:images"}
+                 {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
+            {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
             ]
         ;
 
