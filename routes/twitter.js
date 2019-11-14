@@ -71,6 +71,28 @@ module.exports =  function(io) {
 
     const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
+    async function getUserInformation(userId){
+
+        const url= "https://api.twitter.com/1.1/users/show.json?user_id=" + userId;
+        const requestConfig = {
+            url: url,
+            auth: {
+                bearer: token
+            }
+        };
+        const response = await get(requestConfig);
+        if (response.statusCode !== 200) {
+            throw new Error(response.body);
+            return null;
+        }
+
+        const result= JSON.parse(response.body)
+        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url}
+
+        return parsedResult;
+
+    }
+
     async function getAllRules(token) {
         const requestConfig = {
             url: rulesURL,
@@ -159,7 +181,8 @@ module.exports =  function(io) {
             }
 
         }).on('error', error => {
-            if (error.code === 'ETIMEDOUT') {
+            console.log(error);
+            if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
                 stream.emit('timeout');
             }
         });
@@ -167,24 +190,22 @@ module.exports =  function(io) {
         return stream;
     }
 
+    router.get("/getUser/:id", async (req, res) => {
+        const result= await getUserInformation(req.params.id);
+        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url}
+        res.json(p)
+    });
+
     router.get("/stream", async (req, res) => {
         console.log('test');
         let  currentRules;
         const rules = [
-                 {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
             {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
+            {"value": "bounding_box: [13.270111083984375 52.46228526678029 13.493957519531248 52.56842095734828]"},
             ]
         ;
 
-        try {
-            // Exchange your credentials for a Bearer token
-            //token = await bearerToken({consumer_key, consumer_secret});
-        } catch (e) {
-            console.error(`Could not generate a Bearer token. Please check that your credentials are correct and that the Filtered Stream preview is enabled in your Labs dashboard. (${e})`);
-            process.exit(-1);
-        }
-
-        try {
+        /** try {
             // Gets the complete list of rules currently applied to the stream
             currentRules = await getAllRules(token);
 
@@ -197,6 +218,9 @@ module.exports =  function(io) {
             console.error(e);
             process.exit(-1);
         }
+         */
+
+        await setRules(rules, token);
 
         // Listen to the stream.
         // This reconnection logic will attempt to reconnect when a disconnection is detected.
@@ -207,7 +231,7 @@ module.exports =  function(io) {
         let timeout = 0;
         stream.on('timeout', () => {
             // Reconnect on error
-            console.warn('A connection error occurred. Reconnecting…');
+            console.log('A connection error occurred. Reconnecting…');
             setTimeout(() => {
                 timeout++;
                 streamConnect(token);
