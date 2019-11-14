@@ -14,7 +14,8 @@ var osmlayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     maxZoom: 18
 });
 
-
+// add pan-control in the bottomleft of the map
+L.control.pan({position: 'bottomleft'}).addTo(map);
 
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
 // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd:Warnungen_Gemeinden
