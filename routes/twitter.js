@@ -5,23 +5,39 @@ module.exports =  function(io) {
 
     const express = require('express');
     const router = express.Router();
-    const OAuth2 = require('oauth').OAuth2;
+    const OAuth = require('oauth');
+    const OAuth2 = OAuth.OAuth2;
+    const request = require('request');
+    const util = require('util');
+
+   const get = util.promisify(request.get);
+   const post = util.promisify(request.post);
 
     const twitterToken = require('../private/token.js').token.twitter_config;
 
-    var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
+    var oauth = new OAuth.OAuth(
+        'https://api.twitter.com/oauth/request_token',
+        'https://api.twitter.com/oauth/access_token',
+        twitterToken.consumerKey,
+        twitterToken.consumerSecret,
+        '1.0A',
+        null,
+        'HMAC-SHA1'
+    );
 
-    var token = null;
-    oauth2.getOAuthAccessToken('', {
+   var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
+
+    var token;
+   oauth2.getOAuthAccessToken('', {
         'grant_type': 'client_credentials'
     }, function (e, access_token) {
         token = access_token;
+        console.log(token)
     });
 
 
 
-
-   /** router.get("/search", (req,res) => {
+      /** router.get("/search", (req,res) => {
 
         var endpoint = 'https://api.twitter.com/1.1/search/tweets.json?q=rain';
 
@@ -61,14 +77,6 @@ module.exports =  function(io) {
     */
 
 
-
-    const request = require('request');
-    const util = require('util');
-
-    const get = util.promisify(request.get);
-    const post = util.promisify(request.post);
-
-
     const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
     async function getUserInformation(userId){
@@ -80,17 +88,42 @@ module.exports =  function(io) {
                 bearer: token
             }
         };
+
         const response = await get(requestConfig);
         if (response.statusCode !== 200) {
             throw new Error(response.body);
             return null;
         }
 
-        const result= JSON.parse(response.body)
-        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url}
+        const result= JSON.parse(response.body);
+        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url};
 
         return parsedResult;
 
+    }
+
+    async function getPlaceInformation(placeId){
+
+
+
+        const url= "https://api.twitter.com/1.1/geo/id/" + placeId +".json";
+
+        return new Promise(function (resolve, reject) {
+            oauth.get(
+                url,
+                twitterToken.accessToken,
+                //you can get it at dev.twitter.com for your own apps
+                twitterToken.accessTokenSecret,
+                //you can get it at dev.twitter.com for your own apps
+                function (e, data, res) {
+                    if (e) console.error(e);
+                    const result = JSON.parse(data);
+                    console.log(result);
+
+                    const parsedResult= {"name": result.full_name, "coordinate": {"lat": result.centroid[1], "lng": result.centroid[0]}};
+                    resolve(parsedResult);
+                });
+        });
     }
 
     async function getAllRules(token) {
@@ -190,14 +223,17 @@ module.exports =  function(io) {
         return stream;
     }
 
+    router.get("/getPlaceCoord/:placeId", async (req, res) => {
+        const result= await getPlaceInformation(req.params.placeId);
+        res.json(result)
+    });
+
     router.get("/getUser/:id", async (req, res) => {
         const result= await getUserInformation(req.params.id);
-        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url}
-        res.json(p)
+        res.json(result)
     });
 
     router.get("/stream", async (req, res) => {
-        console.log('test');
         let  currentRules;
         const rules = [
             {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
