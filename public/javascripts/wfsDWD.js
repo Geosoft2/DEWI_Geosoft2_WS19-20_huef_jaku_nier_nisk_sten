@@ -93,3 +93,25 @@ function mapExtendChange(bounds){
         +bounds._southWest.lat +" lat, "+ bounds._southWest.lng +" lng und " +bounds._northEast.lat +" lat, "
         +bounds._northEast.lng +" lng.");
 }
+
+var radarlayer = L.tileLayer.wms(rootUrl, {
+    layers: 'dwd:FX-Produkt',
+    // eigene Styled Layer Descriptor (SLD) können zur alternativen Anzeige der Warnungen genutzt werden (https://docs.geoserver.org/stable/en/user/styling/sld/reference/)
+    //sld: 'https://eigenerserver/alternativer.sld',
+    format: 'image/png',
+    transparent: true,
+    opacity: 0.8,
+    attribution: 'Regenradar: &copy; <a href="https://www.dwd.de">DWD</a>'
+});
+
+// Layerlisten für die Layercontrol erstellen und dabei initial aktive Layer zur Karte hinzufügen
+
+
+if (radarlayer) {
+    var overLayers = {
+        "<span title='Wetter- und Unwetterwarnungen einblenden'>Show percipitation radar</span>": radarlayer.addTo(map),
+    };
+}
+
+// Layercontrol-Element erstellen und hinzufügen
+L.control.layers(baseLayers, overLayers).addTo(map);
