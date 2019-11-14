@@ -18,7 +18,7 @@ var osmlayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
 map.on('moveend', function(e) {
-
+    //funktion wird bei verschieben der Karte ausgelöst
     var bounds = map.getBounds();
     mapExtendChange(bounds);
 });
@@ -61,9 +61,7 @@ var ajax = $.ajax({
                 };
             },
             onEachFeature: function (feature, layer) {
-
-              //console.log(feature);
-              wfsLayers.push(feature);
+                wfsLayers.push(feature);
               layer.bindPopup('<h1>'+feature.properties.HEADLINE+'</h1><p>'+feature.properties.NAME+'</p><p>'+feature.properties.DESCRIPTION+'</p>');
             }
       });
@@ -77,18 +75,12 @@ var ajax = $.ajax({
     }
 });
 
-function twitterDatenInWfsLayer(){
+/**
+ * gibt die wfsLayer als JSON in einem Textfeld zurück
+ */
+function testWfsLayer(){
 
-        //console.log(wfsLayers);
-        //console.log(JSON.stringify(wfsLayers));
-    console.log(this);
-    console.log(this.map.getBounds());
-    var mapExtendNorthEast=this.map.getBounds()._northEast;
-    var mapExtendSouthWest=this.map.getBounds()._southWest;
-    console.log(mapExtendNorthEast, mapExtendSouthWest);
     document.getElementById("wfsJson").value= JSON.stringify(wfsLayers);
-    //this.map._onResize=mapResize();
-
 
 }
 
