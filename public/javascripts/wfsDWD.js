@@ -14,6 +14,12 @@ var osmlayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     maxZoom: 18
 });
 
+map.on('moveend', function(e) {
+
+    var bounds = map.getBounds();
+    mapExtendChange(bounds);
+});
+
 
 
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
@@ -53,12 +59,12 @@ var ajax = $.ajax({
             },
             onEachFeature: function (feature, layer) {
 
-              console.log(feature);
+              //console.log(feature);
               wfsLayers.push(feature);
               layer.bindPopup('<h1>'+feature.properties.HEADLINE+'</h1><p>'+feature.properties.NAME+'</p><p>'+feature.properties.DESCRIPTION+'</p>');
             }
       });
-        console.log(wfsLayers);
+        //console.log(wfsLayers);
 
       var overLayers = {
           "<span title='Wetter- und Unwetterwarnungen einblenden'>Warnungen einblenden</span>": warnlayer.addTo(map)
@@ -70,8 +76,25 @@ var ajax = $.ajax({
 
 function twitterDatenInWfsLayer(){
 
-        console.log(wfsLayers);
-        console.log(JSON.stringify(wfsLayers));
+        //console.log(wfsLayers);
+        //console.log(JSON.stringify(wfsLayers));
+    console.log(this);
+    console.log(this.map.getBounds());
+    var mapExtendNorthEast=this.map.getBounds()._northEast;
+    var mapExtendSouthWest=this.map.getBounds()._southWest;
+    console.log(mapExtendNorthEast, mapExtendSouthWest);
     document.getElementById("wfsJson").value= JSON.stringify(wfsLayers);
+    //this.map._onResize=mapResize();
 
+
+}
+
+/**
+ * Funktion, die nach ändern des Kartenauschnittes aufgerufen wird
+ * @param bounds    beinhaltet die Kordinaten der Bounding Box des aktuellen mapextends
+ */
+function mapExtendChange(bounds){
+        alert("Die Karte wurde verschoben, die neue Bounding Box hat die Koordinaten "
+        +bounds._southWest.lat +" lat, "+ bounds._southWest.lng +" lng und " +bounds._northEast.lat +" lat, "
+        +bounds._northEast.lng +" lng.");
 }
