@@ -70,7 +70,7 @@ function boundingbox(bounds){
 function requestExtremeWeather(bbox){
   $.ajax({
    type: "POST",
-   url: '/api/v1/dwd/extremeweather',
+   url: '/api/v1/dwd/extremeWeather',
    // contentType: "application/json; charset=utf-8",
    dataType: 'json',
    data: 'bbox='+encodeURIComponent(JSON.stringify(bbox)) // manually serialize()
@@ -149,6 +149,7 @@ radarlayer = L.tileLayer.wms(rootUrl, {
     attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a>'
 }).addTo(map);
 
+// L.control.attribution({prefix: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a>'}).addTo(map);
 
 var baseLayers = {
     "OpenStreetMap": osmlayer

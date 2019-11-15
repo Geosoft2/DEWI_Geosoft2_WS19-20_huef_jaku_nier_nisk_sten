@@ -67,12 +67,9 @@ app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
 
 
-var indexRouter = require('./routes/index');
-var extremeweatherRouter = require('./routes/api/v1/dwd/extremeWeather');
-
-app.use('/', indexRouter);
-app.use('/api/v1/dwd', extremeweatherRouter);
-
+// setup routes
+// @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
+require('./routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

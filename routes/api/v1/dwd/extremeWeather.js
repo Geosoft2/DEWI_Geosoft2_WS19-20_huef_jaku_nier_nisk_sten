@@ -2,13 +2,11 @@
 // jshint node: true
 "use strict";
 
-var express = require('express');
-var router = express.Router();
-var request = require('request');
+const request = require('request');
 const querystring = require('querystring');
 
 
-router.post('/extremeweather', function(req, res, next) {
+const postExtremeWeather = function(req, res){
 
   console.log(req.body);
   var bbox = JSON.parse(req.body.bbox);
@@ -46,6 +44,8 @@ router.post('/extremeweather', function(req, res, next) {
     .on('error', function(err) {
       return res.status(400).send("Error: DWD WFS is not working");
     });
-});
+};
 
-module.exports = router;
+module.exports = {
+  postExtremeWeather,
+};
