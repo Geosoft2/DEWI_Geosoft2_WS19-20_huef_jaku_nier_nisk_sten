@@ -3,27 +3,24 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body onload="initialExtremeWeather()">
 
-    <div id="mapWFS" style = "width:700px; height:600px;"></div>
-    <br>
-    <textarea id="wfsJson"></textarea>
-    <button onClick="testWfsLayer()">Testen und Zurückgabe des WfsLayers</button>
+    <a href="/">
+      <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
+    </a>
 
-
-
+    <div id="loader">
+      <div id="mapWFS" style = "width:700px; height:560px;"></div>
+    </div>
 
   </body>
 </html>
 
+<script src="/jquery/jquery.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
-<script src="/jquery/jquery.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
