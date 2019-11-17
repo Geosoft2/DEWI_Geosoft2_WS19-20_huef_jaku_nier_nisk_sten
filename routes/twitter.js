@@ -9,6 +9,7 @@ module.exports =  function(io) {
     const OAuth2 = OAuth.OAuth2;
     const request = require('request');
     const util = require('util');
+    const https = require('https');
 
    const get = util.promisify(request.get);
    const post = util.promisify(request.post);
@@ -37,9 +38,21 @@ module.exports =  function(io) {
 
 
 
-      /** router.get("/search", (req,res) => {
+      router.post("/search", (req,res) => {
 
-        var endpoint = 'https://api.twitter.com/1.1/search/tweets.json?q=rain';
+        let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?result_type=recent&q=';
+
+        const  q = req.body.filter;
+        const bbox= req.body.area;
+
+        if(!q || typeof q !== "string"){
+            res.status(400).send("filter is a required Parameter and must be a string")
+        }else{
+            endpoint += q;
+        }
+        if(bbox){
+            endpoint+="&geocode=" + String(bbox.coordinate.lat) +","+ String(bbox.coordinate.lng) + "," + String(bbox.area) + "km"
+        }
 
         const options = {
             headers: {
@@ -60,10 +73,35 @@ module.exports =  function(io) {
 
                 try {
                     var twitterResponse = JSON.parse(body);
-                    return res.json(twitterResponse);
+                    var tweetResoponse = [];
+                    var mongoDBs = {tweets: []}    ;
+                    for(var tweet of twitterResponse.statuses) {
+                        var mongoDB = {
+                            "Nid": tweet.id_str,
+                            "url": "twitter.com/i/status/" + tweet.id_str,
+                            "text": tweet.text,
+                            "createdAt": tweet.created_at,
+                            "author": {
+                                "id": tweet.user.id,
+                                "name": tweet.user.name,
+                                "url": "twitter.com/" + tweet.user.screen_name
+                            },
+                            "media": []
+                        };
+                        if(tweet.entities.media) {
+                            for (var media of tweet.entities.media) {
+                                mongoDB.media.push({"id": media.id, "url": media.media_url})
+                            }
+                        }
+
+                        mongoDBs.tweets.push(mongoDB)
+
+                    }
+                    return res.json(mongoDBs);
                 }
                 catch(err){
-                    return res.status(500).send({error: "requestFailed"});
+                    console.log(err)
+                    return res.status(500).send({error: err});
                 }
             });
 
@@ -74,7 +112,6 @@ module.exports =  function(io) {
         });
     });
 
-    */
 
 
     const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
@@ -96,7 +133,8 @@ module.exports =  function(io) {
         }
 
         const result= JSON.parse(response.body);
-        const parsedResult= {"id" : result.id, "name": result.name, "URL": result.url};
+        console.log(result)
+        const parsedResult= {"id" : result.id, "name": result.name, "URL": "twitter.com/" + result.screen_name};
 
         return parsedResult;
 

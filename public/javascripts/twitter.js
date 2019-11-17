@@ -7,9 +7,9 @@ function testTwitter(){
         document.getElementById("twitter").value= JSON.stringify(tweet);
     });
     $.ajax({
-        url: "/twitter/stream", // URL der Abfrage,
-        data: {},
-        type: "get"
+        url: "/twitter/search", // URL der Abfrage,
+        data: {"filter" : "rain"},
+        type: "post"
     })
         .done(function (response) {
             console.log(response);
