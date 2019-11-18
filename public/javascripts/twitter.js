@@ -8,7 +8,11 @@ function testTwitter(){
     });
     $.ajax({
         url: "/twitter/search", // URL der Abfrage,
-        data: {"filter" : "rain"},
+        data:{"bbox" : {
+                "southWest": {"lat": 52.46228526678029 , "lng": 13.270111083984375},
+                "northEast": {"lat": 52.56842095734828 , "lng": 13.493957519531248}},
+            "filter" : "rain",
+            "since" : 21600},
         type: "post"
     })
         .done(function (response) {

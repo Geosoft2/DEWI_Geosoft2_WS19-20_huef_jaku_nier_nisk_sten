@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/tnier01/Geosoft2_WS19-20_huef_jaku_nier_nisk_sten#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
