@@ -78,14 +78,16 @@ function mapExtendChange(bounds){
  */
 function boundingbox(bounds){
   return {
-    southWest: {
-      lat: bounds._southWest.lat,
-      lng: bounds._southWest.lng
-    },
-    northEast: {
-      lat: bounds._northEast.lat,
-      lng: bounds._northEast.lng
-  }
+    bbox: {
+      southWest: {
+        lat: bounds._southWest.lat,
+        lng: bounds._southWest.lng
+      },
+      northEast: {
+        lat: bounds._northEast.lat,
+        lng: bounds._northEast.lng
+      }
+    }
   };
 }
 
@@ -97,9 +99,9 @@ function requestExtremeWeather(bbox){
   $.ajax({
    type: "POST",
    url: '/api/v1/dwd/extremeWeather',
-   // contentType: "application/json; charset=utf-8",
+   // contentType: "application/json",
    dataType: 'json',
-   data: 'bbox='+encodeURIComponent(JSON.stringify(bbox)) // manually serialize()
+   data: bbox
   })
   .done(function(response) {
     console.log(response);
@@ -153,6 +155,7 @@ function createLayer(data){
 function initialExtremeWeather(){
     // initial bounding box with the area of germany
     var initialBbox = {
+      bbox: {
         southWest: {
             lat: 47.2704, // southWest.lng
             lng: 6.6553 // southWest.lat
@@ -161,6 +164,7 @@ function initialExtremeWeather(){
             lat: 55.0444, // northEast.lng
             lng: 15.0176 // southWest.lat
         }
+      }
     };
 
     // get the new default boundingbox
@@ -236,4 +240,3 @@ function getCookie(cname) {
     }
     return "";
 }
-
