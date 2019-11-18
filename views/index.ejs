@@ -3,27 +3,31 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
+    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
+    <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
 
-    <div id="mapWFS" style = "width:700px; height:600px;"></div>
+    <div id="mapWFS" style = "width:700px; height:600px;">
+    </div>
+
+    <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
+
     <br>
     <textarea id="wfsJson"></textarea>
     <button onClick="testWfsLayer()">Testen und Zurückgabe des WfsLayers</button>
-
-
-
-
   </body>
 </html>
 
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
+<script src="/leafletEasyButton/easy-button.js"></script>
 <script src="/jquery/jquery.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
+
