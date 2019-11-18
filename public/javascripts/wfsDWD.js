@@ -4,13 +4,8 @@
 // jshint esversion: 6
 "use strict";
 
-
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 var bounds;
-var southWestLat;
-var southWestLng;
-var northEastLat;
-var northEastLng;
 
 var mapOptions = {
     center: [51, 10],
@@ -21,6 +16,7 @@ var mapOptions = {
 };
 
 var map = new L.map('mapWFS', mapOptions);
+
 var osmlayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
@@ -31,36 +27,34 @@ var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest
     maxZoom: 18
 });
 
-// Layerlisten für die Layercontrol erstellen und dabei initial aktive Layer zur Karte hinzufügen
+// list of layers which will be initally added to the map
 var baseLayers = {
     "OpenStreetMap": osmlayer.addTo(map),
-    "Esri World Imagery": Esri_WorldImagery.addTo(map)
-
+    "Esri World Imagery": Esri_WorldImagery
 };
 
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
-
-
 map.on('moveend', function(e) {
-    //funktion wird bei verschieben der Karte ausgelöst
+    // function which is triggered automatically when the map gets moved
     bounds = map.getBounds();
     mapExtendChange(bounds);
 });
 
-// settings
+/*
+settings button for setting the default map extnet
+ */
 L.easyButton('<i class="fas fa-cog"></i>', function(btn, map){
     {position: 'bottomright'}
-    alert('button below');
+    alert('settings');
     if (confirm("set actual map extent as new default map extent")) {
-
-        mapExtendChange(bounds);
-        alert(southWestLat + southWestLng + northEastLat + northEastLng);
+        var cookieValue = JSON.stringify(boundingbox(bounds));
+        // cookie to store the map extent
+        setCookie("defaultBbox", cookieValue, 1000000);
     } else {
         alert("You pressed Cancel!");
     }
-
 }).addTo(map);
 
 var extremeWeatherGroup = L.layerGroup();
@@ -74,13 +68,7 @@ var radarlayer;
 function mapExtendChange(bounds){
   var bbox = boundingbox(bounds);
   requestExtremeWeather(bbox);
-    southWestLat = bounds._southWest.lat;
-    southWestLng = bounds._southWest.lng;
-    northEastLat = bounds._northEast.lat;
-    northEastLng = bounds._northEast.lng;
-
-    return southWestLat, southWestLng, northEastLat, northEastLng;
-
+  console.log("extentchange");
 }
 
 /**
@@ -97,7 +85,7 @@ function boundingbox(bounds){
     northEast: {
       lat: bounds._northEast.lat,
       lng: bounds._northEast.lng
-    }
+  }
   };
 }
 
@@ -158,22 +146,41 @@ function createLayer(data){
 }
 
 /**
- * @desc queries the extreme weather events with predefined bbox and add it to the map
+ * @desc Queries the extreme weather events with predefined bbox and add it to the map - if the page is reloaded. The
+ * predefined map extent is about the area of germany. The user has in the settings the possibility to change
+ *
  */
 function initialExtremeWeather(){
-  var bbox = {
-    southWest: {
-      lat: 47.2704, // southWest.lng
-      lng: 6.6553 // southWest.lat
-    },
-    northEast: {
-      lat: 55.0444, // northEast.lng
-      lng: 15.0176 // southWest.lat
-    }
-  };
-  requestExtremeWeather(bbox);
-}
+    // initial bounding box with the area of germany
+    var initialBbox = {
+        southWest: {
+            lat: 47.2704, // southWest.lng
+            lng: 6.6553 // southWest.lat
+        },
+        northEast: {
+            lat: 55.0444, // northEast.lng
+            lng: 15.0176 // southWest.lat
+        }
+    };
 
+    // get the new default boundingbox
+    var newDefaultBbox = getCookie("defaultBbox");
+
+    // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
+    if (newDefaultBbox != "") {
+        newDefaultBbox = JSON.parse(newDefaultBbox);
+
+        var northEastLat = newDefaultBbox.northEast.lat;
+        var northEastLng = newDefaultBbox.northEast.lng;
+        var southWestLat = newDefaultBbox.southWest.lat;
+        var southWestLng = newDefaultBbox.southWest.lng;
+
+        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]])
+    }
+    else {
+        requestExtremeWeather(initialBbox);
+    }
+}
 
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
@@ -194,5 +201,39 @@ var overLayers = {
       // Layercontrol-Element erstellen und hinzufügen
       L.control.layers(baseLayers, overLayers).addTo(map);
 
+/**
+ * @desc function for creating a new cookie
+ * @param cname name of the cookie
+ * @param cvalue value of the cookie
+ * @param exdays number of days until the cookie shall be deleted
+ * @source https://www.w3schools.com/js/js_cookies.asp
+ */
+function setCookie(cname,cvalue,exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 
+/**
+ * @desc function for requesting a cookie which was stored before
+ * @param cname name of the cookie
+ * @returns {string}
+ * @source https://www.w3schools.com/js/js_cookies.asp
+ */
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
