@@ -9,21 +9,21 @@
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
 
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body onload="initialExtremeWeather()">
 
-    <div id="mapWFS" style = "width:700px; height:600px;">
+    <a href="/">
+      <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
+    </a>
+
+    <div id="loader">
+      <div id="mapWFS" style = "width:700px; height:560px;"></div>
     </div>
-
     <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
 
-    <br>
-    <textarea id="wfsJson"></textarea>
-    <button onClick="testWfsLayer()">Testen und Zurückgabe des WfsLayers</button>
   </body>
 </html>
 
+<script src="/jquery/jquery.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
 <script src="/leafletEasyButton/easy-button.js"></script>

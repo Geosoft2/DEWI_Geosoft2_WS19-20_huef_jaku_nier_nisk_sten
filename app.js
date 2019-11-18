@@ -13,8 +13,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
-
 
 function connectMongoDB() {
   (async () => {
@@ -70,7 +68,10 @@ app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancont
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
 
-app.use('/', indexRouter);
+
+// setup routes
+// @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
+require('./routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
