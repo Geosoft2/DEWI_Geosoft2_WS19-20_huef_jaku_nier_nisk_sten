@@ -11,16 +11,24 @@ const postExtremeWeather = function(req, res){
   console.log(req.body);
   var bbox = JSON.parse(req.body.bbox);
 
+  // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
   var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
   var defaultParameters = {
     service: 'WFS',
     version: '2.0.0',
     request: 'GetFeature',
     typeName: 'dwd:Warnungen_Gemeinden',//_vereinigt',
-    // maxFeatures: 200,
     outputFormat: 'application/json',
     srsName:'EPSG:4326',
-    bbox: bbox.southWest.lng + ',' + bbox.southWest.lat + ',' + bbox.northEast.lng + ',' + bbox.northEast.lat + ',EPSG:4326'
+    cql_filter: // Filter BBOX
+                'BBOX(dwd:THE_GEOM, '+bbox.southWest.lat+','+bbox.southWest.lng+','+bbox.northEast.lat+','+bbox.northEast.lng+')'+
+                'And '+
+                // @see pp.16 https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
+                // Filter Severity
+                "SEVERITY in ('Moderate', 'Minor')" // TODO: must be change into 'Severe', 'Extreme'
+                // 'And '+
+                // // Filter C_GROUP
+                // "C_GROUP in ('THUNDERSTORM ', 'WIND', ...)"
   };
 
   var parameters = querystring.stringify(defaultParameters);
