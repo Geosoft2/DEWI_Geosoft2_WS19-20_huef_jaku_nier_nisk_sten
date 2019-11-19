@@ -74,6 +74,9 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io.js/lib'));
+app.use('/react', express.static(__dirname + '/node_modules/react/umd'));
+app.use('/react-dom', express.static(__dirname +'/node_modules/react-dom/umd'));
+app.use('/material-ui', express.static(__dirname + '/node_modules/@material-ui/core/umd'));
 
 app.use('/', indexRouter);
 app.use('/twitter', twitterRouter(app.io));

@@ -9,12 +9,14 @@
     <p>Welcome to <%= title %></p>
 
     <textarea id="twitter"></textarea>
-    <button onClick="testTwitter()">Test Twitter</button>
-    <a class="twitter-timeline" href="https://twitter.com/TwitterDev/timelines/539487832448843776?ref_src=twsrc%5Etfw">National Park Tweets - Curated tweets by TwitterDev</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div id="tweets"></div>
   </body>
 </html>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/jquery/jquery.min.js"></script>
+<script src="/react/react.development.js"></script>
+<script src="/react-dom/react-dom.development.js"></script>
+<script src="/material-ui/material-ui.development.js"></script>
 <script src="javascripts/twitter.js"></script>
 

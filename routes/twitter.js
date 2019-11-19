@@ -37,110 +37,7 @@ module.exports =  function(io) {
         console.log(token)
     });
 
-
-
-      router.post("/search", (req,res) => {
-
-        let endpoint = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json?query=';
-
-        const  q = req.body.filter;
-        const bbox= req.body.bbox;
-        let date = Date.now();
-
-
-
-        if(!q || typeof q !== "string"){
-            res.status(400).send("filter is a required Parameter and must be a string")
-        }else{
-            endpoint += '"'+ q + '"' ;
-        }
-        if(bbox){
-            endpoint +=" bounding_box: [" + String(bbox.southWest.lng) +" " + String(bbox.southWest.lat)+ " "  + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]";
-        }
-        if(req.body.since){
-              date = date - req.body.since * 60 * 1000;
-              const twitterDate = new Date(date);
-              const twitterDateString = String(twitterDate.getFullYear()) + ("0" + (twitterDate.getUTCMonth()+1)).slice(-2) + ("0" + twitterDate.getUTCDate()).slice(-2) + ("0" + twitterDate.getUTCHours()).slice(-2) + ("0" + twitterDate.getUTCMinutes()).slice(-2);
-              endpoint+= "&fromDate=" +twitterDateString
-          }
-
-        const options = {
-            headers: {
-                Authorization: 'Bearer ' + token
-            }
-        };
-
-        https.get(endpoint, options, (httpResponse) => {
-            // concatenate updates from datastream
-
-            var body = "";
-            httpResponse.on("data", (chunk) => {
-                //console.log("chunk: " + chunk);
-                body += chunk;
-            });
-
-            httpResponse.on("end", () => {
-
-                try {
-
-                    var twitterResponse = JSON.parse(body);
-                    console.log(twitterResponse)
-
-
-                    var mongoDBs = {tweets: []}    ;
-                    for(var tweet of twitterResponse.results) {
-                        var mongoDB = {
-                            "Nid": tweet.id_str,
-                            "url": "https://twitter.com/i/status/" + tweet.id_str,
-                            "text": tweet.text,
-                            "createdAt": tweet.created_at,
-                            "author": {
-                                "id": tweet.user.id,
-                                "name": tweet.user.name,
-                                "url": "https://twitter.com/" + tweet.user.screen_name
-                            },
-                            "media": [],
-                            "places": {
-                                    "coordinates" : {"lat" : null, "lng" : null},
-                                    },
-                        };
-                        if(tweet.entities.media) {
-                            for (var media of tweet.entities.media) {
-                                mongoDB.media.push({"id": media.id, "url": media.media_url})
-                            }
-                        }
-                        if(tweet.geo){
-                            mongoDB.places.coordinates.lat = tweet.geo.coordinates[1];
-                            mongoDB.places.coordinates.lng = tweet.geo.coordinates[0];
-                        }
-                        else if(tweet.place){
-                            mongoDB.places.coordinates.lat = ((tweet.place.bounding_box.coordinates[0][0][1] + tweet.place.bounding_box.coordinates[0][1][1]) / 2);
-                            mongoDB.places.coordinates.lng = ((tweet.place.bounding_box.coordinates[0][0][0] + tweet.place.bounding_box.coordinates[0][2][0]) / 2);
-                            mongoDB.places.placeName = tweet.place.full_name
-                        }
-
-                        mongoDBs.tweets.push(mongoDB)
-
-                    }
-
-                    return res.json(mongoDBs);
-                }
-                catch(err){
-                    console.log(err);
-                    return res.status(500).send({error: err});
-                }
-            });
-
-            httpResponse.on("error", (error) => {
-                // JL().warn("Twitter Api not working" + error);
-                res.status(500).send({error: "Twitter Api is not working"});
-            });
-        });
-    });
-
-
-
-    const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
+   const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
     async function getUserInformation(userId){
 
@@ -159,11 +56,104 @@ module.exports =  function(io) {
         }
 
         const result= JSON.parse(response.body);
-        console.log(result)
         const parsedResult= {"id" : result.id, "name": result.name, "URL": "twitter.com/" + result.screen_name};
 
         return parsedResult;
 
+    }
+
+    async  function search(query, bbox, since) {
+
+        return new Promise(function (resolve, reject) {
+            let endpoint = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json?query=';
+
+            if (!query || typeof query !== "string") {
+                resolve({error: "filter is a required Parameter and must be a string", code: 400});
+            } else {
+                endpoint += '"' + query + '"';
+            }
+            if (bbox) {
+                endpoint += " bounding_box: [" + String(bbox.southWest.lng) + " " + String(bbox.southWest.lat) + " " + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]";
+            }
+            if (since) {
+                let date = Date.now();
+                date = date - since * 60 * 1000;
+                const twitterDate = new Date(date);
+                const twitterDateString = String(twitterDate.getFullYear()) + ("0" + (twitterDate.getUTCMonth() + 1)).slice(-2) + ("0" + twitterDate.getUTCDate()).slice(-2) + ("0" + twitterDate.getUTCHours()).slice(-2) + ("0" + twitterDate.getUTCMinutes()).slice(-2);
+                endpoint += "&fromDate=" + twitterDateString
+            }
+
+            const options = {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            };
+
+            https.get(endpoint, options, (httpResponse) => {
+                // concatenate updates from datastream
+
+                var body = "";
+                httpResponse.on("data", (chunk) => {
+                    //console.log("chunk: " + chunk);
+                    body += chunk;
+                });
+
+                httpResponse.on("end", () => {
+
+                    try {
+
+                        var twitterResponse = JSON.parse(body);
+
+
+                        var mongoDBs = {tweets: []};
+                        for (var tweet of twitterResponse.results) {
+                            var mongoDB = {
+                                "Nid": tweet.id_str,
+                                "url": "https://twitter.com/i/status/" + tweet.id_str,
+                                "text": tweet.text,
+                                "createdAt": tweet.created_at,
+                                "author": {
+                                    "id": tweet.user.id,
+                                    "name": tweet.user.name,
+                                    "url": "https://twitter.com/" + tweet.user.screen_name
+                                },
+                                "media": [],
+                                "places": {
+                                    "coordinates": {"lat": null, "lng": null},
+                                },
+                            };
+                            if (tweet.entities.media) {
+                                for (var media of tweet.entities.media) {
+                                    mongoDB.media.push({"id": media.id, "url": media.media_url})
+                                }
+                            }
+                            if (tweet.geo) {
+                                mongoDB.places.coordinates.lat = tweet.geo.coordinates[1];
+                                mongoDB.places.coordinates.lng = tweet.geo.coordinates[0];
+                            } else if (tweet.place) {
+                                mongoDB.places.coordinates.lat = ((tweet.place.bounding_box.coordinates[0][0][1] + tweet.place.bounding_box.coordinates[0][1][1]) / 2);
+                                mongoDB.places.coordinates.lng = ((tweet.place.bounding_box.coordinates[0][0][0] + tweet.place.bounding_box.coordinates[0][2][0]) / 2);
+                                mongoDB.places.placeName = tweet.place.full_name
+                            }
+
+                            mongoDBs.tweets.push(mongoDB)
+
+                        }
+
+                        resolve(mongoDBs);
+                    } catch (err) {
+                        console.log(err);
+                        resolve({error: err, code: 500});
+                    }
+                });
+
+                httpResponse.on("error", (error) => {
+                    // JL().warn("Twitter Api not working" + error);
+                    return {error: "Twitter Api is not working", code: 500};
+                });
+            });
+
+        })
     }
 
     async function getPlaceInformation(placeId){
@@ -295,6 +285,34 @@ module.exports =  function(io) {
     router.get("/getUser/:id", async (req, res) => {
         const result= await getUserInformation(req.params.id);
         res.json(result)
+    });
+
+    router.post("/search",  async (req,res) => {
+
+        const  q = req.body.filter;
+        const bbox= req.body.bbox;
+        const since= req.body.since;
+
+        const result = await search(q,bbox,since);
+
+        if(result.code === 500){
+            res.status(500).send(result.error)
+        }
+        else if(result.code === 400){
+            res.status(400).send(result.error)
+        }
+        else{
+            res.json(result)
+        }
+    });
+
+    router.post("/setStreamFilter", (req,res) => {
+
+        const rules = [];
+        if (bbox) {
+            rules.push({"value" :  " bounding_box: [" + String(bbox.southWest.lng) + " " + String(bbox.southWest.lat) + " " + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]"});
+        }
+
     });
 
     router.get("/stream", async (req, res) => {
