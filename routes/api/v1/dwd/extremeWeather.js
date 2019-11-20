@@ -9,7 +9,7 @@ const querystring = require('querystring');
 const postExtremeWeather = function(req, res){
 
   console.log(req.body);
-  var bbox = JSON.parse(req.body.bbox);
+  var bbox = req.body.bbox;
 
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
   var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
