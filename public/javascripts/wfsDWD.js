@@ -43,17 +43,14 @@ map.on('moveend', function(e) {
 });
 
 /*
-settings button for setting the default map extnet
+settings button for setting the default map extent
  */
-L.easyButton('<i class="fas fa-cog"></i>', function(btn, map){
-    {position: 'bottomright'}
-    alert('settings');
+L.easyButton('<i class="fas fa-cog"></i>',  function(btn, map){
+
     if (confirm("set actual map extent as new default map extent")) {
         var cookieValue = JSON.stringify(boundingbox(bounds));
         // cookie to store the map extent
         setCookie("defaultBbox", cookieValue, 1000000);
-    } else {
-        alert("You pressed Cancel!");
     }
 }).addTo(map);
 
@@ -68,7 +65,6 @@ var radarlayer;
 function mapExtendChange(bounds){
   var bbox = boundingbox(bounds);
   requestExtremeWeather(bbox);
-  console.log("extentchange");
 }
 
 /**
