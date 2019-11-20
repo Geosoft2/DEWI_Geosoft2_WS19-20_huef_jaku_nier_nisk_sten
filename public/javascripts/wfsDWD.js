@@ -170,10 +170,10 @@ function initialExtremeWeather(){
     if (newDefaultBbox != "") {
         newDefaultBbox = JSON.parse(newDefaultBbox);
 
-        var northEastLat = newDefaultBbox.northEast.lat;
-        var northEastLng = newDefaultBbox.northEast.lng;
-        var southWestLat = newDefaultBbox.southWest.lat;
-        var southWestLng = newDefaultBbox.southWest.lng;
+        var northEastLat = newDefaultBbox.bbox.northEast.lat;
+        var northEastLng = newDefaultBbox.bbox.northEast.lng;
+        var southWestLat = newDefaultBbox.bbox.southWest.lat;
+        var southWestLng = newDefaultBbox.bbox.southWest.lng;
 
         map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]])
     }
