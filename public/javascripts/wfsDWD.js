@@ -87,6 +87,26 @@ function boundingbox(bounds){
   };
 }
 
+
+function saveDataInMongo(feature){
+  console.log('feature', feature);
+  $.ajax({
+   type: "POST",
+   url: '/api/v1/mongo/extremeWeather',
+   // contentType: "application/json",
+   dataType: 'json',
+   data: feature
+  })
+  .done(function(response) {
+    console.log(response);
+  })
+  .fail(function(err){
+    console.log(err.responseText);
+  });
+}
+
+
+
 /**
  * @desc queries the extreme weather events based on the current map-extent and add it to the map
  * @param {json} bbox coordinates of current map-extent
@@ -101,6 +121,7 @@ function requestExtremeWeather(bbox){
   })
   .done(function(response) {
     console.log(response);
+    saveDataInMongo(response);
     // remove existing layer
     removeExistingLayer(warnlayer);
     // create new layer
