@@ -14,4 +14,4 @@ const ExtremeWeatherSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Tweet', ExtremeWeatherSchema);
+module.exports = mongoose.model('ExtremeWeather', ExtremeWeatherSchema);
