@@ -5,24 +5,24 @@ const e = React.createElement;
 class TwitterList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { tweets: []};
+        this.state = { tweets: [], timeout: false};
     }
 
     componentDidMount(){
         this.testTwitter()
     }
 
-
-
     testTwitter= () => {
 
         const self= this;
         socket.on('tweet', function(tweet){
             const tweets2 = self.state.tweets;
-            if(tweet.data){
-                tweets2.push(tweet.data);
-                self.setState({tweets : tweets2});
-            }
+            tweets2.push(tweet);
+            self.setState({tweets : tweets2});
+        });
+        socket.on('timeout', function (timeout){
+            console.log(timeout)
+            self.setState({timeout : timeout})
         });
         $.ajax({
             url: "/twitter/stream", // URL der Abfrage,
@@ -30,9 +30,6 @@ class TwitterList extends React.Component {
             type: "get"
         })
             .done(function (response) {
-                console.log(response);
-                document.getElementById("twitter").value= JSON.stringify(response);
-                $("#twitter").value= JSON.stringify(response);
             })
             .fail(function (err) {
                 console.log(err)
@@ -47,7 +44,6 @@ class TwitterList extends React.Component {
             type: "post"
         })
             .done(function (response) {
-                console.log(response);
                 self.setState({tweets: response.tweets})
             })
             .fail(function (err) {
@@ -62,18 +58,27 @@ class TwitterList extends React.Component {
         } = window['MaterialUI'];
 
         const cards=[];
+        cards.unshift(e("br"));
 
             this.state.tweets.map(function (item, i) {
-                cards.push(e(Card, null, item.text));
-                cards.push(e("br", null, null));
+                const media=[];
+                for(var mediaItem of item.media){
+                    if(mediaItem.type ==="video"){
+                        media.push(e("video", {width:300, height: "auto"}, e("source", {src:mediaItem.url, type: "video/" +mediaItem.url.substr(mediaItem.url.length-3, 3)})))
+                    }
+                    media.push(e("img", {src: mediaItem.url, width:300, height: "auto"}))
+                }
+                cards.unshift(e(Card, null, item.text,  e("br"), "Author: " + item.author.name, e("br"),
+                    e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
+                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"), media));
+                cards.unshift(e("br", null, null));
             });
 
-        if( cards.length >0) {
-            return cards
+        if(this.state.timeout){
+            cards.unshift(e("p",null,"Lost Connection to Twitter Stream. Reconnecting ..."))
         }
-        else {
-            return e("p", null, "")
-        }
+
+        return cards
     }
 }
 

@@ -41,24 +41,27 @@ module.exports =  function(io) {
 
     async function getUserInformation(userId){
 
-        const url= "https://api.twitter.com/1.1/users/show.json?user_id=" + userId;
-        const requestConfig = {
-            url: url,
-            auth: {
-                bearer: token
+        return new Promise(async function (resolve, reject) {
+            const url = "https://api.twitter.com/1.1/users/show.json?user_id=" + userId;
+            const requestConfig = {
+                url: url,
+                auth: {
+                    bearer: token
+                }
+            };
+
+
+            const response = await get(requestConfig);
+            if (response.statusCode !== 200) {
+                throw new Error(response.body);
+                return null;
             }
-        };
 
-        const response = await get(requestConfig);
-        if (response.statusCode !== 200) {
-            throw new Error(response.body);
-            return null;
-        }
+            const result = JSON.parse(response.body);
+            const parsedResult = {"id": result.id, "name": result.name, "URL": "twitter.com/" + result.screen_name};
 
-        const result= JSON.parse(response.body);
-        const parsedResult= {"id" : result.id, "name": result.name, "URL": "twitter.com/" + result.screen_name};
-
-        return parsedResult;
+            resolve(parsedResult)
+        });
 
     }
 
@@ -158,8 +161,6 @@ module.exports =  function(io) {
 
     async function getPlaceInformation(placeId){
 
-
-
         const url= "https://api.twitter.com/1.1/geo/id/" + placeId +".json";
 
         return new Promise(function (resolve, reject) {
@@ -171,11 +172,17 @@ module.exports =  function(io) {
                 //you can get it at dev.twitter.com for your own apps
                 function (e, data, res) {
                     if (e) console.error(e);
-                    const result = JSON.parse(data);
-                    console.log(result);
-
-                    const parsedResult= {"name": result.full_name, "coordinate": {"lat": result.centroid[1], "lng": result.centroid[0]}};
-                    resolve(parsedResult);
+                    else {
+                        const result = JSON.parse(data);
+                        const parsedResult = {"name": result.full_name,
+                            "coordinates": {
+                                "lat": ((result.bounding_box.coordinates[0][0][1] + result.bounding_box.coordinates[0][1][1]) / 2),
+                                "lng": ((result.bounding_box.coordinates[0][2][0] +result.bounding_box.coordinates[0][0][0])/ 2)
+                            }
+                        };
+                        console.log(result);
+                        resolve(parsedResult)
+                    };
                 });
         });
     }
@@ -241,15 +248,36 @@ module.exports =  function(io) {
             throw new Error(JSON.stringify(response.body));
             return null;
         }
-
         return response.body;
     }
 
+    function getMediaKey (authorID, mediaKey){
 
-    function streamConnect(token, res) {
+        var url= "https://ads-api.twitter.com/6/accounts/" +authorID +"/media_library/" +mediaKey;
+
+        return new Promise(function (resolve, reject) {
+            oauth.get(
+                url,
+                twitterToken.accessToken,
+                //you can get it at dev.twitter.com for your own apps
+                twitterToken.accessTokenSecret,
+                //you can get it at dev.twitter.com for your own apps
+                function (e, data, res) {
+                    if (e) console.error(e);
+                    else {
+                        const result = JSON.parse(data);
+                        const parsedResult = {url : restult.media_url}
+                        };
+                        resolve(parsedResult)
+                    });
+                });
+    }
+
+
+     function streamConnect(token, res) {
         // Listen to the stream
         const config = {
-            url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed',
+            url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys',
             auth: {
                 bearer: token,
             },
@@ -258,18 +286,58 @@ module.exports =  function(io) {
 
         const stream = request.get(config);
 
-        stream.on('data', data => {
+        stream.on('data', async data => {
             try {
-                const json = JSON.parse(data);
-                io.emit('tweet', json);
-                console.log(json);
-            } catch (e) {
-                // Heartbeat received. Do nothing.
+                const tweetJSON = JSON.parse(data);
+                console.log(tweetJSON);
+                if (tweetJSON.data) {
+                    io.emit('timeout', false);
+                    console.log("Tweet Received");
+                    const tweet=tweetJSON.data;
+                    const author = await getUserInformation(tweet.author_id);
+                    var mongoDB = {
+                        "Nid": tweet.id,
+                        "url": "https://twitter.com/i/status/" + tweet.id,
+                        "text": tweet.text,
+                        "createdAt": tweet.created_at,
+                        "author": author,
+                        "media": [],
+                        "places": {
+                            "coordinates": {"lat": null, "lng": null},
+                        },
+                    };
+                    if(tweetJSON.includes) {
+                            for (var media of tweetJSON.includes.media) {
+                                if(media.type=== "video"){
+                                    const url =getMediaKey(tweet.author_id, media.media_key);
+                                    mongoDB.media.push({"id": media.media_key, "url": url, type: media.type})
+                                }
+                                else{
+                                    mongoDB.media.push({"id": media.media_key, "url": media.url, "type": media.type})
+                                }
+                            }
+                        }
+                    if (tweet.geo.coordinates) {
+                        mongoDB.places.coordinates.lat = tweet.geo.coordinates.coordinates[1];
+                        mongoDB.places.coordinates.lng = tweet.geo.coordinates.coordinates[0];
+                    } else {
+                        const place = await getPlaceInformation(tweet.geo.place_id);
+                        mongoDB.places = place;
+                    }
+                    io.emit('tweet', mongoDB);
+                }
             }
+            catch
+                (e)
+                {
+                    console.log("Twitter Heartbeat received")// Heartbeat received. Do nothing.
+                }
+
 
         }).on('error', error => {
             console.log(error);
             if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
+                io.emit('timeout', true);
                 stream.emit('timeout');
             }
         });
@@ -320,8 +388,7 @@ module.exports =  function(io) {
         const rules = [
             {"value": "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
             {"value": "bounding_box: [13.270111083984375 52.46228526678029 13.493957519531248 52.56842095734828]"},
-            ]
-        ;
+            ];
 
         /** try {
             // Gets the complete list of rules currently applied to the stream
@@ -354,7 +421,6 @@ module.exports =  function(io) {
                 timeout++;
                 streamConnect(token);
             }, 2 ** timeout);
-            streamConnect(token);
         });
     });
 
