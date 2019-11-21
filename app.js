@@ -12,6 +12,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+var socket_io  = require( "socket.io" );
+
 
 
 function connectMongoDB() {
@@ -48,6 +50,10 @@ connectMongoDB();
 
 
 var app = express();
+//var io = socket_io();
+//app.io = io;
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,6 +69,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
+app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io.js/lib'));
+app.use('/react', express.static(__dirname + '/node_modules/react/umd'));
+app.use('/react-dom', express.static(__dirname +'/node_modules/react-dom/umd'));
+app.use('/material-ui', express.static(__dirname + '/node_modules/@material-ui/core/umd'));
 app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Twitter</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
 
   </head>
+  <body>
+    <h1>Twitter Demo</h1>
+    <img src="https://trello-attachments.s3.amazonaws.com/5db04f4543b6db4e205eca74/5db050cc3cc62269e46209f6/9a797436aaf2da147aaa14089727342e/DEWI_Logo.jpg" align="right" />
+    <div id="tweets"></div>
   <body onload="initialExtremeWeather()">
 
     <a href="/">
@@ -24,11 +28,16 @@
   </body>
 </html>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="/jquery/jquery.min.js"></script>
+<script src="/react/react.development.js"></script>
+<script src="/react-dom/react-dom.development.js"></script>
+<script src="/material-ui/material-ui.development.js"></script>
+<script src="javascripts/twitter.js"></script>
+
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
 <script src="/leafletEasyButton/easy-button.js"></script>
-<script src="/jquery/jquery.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
 

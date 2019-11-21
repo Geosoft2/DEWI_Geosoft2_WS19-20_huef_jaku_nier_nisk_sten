@@ -13,5 +13,6 @@ const V1Router = express.Router();
 
 // Put route handels here;
 V1Router.use('/dwd', require('./dwd'));
+V1Router.use('/twitter', require('./twitter'));
 
 module.exports = V1Router;
