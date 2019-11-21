@@ -309,8 +309,8 @@ module.exports =  function(io) {
                     if(tweetJSON.includes) {
                             for (var media of tweetJSON.includes.media) {
                                 if(media.type=== "video"){
-                                    const url =getMediaKey(tweet.author_id, media.media_key);
-                                    mongoDB.media.push({"id": media.media_key, "url": url, type: media.type})
+                                    //const url =getMediaKey(tweet.author_id, media.media_key);
+                                    mongoDB.media.push({"id": media.media_key, "url": media.preview_image_url, type: media.type})
                                 }
                                 else{
                                     mongoDB.media.push({"id": media.media_key, "url": media.url, "type": media.type})

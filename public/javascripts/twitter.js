@@ -63,9 +63,9 @@ class TwitterList extends React.Component {
             this.state.tweets.map(function (item, i) {
                 const media=[];
                 for(var mediaItem of item.media){
-                    if(mediaItem.type ==="video"){
+                   /* if(mediaItem.type ==="video"){
                         media.push(e("video", {width:300, height: "auto"}, e("source", {src:mediaItem.url, type: "video/" +mediaItem.url.substr(mediaItem.url.length-3, 3)})))
-                    }
+                    }*/
                     media.push(e("img", {src: mediaItem.url, width:300, height: "auto"}))
                 }
                 cards.unshift(e(Card, null, item.text,  e("br"), "Author: " + item.author.name, e("br"),
