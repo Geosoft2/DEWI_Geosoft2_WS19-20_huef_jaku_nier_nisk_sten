@@ -64,7 +64,7 @@ var radarlayer;
  */
 function mapExtendChange(bounds) {
     var bbox = boundingbox(bounds);
-    var bboxesArray =bboxes(bbox);
+    var bboxesArray =bboxes(bbox.bbox);
     requestExtremeWeather(bbox);
 }
 
@@ -73,29 +73,30 @@ function mapExtendChange(bounds) {
  * @param bbox a bounding box with a southWest and northEast coordinate
  */
 function bboxes(bbox){
-    var westOst= meterToMile(distVincenty(bbox.bbox.southWest.lat, bbox.bbox.southWest.lng, bbox.bbox.southWest.lat, bbox.bbox.northEast.lng));
-    var nordSued= meterToMile(distVincenty(bbox.bbox.southWest.lat, bbox.bbox.southWest.lng, bbox.bbox.northEast.lat, bbox.bbox.southWest.lng));
+    var westOst= meterToMile(distVincenty(bbox.southWest.lat, bbox.southWest.lng, bbox.southWest.lat, bbox.northEast.lng));
+    var nordSued= meterToMile(distVincenty(bbox.southWest.lat, bbox.southWest.lng, bbox.northEast.lat, bbox.southWest.lng));
     var westOstDiff= Math.ceil(westOst/25);
     var nordSuedDiff= Math.ceil(nordSued/25);
     var boxes=[];
-    var lngMultiplicator= (bbox.bbox.northEast.lng - bbox.bbox.southWest.lng)/westOstDiff;
-    var latMultiplicator= (bbox.bbox.northEast.lat - bbox.bbox.southWest.lat)/nordSuedDiff;
+    var lngMultiplicator= (bbox.northEast.lng - bbox.southWest.lng)/westOstDiff;
+    var latMultiplicator= (bbox.northEast.lat - bbox.southWest.lat)/nordSuedDiff;
     boxes.push(westOstDiff);
     for (var i=0; i<westOstDiff; i++){
         for (var j=0; j<nordSuedDiff;j++){
             boxes.push(
                 {southWest:{
-                lat:bbox.bbox.southWest.lat + j*latMultiplicator,
-                lng:bbox.bbox.southWest.lng + i*lngMultiplicator
+                lat:bbox.southWest.lat + j*latMultiplicator,
+                lng:bbox.southWest.lng + i*lngMultiplicator
             },
               northEast:{
-                  lat:bbox.bbox.southWest.lat + (j+1)*latMultiplicator,
-                  lng:bbox.bbox.southWest.lng + (i+1)*lngMultiplicator
+                  lat:bbox.southWest.lat + (j+1)*latMultiplicator,
+                  lng:bbox.southWest.lng + (i+1)*lngMultiplicator
               }
                 }
             );
         }
     }
+    console.log(boxes);
     return boxes;
 
 }
