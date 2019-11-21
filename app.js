@@ -48,10 +48,10 @@ function connectMongoDB() {
 connectMongoDB();
 
 
-
 var app = express();
-//var io = socket_io();
-//app.io = io;
+var io = socket_io();
+app.io = io;
+app.set('socketio', io);
 
 
 

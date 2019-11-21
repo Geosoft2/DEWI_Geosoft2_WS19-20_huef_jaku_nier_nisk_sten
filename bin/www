@@ -8,8 +8,6 @@ var app = require('../app');
 var debug = require('debug')('app:server');
 var http = require('http');
 
-var SocketSingleton = require('../io');
-
 /**
  * Get port from environment and store in Express.
  */
@@ -27,17 +25,18 @@ var server = http.createServer(app);
  * Socket.io
  */
 
+var io = app.io;
+io.attach( server );
 
-var io     = require("../io").io;
-console.log(io)
-//io.attach( server );
+io.on('connection', function(socket) {
+    console.log("user connected");
+});
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port, () => console.log("App listening on port " + port + "!"));
-io.attach(server)
 server.on('error', onError);
 server.on('listening', onListening);
 

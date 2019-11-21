@@ -12,7 +12,16 @@ const TwitterRouter = express.Router();
 
 const twitterRoute= require('../twitter/twitter');
 
-TwitterRouter.use("/", twitterRoute());
+TwitterRouter.get("/getPlaceCoord/:placeId", require('./twitter').getPlaceCoord);
+
+TwitterRouter.get("/getUser/:id", require('./twitter').getUser);
+
+TwitterRouter.post("/search", require('./twitter').postSearch);
+
+TwitterRouter.post("/setStreamFilter", require('./twitter').setStreamFilter);
+
+TwitterRouter.get("/stream", require('./twitter').stream);
+
 
 
 module.exports = TwitterRouter;
