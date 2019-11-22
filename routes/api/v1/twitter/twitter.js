@@ -104,7 +104,7 @@ const stream = async function (req, res){
     // To avoid rate limites, this logic implements exponential backoff, so the wait time
     // will increase if the client cannot reconnect to the stream.
 
-    const stream = streamConnect(token, req, res);
+    const stream = streamConnect(token, res);
     let timeout = 0;
     stream.on('timeout', () => {
         // Reconnect on error

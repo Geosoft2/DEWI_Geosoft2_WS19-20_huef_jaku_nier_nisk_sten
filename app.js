@@ -8,11 +8,11 @@ const port = 3000;
 
 const createError = require('http-errors');
 const express = require('express');
+var app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-var socket_io  = require( "socket.io" );
 
 
 
@@ -46,13 +46,6 @@ function connectMongoDB() {
 
 // connect to MongoDB
 connectMongoDB();
-
-
-var app = express();
-var io = socket_io();
-app.io = io;
-app.set('socketio', io);
-
 
 
 // view engine setup

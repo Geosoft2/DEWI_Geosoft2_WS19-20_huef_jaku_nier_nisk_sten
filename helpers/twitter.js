@@ -11,6 +11,8 @@ const https = require('https');
 const get = util.promisify(request.get);
 const post = util.promisify(request.post);
 
+const io = require("./socket-io").io;
+
 const twitterToken = require('../private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
@@ -295,8 +297,7 @@ const getMediaKey = function(authorID, mediaKey){
 
 
 
-const streamConnect = function(token, req, res) {
-    var io = req.app.get('socketio');
+const streamConnect = function(token, res) {
    // Listen to the stream
    const config = {
        url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys',
