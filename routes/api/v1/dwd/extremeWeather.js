@@ -17,7 +17,7 @@ const postExtremeWeather = function(req, res){
     service: 'WFS',
     version: '2.0.0',
     request: 'GetFeature',
-    typeName: 'dwd:Warnungen_Gemeinden',//_vereinigt',
+    typeName: 'dwd:Warnungen_Gemeinden_vereinigt',//_vereinigt',
     outputFormat: 'application/json',
     srsName:'EPSG:4326',
     cql_filter: // Filter BBOX
