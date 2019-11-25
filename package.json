@@ -27,6 +27,8 @@
     "http-errors": "~1.6.3",
     "jquery": "^3.4.1",
     "leaflet": "^1.5.1",
+    "leaflet-control-custom": "^1.0.0",
+    "leaflet-control-window": "^1.0.0",
     "leaflet-easybutton": "^2.4.0",
     "leaflet.pancontrol": "^1.0.0",
     "mongoose": "^5.7.1",

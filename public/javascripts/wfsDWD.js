@@ -43,20 +43,52 @@ map.on('moveend', function(e) {
 });
 
 /*
-settings button for setting the default map extent
+settings button for setting the settings menu.
+Used label so if you click the text/ description of the checkbox, the checkbox is also checked.
  */
 L.easyButton('<i class="fas fa-cog"></i>',  function(btn, map){
 
-    if (confirm("set actual map extent as new default map extent")) {
+    L.control.window(map,{
+        title:'settings',
+        content:
+            '<input type="checkbox" id="checkboxMapExtent" onclick="">' +
+            '<label for="checkboxMapExtent">set actual map extent as new default map extent</label></p>' +
+            '<p><button type="button" id="applyButton" onclick="settingsMenu()">Apply</button></p>' +
+            '<p id="settingsAppliedText" style="visibility: hidden;"><b>new settings were applied</b></p>',
+        visible: true})
+
+}).addTo(map);
+
+/**
+ * @desc function which applies all functions concerning checked checkboxes.
+ */
+function settingsMenu() {
+
+    var checkBoxMapExtent = document.getElementById("checkboxMapExtent");
+
+    if (checkBoxMapExtent.checked == true) {
+        setDefaultMapExtent()
+    }
+
+    // text for confirming the user, that everything was applied
+    document.getElementById("settingsAppliedText").style.visibility = "visible";
+
+}
+
+/**
+ * @desc function which sets the actual map extent as new map extent.
+ */
+function setDefaultMapExtent() {
         var cookieValue = JSON.stringify(boundingbox(bounds));
         // cookie to store the map extent
         setCookie("defaultBbox", cookieValue, 1000000);
-    }
-}).addTo(map);
+}
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
+
+
 
 /**
  * @desc new extreme weather data are loaded after each change of map-extent

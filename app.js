@@ -67,7 +67,8 @@ app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
-
+app.use("/leafletControlWindow", express.static(__dirname + "/node_modules/leaflet-control-window/src"));
+app.use("/leafletControlCustom", express.static(__dirname + "/node_modules/leaflet-control-custom/"));
 
 // setup routes
 // @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
