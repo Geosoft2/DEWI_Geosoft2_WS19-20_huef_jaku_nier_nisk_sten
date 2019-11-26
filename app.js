@@ -1,4 +1,4 @@
-// jshint esversion: 8
+// jshint esversion: 6
 // jshint node: true
 "use strict";
 
@@ -11,41 +11,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const mongoose = require('mongoose');
-
-
-function connectMongoDB() {
-  (async () => {
-    // set up default ("Docker") mongoose connection
-    await mongoose.connect('mongodb://mongo/itemdb', {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      autoReconnect: true
-    }).then(db => {
-      console.log('Connected to MongoDB (databasename: "'+db.connections[0].name+'") on host "'+db.connections[0].host+'" and on port "'+db.connections[0].port+'""');
-    }).catch(async err => {
-      console.log('Connection to '+'mongodb://mongo/itemdb'+' failed, try to connect to '+'mongodb://localhost:27017/itemdb');
-      // set up "local" mongoose connection
-      await mongoose.connect('mongodb://localhost:27017/itemdb', {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        autoReconnect: true
-      }).then(db => {
-        console.log('Connected to MongoDB (databasename: "'+db.connections[0].name+'") on host "'+db.connections[0].host+'" and on port "'+db.connections[0].port+'""');
-      }).catch(err2nd => {
-        console.log('Error at MongoDB-connection with Docker: '+err);
-        console.log('Error at MongoDB-connection with Localhost: '+err2nd);
-        console.log('Retry to connect in 3 seconds');
-        setTimeout(connectMongoDB, 3000); // retry until db-server is up
-      });
-    });
-  })();
-}
-
-// connect to MongoDB
-connectMongoDB();
-
-
 
 var app = express();
 

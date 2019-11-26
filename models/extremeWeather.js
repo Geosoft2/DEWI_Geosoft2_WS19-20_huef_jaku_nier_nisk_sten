@@ -5,9 +5,28 @@
 const mongoose = require('mongoose');
 
 const ExtremeWeatherSchema = mongoose.Schema({
-    feature: {
-        type: mongoose.Mixed
+  type: {
+    type: String,
+    enum: ['Feature'],
+    default: 'Feature',
+    required: true
+  },
+  geometry: {
+    type: {
+      type: String,
+      enum: ['MultiPolygon'],
+      default: 'MultiPolygon'
+    },
+    coordinates: {
+      type: [[[[Number]]]],
     }
+  },
+  properties: {
+    type: mongoose.Mixed
+  }
 });
+
+
+// ExtremeWeatherSchema.index({geometry: '2dsphere'});
 
 module.exports = mongoose.model('ExtremeWeather', ExtremeWeatherSchema);

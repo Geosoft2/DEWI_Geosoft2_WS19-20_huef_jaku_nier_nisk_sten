@@ -74,54 +74,59 @@ function mapExtendChange(bounds){
  */
 function boundingbox(bounds){
   return {
-    bbox: {
-      southWest: {
-        lat: bounds._southWest.lat,
-        lng: bounds._southWest.lng
-      },
-      northEast: {
-        lat: bounds._northEast.lat,
-        lng: bounds._northEast.lng
-      }
+    southWest: {
+      lat: bounds._southWest.lat,
+      lng: bounds._southWest.lng
+    },
+    northEast: {
+      lat: bounds._northEast.lat,
+      lng: bounds._northEast.lng
     }
   };
 }
 
 
-function saveDataInMongo(feature){
-  console.log('feature', feature);
-  $.ajax({
-   type: "POST",
-   url: '/api/v1/mongo/extremeWeather',
-   // contentType: "application/json",
-   dataType: 'json',
-   data: feature
-  })
-  .done(function(response) {
-    console.log(response);
-  })
-  .fail(function(err){
-    console.log(err.responseText);
-  });
+// function saveDataInMongo(feature){
+//   console.log('feature', feature);
+//   $.ajax({
+//    type: "POST",
+//    url: '/api/v1/mongo/extremeWeather',
+//    // contentType: "application/json",
+//    dataType: 'json',
+//    data: feature
+//   })
+//   .done(function(response) {
+//     console.log(response);
+//   })
+//   .fail(function(err){
+//     console.log(err.responseText);
+//   });
+// }
+
+
+function requestEvent(){
+  bounds = map.getBounds();
+  var bbox = boundingbox(bounds);
+  requestExtremeWeather(bbox);
 }
 
-
-
 /**
- * @desc queries the extreme weather events based on the current map-extent and add it to the map
- * @param {json} bbox coordinates of current map-extent
- */
+* @desc queries the extreme weather events based on the current map-extent and add it to the map
+* @param {json} bbox coordinates of current map-extent
+*/
 function requestExtremeWeather(bbox){
+  var events = $('#selectEvent').val();
   $.ajax({
-   type: "POST",
-   url: '/api/v1/dwd/extremeWeather',
+   type: "Get",
+   url: '/api/v1/mongo/extremeWeather',
+   data: {
+     events: events,
+     bbox: bbox
+   }
    // contentType: "application/json",
-   dataType: 'json',
-   data: bbox
   })
   .done(function(response) {
-    console.log(response);
-    saveDataInMongo(response);
+    console.log('mongo', response);
     // remove existing layer
     removeExistingLayer(warnlayer);
     // create new layer
@@ -133,6 +138,34 @@ function requestExtremeWeather(bbox){
     console.log(err.responseText);
   });
 }
+
+
+
+// /**
+//  * @desc queries the extreme weather events based on the current map-extent and add it to the map
+//  * @param {json} bbox coordinates of current map-extent
+//  */
+// function requestExtremeWeather(bbox){
+//   $.ajax({
+//    type: "POST",
+//    url: '/api/v1/dwd/extremeWeather',
+//    // contentType: "application/json",
+//    dataType: 'json',
+//    data: bbox
+//   })
+//   .done(function(response) {
+//     console.log(response);
+//     // remove existing layer
+//     removeExistingLayer(warnlayer);
+//     // create new layer
+//     warnlayer = createLayer(response);
+//     // add layer to layerGroup and map
+//     extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+//   })
+//   .fail(function(err){
+//     console.log(err.responseText);
+//   });
+// }
 
 /**
  * @desc checks if layer exists and remove it from map
@@ -172,7 +205,6 @@ function createLayer(data){
 function initialExtremeWeather(){
     // initial bounding box with the area of germany
     var initialBbox = {
-      bbox: {
         southWest: {
             lat: 47.2704, // southWest.lng
             lng: 6.6553 // southWest.lat
@@ -181,7 +213,6 @@ function initialExtremeWeather(){
             lat: 55.0444, // northEast.lng
             lng: 15.0176 // southWest.lat
         }
-      }
     };
 
     // get the new default boundingbox
@@ -196,7 +227,7 @@ function initialExtremeWeather(){
         var southWestLat = newDefaultBbox.bbox.southWest.lat;
         var southWestLng = newDefaultBbox.bbox.southWest.lng;
 
-        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]])
+        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
     }
     else {
         requestExtremeWeather(initialBbox);
@@ -219,8 +250,8 @@ var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,
     "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
 };
-      // Layercontrol-Element erstellen und hinzufügen
-      L.control.layers(baseLayers, overLayers).addTo(map);
+// Layercontrol-Element erstellen und hinzufügen
+L.control.layers(baseLayers, overLayers).addTo(map);
 
 /**
  * @desc function for creating a new cookie

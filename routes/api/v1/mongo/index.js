@@ -11,6 +11,7 @@ const express = require('express');
 const MongoRouter = express.Router();
 
 MongoRouter.post('/extremeWeather', require('./extremeWeather').postExtremeWeather);
+MongoRouter.get('/extremeWeather', require('./extremeWeather').getExtremeWeather);
 
 
 module.exports = MongoRouter;

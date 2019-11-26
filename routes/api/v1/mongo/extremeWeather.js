@@ -3,30 +3,63 @@
 "use strict";
 
 const ExtremeWeather = require('../../../../models/extremeWeather');
+const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../../../../helpers/geoJSON');
 
 
-const postExtremeWeather = function(req, res){
-
-  console.log(req.body);
-  var features = req.body.features;
-
-  for(var i = 0; i < features.length; i++){
-    // asynchron?
-    var newFeature = new ExtremeWeather({
-      feature: features[i]
-    });
-
-    try{
-      newFeature.save();
-    }
-    catch(err){
-      console.log(err);
-    }
+const postExtremeWeather = async function(req, res){
+  try{
+    await ExtremeWeather.deleteMany({});
   }
-  res.status(200).send('Everything is stored.');
+  catch(err){
+    console.log(err);
+    res.status(400).send('Error while deleting data in MongoDB.');
+  }
+  var features = req.body.features;
+  // only if data are available, data can be stored
+  if(features){
+    for(var i = 0; i < features.length; i++){
+      var newFeature = new ExtremeWeather({
+        type: features[i].type,
+        geometry: features[i].geometry,
+        properties: features[i].properties
+      });
+      try{
+        // asynchron?
+        await newFeature.save();
+      }
+      catch(err){
+        console.log(err);
+        res.status(400).send('Error while storing data in MongoDB.');
+      }
+    }
+    res.status(200).send('Everything is stored.');
+  }
+  else {
+    res.status(200).send('Nothing to store.');
+  }
 };
+
+
+const getExtremeWeather = async function(req, res){
+  var events = req.query.events || []; // output: ['FOG', 'FROST']
+  var polygon = bboxToPolygon(req.query.bbox);
+  try{
+    const result = await ExtremeWeather.find({
+      'properties.EC_GROUP': {$in: events},
+      geometry: {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}}
+    });
+    var geoJSON = makeGeoJSonFromFeatures(result);
+    // console.log(result);
+    res.status(200).send(geoJSON);
+  }
+  catch(err){
+    res.status(400).send('Error while getting extreme weather events from MongoDB.');
+  }
+};
+
 
 
 module.exports = {
   postExtremeWeather,
+  getExtremeWeather
 };
