@@ -28,7 +28,7 @@ const connectMongoDB = async function(cb) {
       console.log(chalk.red('Error at MongoDB-connection with Docker: '+err));
       console.log(chalk.red('Error at MongoDB-connection with Localhost: '+err2nd));
       console.log(chalk.red('Retry to connect in 3 seconds'));
-      setTimeout(connectMongoDB, 3000); // retry until db-server is up
+      setTimeout(connectMongoDB, 3000, cb); // retry until db-server is up
     });
   });
 };
