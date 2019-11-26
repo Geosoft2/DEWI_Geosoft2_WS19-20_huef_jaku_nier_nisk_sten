@@ -19,7 +19,7 @@ const requestExtremeWeather = function(){
         if(response.statusCode !== 200){
           return console.log(chalk.red(body));
         }
-        return saveExtremeWeather(body);
+        return saveExtremeWeather(JSON.parse(body));
       });
     })
     .on('error', function(err) {
