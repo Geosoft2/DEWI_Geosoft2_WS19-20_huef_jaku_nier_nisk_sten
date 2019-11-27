@@ -5,7 +5,6 @@
 
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
@@ -17,18 +16,6 @@ api.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000
 api.use(cookieParser());
 
 api.use(cors());
-
-// // set public folder
-// app.use(express.static(path.join(__dirname, 'public')));
-// // make packages available for client using statics
-// app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
-// app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
-// app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
-// app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
-// app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
-// app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
-// app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
-
 
 // setup routes
 // @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
@@ -47,7 +34,7 @@ api.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('error');
 });
 
 module.exports = api;

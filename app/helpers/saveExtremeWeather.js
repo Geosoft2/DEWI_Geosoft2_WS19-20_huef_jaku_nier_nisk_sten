@@ -6,7 +6,7 @@ const request = require('request');
 const chalk = require('chalk');
 
 const requestExtremeWeather = function(cb){
-  var url = 'http://localhost:3001/api/v1/dwd/extremeWeather';
+  var url = process.env.API_Domain + '/api/v1/dwd/extremeWeather';
   request.post(url/*, {form: req.body}*/) // BBOX is not necessary
     .on('response', function(response) {
       // concatenate updates from datastream
@@ -30,7 +30,7 @@ const requestExtremeWeather = function(cb){
 
 
 const saveExtremeWeather = function(geoJSON, cb){
-  var url = 'http://localhost:3001/api/v1/mongo/extremeWeather';
+  var url = process.env.API_Domain + '/api/v1/mongo/extremeWeather';
   request.post(url, {form: geoJSON})
     .on('response', function(response) {
       // concatenate updates from datastream

@@ -1,11 +1,19 @@
 version: '3'
 services:
+  api:
+    build: ./api
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
   app:
-    build: .
+    build: ./app
     ports:
       - "3000:3000"
     depends_on:
-      - mongo
+      - api
+    environment:
+      - API_Domain=http://192.168.99.100:3001
   mongo:
     image: mongo
     ports:

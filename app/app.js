@@ -3,9 +3,6 @@
 "use strict";
 
 
-// server uses port 3000
-const port = 3000;
-
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -14,12 +11,15 @@ const logger = require('morgan');
 
 var app = express();
 
+//reads configuration from a .env file
+require('dotenv').config();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000000 }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // set public folder
@@ -33,10 +33,9 @@ app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancont
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
 
-
 // setup routes
-// @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
-require('./routes')(app);
+app.use('/', require('./routes'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

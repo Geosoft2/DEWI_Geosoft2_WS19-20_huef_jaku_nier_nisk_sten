@@ -119,7 +119,7 @@ function requestEvent(){
 function requestExtremeWeather(bbox, events){
   $.ajax({
    type: "Get",
-   url: 'http://localhost:3001/api/v1/mongo/extremeWeather',
+   url:  'http://'+location.hostname+':3001/api/v1/mongo/extremeWeather',
    data: {
      events: events,
      bbox: bbox
