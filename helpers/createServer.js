@@ -7,7 +7,7 @@ var debug = require('debug')('app:server');
 const chalk = require('chalk');
 
 
-const createServer = function(app, port, cb){
+const createServer = function(app, port, name, cb){
   /**
    * Create HTTP server.
    */
@@ -16,10 +16,10 @@ const createServer = function(app, port, cb){
   /**
    * Listen on provided port, on all network interfaces.
    */
-  server.listen(port, () => console.log(chalk.green.inverse("App listening on port " + port + "!")));
+  server.listen(port, () => console.log(chalk.green.inverse(name+" listening on port " + port + "!")));
   server.on('error', onError);
   server.on('listening', onListening);
-  cb();
+  if(cb) cb();
 
   /**
    * Event listener for HTTP server "error" event.

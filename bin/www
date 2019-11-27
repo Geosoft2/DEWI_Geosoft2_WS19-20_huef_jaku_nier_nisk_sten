@@ -9,6 +9,7 @@
  * Module dependencies.
  */
 const app = require('../app');
+const api = require('../api');
 const {requestExtremeWeather} = require('../helpers/saveExtremeWeather');
 const {connectMongoDB} = require('../helpers/mongoConnection');
 const {createServer} = require('../helpers/createServer');
@@ -16,15 +17,22 @@ const {createServer} = require('../helpers/createServer');
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+var portApp = normalizePort('3000');
+app.set('port', portApp);
+
+var portApi = normalizePort('3001');
+api.set('port', portApi);
 
 /**
- * First connect to MongoDB and then start server
+ * First connect to MongoDB and then start API-server, then request extreme Weather and finally start APP
  */
  connectMongoDB(function(){
-   createServer(app, port, function(){
-     requestExtremeWeather();
+   // create API-Server
+   createServer(api, portApi, 'API', function(){
+     requestExtremeWeather(function(){
+       // create APP-Server
+       createServer(app, portApp, 'App');
+     });
    });
  });
 

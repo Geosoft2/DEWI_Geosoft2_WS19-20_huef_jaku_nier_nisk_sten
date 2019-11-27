@@ -43,11 +43,11 @@ const postExtremeWeather = async function(req, res){
 const getExtremeWeather = async function(req, res){
   var events = req.query.events || []; // output: ['FOG', 'FROST']
   var polygon = bboxToPolygon(req.query.bbox);
-  try{
+  try {
     const result = await ExtremeWeather.find({
       'properties.EC_GROUP': {$in: events},
       geometry: {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}}
-    });
+    }, {_id: 0}); //without _id (ObjectID)
     var geoJSON = makeGeoJSonFromFeatures(result);
     // console.log(result);
     res.status(200).send(geoJSON);

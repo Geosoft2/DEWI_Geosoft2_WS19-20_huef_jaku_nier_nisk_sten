@@ -91,7 +91,7 @@ function boundingbox(bounds){
 //   console.log('feature', feature);
 //   $.ajax({
 //    type: "POST",
-//    url: '/api/v1/mongo/extremeWeather',
+//    url: 'http://localhost:3001/api/v1/mongo/extremeWeather',
 //    // contentType: "application/json",
 //    dataType: 'json',
 //    data: feature
@@ -119,7 +119,7 @@ function requestEvent(){
 function requestExtremeWeather(bbox, events){
   $.ajax({
    type: "Get",
-   url: '/api/v1/mongo/extremeWeather',
+   url: 'http://localhost:3001/api/v1/mongo/extremeWeather',
    data: {
      events: events,
      bbox: bbox
@@ -149,7 +149,7 @@ function requestExtremeWeather(bbox, events){
 // function requestExtremeWeather(bbox){
 //   $.ajax({
 //    type: "POST",
-//    url: '/api/v1/dwd/extremeWeather',
+//    url: 'http://localhost:3001/api/v1/dwd/extremeWeather',
 //    // contentType: "application/json",
 //    dataType: 'json',
 //    data: bbox
