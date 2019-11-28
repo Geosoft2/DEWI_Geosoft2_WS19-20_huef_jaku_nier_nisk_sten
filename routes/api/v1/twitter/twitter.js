@@ -239,7 +239,7 @@ const stream = async function (req, res){
 // router.get("/stream", async (req, res) => {
     let  currentRules;
     const rules = [
-        {value: "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
+        //{value: "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
         //{value : "\"rain\" has:geo"}
         ];
 

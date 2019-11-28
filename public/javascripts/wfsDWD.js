@@ -36,11 +36,6 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
-map.on('moveend', function (e) {
-    // function which is triggered automatically when the map gets moved
-    bounds = map.getBounds();
-    mapExtendChange(bounds);
-});
 
 /*
 settings button for setting the default map extent
@@ -58,74 +53,32 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
-/**
- * @desc new extreme weather data are loaded after each change of map-extent
- * @param {json} bounds coordinates of current map-extent
- */
-async function mapExtendChange(bounds) {
-    // TODO: setTweets("array of tweets");
-    var bbox = boundingbox(bounds);
-    // TODO: uncomment updateTwitterStream after setStreamfilter works
-    //await updateTwitterStream(bbox.bbox);
-    requestExtremeWeather(bbox);
-}
+
 
 /**
  * adds the Tweets to the map that lay within the wfslayers and the current mapextend
  * @param wfsLayers
  */
-function addTweets(wfsLayers) {
+function addTweets(wfsLayers, tweets) {
     var tweetsInWfsLayers = [];
-    var tweets = [];
-    // example for the tweets
-    // TODO: delete example data after loading tweets from mongodb is working
-    tweets.push({
-        tweetId : 1,
-        places: {
-            coordinates: {
-                lng: 13.404954,
-                lat: 52.520008
-            }
-        }
-    });
-    tweets.push({
-        tweetId : 2,
-        places: {
-            coordinates: {
-                lng: 14.418540,
-                lat: 50.073658
-            }
-        }
-    });
-    tweets.push({
-        tweetId : 3,
-        places: {
-            coordinates: {
-                lng: 10.418540,
-                lat: 50.073658
-            }
-        }
-    });
 
-    //TODO: get the tweets from mongodb and push them to tweets
     for (var t in tweets) {
-       /* if (isTweetInWfsLayer(tweets[t], wfsLayers.features)) {
+        if (isTweetInWfsLayer(tweets[t], wfsLayers.features)) {
             tweetsInWfsLayers.push(tweets[t]);
-        }*/
+        }
     }
     for (var t=0; t<tweetsInMap.length; t++){
 
         if (!isTweetInMapextend(tweetsInMap[t])){
-            console.log(tweetsInMap[t]);
             map.removeLayer(tweetsInMap[t]);
             tweetsInMap.splice(t, 1);
-            console.log(tweetsInMap);
             t--;
         }
         else{
-            console.log(tweetsInMap[t]._leaflet_id);
+           // console.log(tweetsInMap[t]._leaflet_id);
         }
     }
+    setTweets(tweetsInWfsLayers);
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
 
         // should only add a marker if not already one with the same id exists
@@ -136,13 +89,15 @@ function addTweets(wfsLayers) {
         for (var n in newTweets) {
             var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
             //TODO: give the marker the attributes of the tweets that it should have
-            marker.tweetId=newTweets[n].tweetId;
+            marker.tweetId=newTweets[n].Nid;
             tweetsInMap.push(marker);
             //marker.setIcon()
         }
 
 
     }
+    console.log(tweetsInMap);
+    setTweets(tweetsInWfsLayers);
 }
 
 /**
@@ -173,11 +128,11 @@ function isTweetInMapextend(marker) {
         properties: {}
     };
     var bbox = turf.polygon([[
-        [bounds._southWest.lat, bounds._southWest.lng],
-        [bounds._southWest.lat, bounds._northEast.lng],
-        [bounds._northEast.lat, bounds._northEast.lng],
-        [bounds._northEast.lat, bounds._southWest.lng],
-        [bounds._southWest.lat, bounds._southWest.lng]
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
     ]]);
     return turf.booleanWithin(point, bbox);
 }
@@ -197,11 +152,11 @@ function isTweetInWfsLayer(tweet, wfsLayers) {
         properties: {}
     };
     var bbox = turf.polygon([[
-        [bounds._southWest.lat, bounds._southWest.lng],
-        [bounds._southWest.lat, bounds._northEast.lng],
-        [bounds._northEast.lat, bounds._northEast.lng],
-        [bounds._northEast.lat, bounds._southWest.lng],
-        [bounds._southWest.lat, bounds._southWest.lng]
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
     ]]);
 
     for (var w in wfsLayers) {
@@ -218,20 +173,6 @@ function isTweetInWfsLayer(tweet, wfsLayers) {
         }
     }
     return false;
-}
-
-/**
- * updates the TwitterStream with a new boundingbox
- * @param bbox
- */
-function updateTwitterStream(bbox) {
-    $.ajax({
-        type: "POST",
-        url: '/api/v1/twitter/setStreamFilter',
-        // contentType: "application/json",
-        dataType: 'json',
-        data: bbox
-    })
 }
 
 /**
@@ -259,25 +200,27 @@ function boundingbox(bounds) {
  * @param {json} bbox coordinates of current map-extent
  */
 function requestExtremeWeather(bbox) {
-    $.ajax({
-        type: "POST",
-        url: '/api/v1/dwd/extremeWeather',
-        // contentType: "application/json",
-        dataType: 'json',
-        data: bbox
-    })
-        .done(function (response) {
-            addTweets(response);
-            // remove existing layer
-            removeExistingLayer(warnlayer);
-            // create new layer
-            warnlayer = createLayer(response);
-            // add layer to layerGroup and map
-            extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+    return new Promise(function (resolve,restrict)    {
+        $.ajax({
+            type: "POST",
+            url: '/api/v1/dwd/extremeWeather',
+            // contentType: "application/json",
+            dataType: 'json',
+            data: bbox
         })
-        .fail(function (err) {
-            console.log(err.responseText);
-        });
+            .done(function (response) {
+                // remove existing layer
+                removeExistingLayer(warnlayer);
+                // create new layer
+                warnlayer = createLayer(response);
+                // add layer to layerGroup and map
+                extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+                resolve(response);
+            })
+            .fail(function (err) {
+                console.log(err.responseText);
+            });
+    });
 }
 
 /**
@@ -308,44 +251,6 @@ function createLayer(data) {
             layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p>');
         }
     });
-}
-
-/**
- * @desc Queries the extreme weather events with predefined bbox and add it to the map - if the page is reloaded. The
- * predefined map extent is about the area of germany. The user has in the settings the possibility to change
- *
- */
-function initialExtremeWeather() {
-    // initial bounding box with the area of germany
-    var initialBbox = {
-        bbox: {
-            southWest: {
-                lat: 47.2704, // southWest.lng
-                lng: 6.6553 // southWest.lat
-            },
-            northEast: {
-                lat: 55.0444, // northEast.lng
-                lng: 15.0176 // southWest.lat
-            }
-        }
-    };
-
-    // get the new default boundingbox
-    var newDefaultBbox = getCookie("defaultBbox");
-
-    // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
-    if (newDefaultBbox != "") {
-        newDefaultBbox = JSON.parse(newDefaultBbox);
-
-        var northEastLat = newDefaultBbox.bbox.northEast.lat;
-        var northEastLng = newDefaultBbox.bbox.northEast.lng;
-        var southWestLat = newDefaultBbox.bbox.southWest.lat;
-        var southWestLng = newDefaultBbox.bbox.southWest.lng;
-
-        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]])
-    } else {
-        requestExtremeWeather(initialBbox);
-    }
 }
 
 // request percipitation radar wms from dwd and add it to the map
@@ -381,25 +286,5 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-/**
- * @desc function for requesting a cookie which was stored before
- * @param cname name of the cookie
- * @returns {string}
- * @source https://www.w3schools.com/js/js_cookies.asp
- */
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
+
 

@@ -32,7 +32,7 @@ const sandboxSearch = function(filter, area) {
         const bbox = area;
 
         if (!q || typeof q !== "string") {
-            res.status(400).send("filter is a required Parameter and must be a string")
+           // res.status(400).send("filter is a required Parameter and must be a string")
         } else {
             endpoint += q;
         }
