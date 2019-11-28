@@ -33,8 +33,11 @@ var oauth = new OAuth.OAuth(
 );
 
 
-
-
+/**
+ * Returns information of an specified user
+ * @param userId of the user
+ * @returns {Promise<user infromation>}
+ */
 const getUserInformation = async function(userId){
 
     return new Promise(async function (resolve, reject) {
@@ -62,9 +65,11 @@ const getUserInformation = async function(userId){
 };
 
 
-
-
-
+/**
+ * Returns information about an specified place
+ * @param placeId of the place
+ * @returns {Promise<placeInformation>}
+ */
 const getPlaceInformation = async function(placeId){
 
     const url= "https://api.twitter.com/1.1/geo/id/" + placeId +".json";

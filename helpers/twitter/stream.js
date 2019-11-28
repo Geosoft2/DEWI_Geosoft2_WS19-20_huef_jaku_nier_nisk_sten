@@ -14,16 +14,21 @@ const twitterToken = require('../../private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
+//specify the twitter Endpoint to set/delete and get rules
 const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
 var token;
+//create twitter access Token
 oauth2.getOAuthAccessToken('', {
     'grant_type': 'client_credentials'
 }, function (e, access_token) {
     token = access_token;
 });
 
-
+/**
+ * Get all active rules of the twitter stream
+ * @returns {Promise<*>}
+ */
 const getAllRules = async function() {
     const requestConfig = {
         url: rulesURL,
@@ -33,6 +38,7 @@ const getAllRules = async function() {
     };
 
     const response = await get(requestConfig);
+    //proof if request worked
     if (response.statusCode !== 200) {
         throw new Error(response.body);
         return null;
@@ -42,7 +48,11 @@ const getAllRules = async function() {
 };
 
 
-
+/**
+ * Delete Rules of the twitter stream
+ * @param rules to delete
+ * @returns {Promise<*>}
+ */
 const deleteAllRules = async function(rules) {
     if (!Array.isArray(rules.data)) {
         return null;
@@ -63,6 +73,8 @@ const deleteAllRules = async function(rules) {
     };
 
     const response = await post(requestConfig);
+
+    //proof if request worked
     if (response.statusCode !== 200) {
         throw new Error(JSON.stringify(response.body));
         return null;
@@ -72,9 +84,11 @@ const deleteAllRules = async function(rules) {
 };
 
 
-
-
-
+/**
+ * Send additional Rules to the filter
+ * @param rules to set
+ * @returns {Promise<*>}
+ */
 const setRules = async function(rules) {
     const requestConfig = {
         url: rulesURL,
@@ -87,6 +101,8 @@ const setRules = async function(rules) {
     };
 
     const response = await post(requestConfig);
+
+    //proof if request worked
     if (response.statusCode !== 201) {
         throw new Error(JSON.stringify(response.body));
         return null;
@@ -94,7 +110,10 @@ const setRules = async function(rules) {
     return response.body;
 };
 
-
+/**
+ * Connect to the Twitter stream and send information via socket-io
+ * @returns the stream
+ */
 const streamConnect = function() {
     // Listen to the stream
     const config = {

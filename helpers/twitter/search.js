@@ -2,36 +2,43 @@ const OAuth = require('oauth');
 const OAuth2 = OAuth.OAuth2;
 const https = require('https');
 
-
 const twitterToken = require('../../private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
 var token;
+
+//create twitter access token
 oauth2.getOAuthAccessToken('', {
     'grant_type': 'client_credentials'
 }, function (e, access_token) {
     token = access_token;
 });
 
+/**
+ * Returns the tweets found out by the sandbox search
+ * @param filter after a keyword
+ * @param area middle Point + Radius to filter tweets
+ * @returns {Promise<tweets>}
+ */
 const sandboxSearch = function(filter, area) {
 
     return new Promise(function (resolve, reject) {
+
+        //build the endpoint url
         let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&q=';
 
         const q = filter;
         const bbox = area;
 
-        /**if (!q || typeof q !== "string") {
+        if (!q || typeof q !== "string") {
             res.status(400).send("filter is a required Parameter and must be a string")
         } else {
             endpoint += q;
-        }*/
+        }
         if(bbox){
             endpoint+="&geocode=" + String(bbox.coordinate.lat) +","+ String(bbox.coordinate.lng) + "," + String(bbox.area) + "km"
         };
-
-        console.log(endpoint);
 
         const options = {
             headers: {
@@ -51,12 +58,11 @@ const sandboxSearch = function(filter, area) {
             httpResponse.on("end", () => {
 
                 try {
+                    //transform the twitter Response in our specified mongoDB format
                     var twitterResponse = JSON.parse(body);
-
-                    var tweetResoponse = [];
                     var mongoDBs = {tweets: []};
                     for (var tweet of twitterResponse.statuses) {
-                        if (tweet.geo || tweet.place || tweet.coordinates) {
+                        if (tweet.geo || tweet.place) {
                             var mongoDB = {
                                 "Nid": tweet.id_str,
                                 "url": "https://twitter.com/i/status/" + tweet.id_str,
@@ -72,11 +78,13 @@ const sandboxSearch = function(filter, area) {
                                     "coordinates": {"lat": null, "lng": null},
                                 },
                             };
+                            //check if media is embedded in the tweet
                             if (tweet.entities.media) {
                                 for (var media of tweet.entities.media) {
-                                    mongoDB.media.push({"id": media.id, "url": media.media_url})
+                                    mongoDB.media.push({"id": media.id, "url": media.media_url, type: media.type})
                                 }
                             }
+                            //proof if coordinates are specified in the tweet or just place information
                             if (tweet.geo) {
                                 mongoDB.places.coordinates.lat = tweet.geo.coordinates[1];
                                 mongoDB.places.coordinates.lng = tweet.geo.coordinates[0];
@@ -104,6 +112,13 @@ const sandboxSearch = function(filter, area) {
     });
 };
 
+/**
+ * Performs the premium Search request
+ * @param query keywords to filter
+ * @param bbox a bbox to filter tweets
+ * @param since the tweets are displayed
+ * @returns {Promise<*>}
+ */
 const premiumSearch = async function(query, bbox, since) {
 
     return new Promise(function (resolve, reject) {

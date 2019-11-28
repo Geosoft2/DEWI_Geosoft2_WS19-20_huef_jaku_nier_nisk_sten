@@ -2,9 +2,6 @@
 // jshint node: true
 "use strict";
 
-const OAuth = require('oauth');
-const OAuth2 = OAuth.OAuth2;
-
 const {
     premiumSearch,
     sandboxSearch,
@@ -44,6 +41,7 @@ const postSearch = async function (req, res){
 
     const result = await premiumSearch(q,bbox,since);
 
+    //Proof if request had an error
     if(result.code === 500){
         res.status(500).send(result.error);
     }
@@ -64,6 +62,7 @@ const postSandboxSearch = async function (req, res){
 
     const result = await sandboxSearch(q,bbox);
 
+    //Proof if request had an error
     if(result.code === 500){
         res.status(500).send(result.error);
     }
@@ -83,7 +82,6 @@ const setStreamFilter = async function (req, res){
     if (bbox) {
         rules.push({"value" :  " bounding_box: [" + String(bbox.southWest.lng) + " " + String(bbox.southWest.lat) + " " + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]"});
     }
-
     try {
         // Gets the complete list of rules currently applied to the stream
         let currentRules = await getAllRules();
