@@ -76,12 +76,26 @@ const postSandboxSearch = async function (req, res){
 };
 
 
-const setStreamFilter = function (req, res){
+const setStreamFilter = async function (req, res){
 // router.post("/setStreamFilter", (req,res) => {
     var bbox = req.body.bbox;
     const rules = [];
     if (bbox) {
         rules.push({"value" :  " bounding_box: [" + String(bbox.southWest.lng) + " " + String(bbox.southWest.lat) + " " + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]"});
+    }
+
+    try {
+        // Gets the complete list of rules currently applied to the stream
+        let currentRules = await getAllRules();
+
+        // Delete all rules. Comment this line if you want to keep your existing rules.
+        await deleteAllRules(currentRules);
+
+        // Add rules to the stream. Comment this line if you want to keep your existing rules.
+        await setRules(rules);
+    } catch (e) {
+        console.error(e);
+        process.exit(-1);
     }
 };
 
