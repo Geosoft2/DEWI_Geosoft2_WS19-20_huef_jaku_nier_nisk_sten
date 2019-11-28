@@ -24,7 +24,7 @@ class TwitterList extends React.Component {
             console.log(timeout)
             self.setState({timeout : timeout})
         });
-        $.ajax({
+       /* $.ajax({
             url: "/api/v1/twitter/stream", // URL der Abfrage,
             data:{},
             type: "get"
@@ -34,6 +34,7 @@ class TwitterList extends React.Component {
             .fail(function (err) {
                 console.log(err)
             });
+        */
         $.ajax({
             url: "/api/v1/twitter/search", // URL der Abfrage,
             data:{"bbox" : {

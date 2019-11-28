@@ -6,7 +6,6 @@
 
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 var bounds;
-
 var mapOptions = {
     center: [51, 10],
     zoom: 6,
@@ -62,12 +61,93 @@ var radarlayer;
  * @desc new extreme weather data are loaded after each change of map-extent
  * @param {json} bounds coordinates of current map-extent
  */
-function mapExtendChange(bounds) {
+async function mapExtendChange(bounds) {
     var bbox = boundingbox(bounds);
+    // TODO: uncomment updateTwitterStream after setStreamfilter works
+    //await updateTwitterStream(bbox.bbox);
     requestExtremeWeather(bbox);
-    //updateTwitterStream(bbox.bbox);
 }
 
+/**
+ * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @param wfsLayers
+ */
+function addTweets(wfsLayers) {
+    var tweetsInWfsLayers = [];
+    var tweets = [];
+    // example for the tweets
+    // TODO: delete example data after loading tweets from mongodb is working
+    tweets.push({
+        places: {
+            coordinates: {
+                lng: 13.404954,
+                lat: 52.520008
+            }
+        }
+    });
+    tweets.push({
+        places: {
+            coordinates: {
+                lng: 14.418540,
+                lat: 50.073658
+            }
+        }
+    });
+
+    //TODO: get the tweets from mongodb and push them to tweets
+    for (var t in tweets) {
+        if (isTweetInWfsLayer(tweets[t], wfsLayers.features)) {
+            tweetsInWfsLayers.push(tweets[t]);
+        }
+    }
+    for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
+        L.marker([tweetsInWfsLayers[0].places.coordinates.lat, tweetsInWfsLayers[0].places.coordinates.lng]).addTo(map);
+    }
+}
+
+/**
+ * checks if the given tweet lays within the given layers and the current mapextend
+ * @param tweet
+ * @param wfsLayers
+ * @returns {boolean}
+ */
+function isTweetInWfsLayer(tweet, wfsLayers) {
+    var point = {   //convert the tweet location in a readable format for turf
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [tweet.places.coordinates.lat, tweet.places.coordinates.lng]
+        },
+        properties: {}
+    };
+    var bbox = turf.polygon([[
+        [bounds._southWest.lat, bounds._southWest.lng],
+        [bounds._southWest.lat, bounds._northEast.lng],
+        [bounds._northEast.lat, bounds._northEast.lng],
+        [bounds._northEast.lat, bounds._southWest.lng],
+        [bounds._southWest.lat, bounds._southWest.lng]
+    ]]);
+
+    for (var w in wfsLayers) {
+        var polygon = turf.polygon([[
+            [wfsLayers[w].bbox[1], wfsLayers[w].bbox[0]],
+            [wfsLayers[w].bbox[1], wfsLayers[w].bbox[2]],
+            [wfsLayers[w].bbox[3], wfsLayers[w].bbox[2]],
+            [wfsLayers[w].bbox[3], wfsLayers[w].bbox[0]],
+            [wfsLayers[w].bbox[1], wfsLayers[w].bbox[0]]
+        ]]);
+        if (turf.booleanWithin(point, polygon) &&
+            turf.booleanWithin(point, bbox)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * updates the TwitterStream with a new boundingbox
+ * @param bbox
+ */
 function updateTwitterStream(bbox) {
     $.ajax({
         type: "POST",
@@ -111,7 +191,7 @@ function requestExtremeWeather(bbox) {
         data: bbox
     })
         .done(function (response) {
-            console.log(response);
+            addTweets(response);
             // remove existing layer
             removeExistingLayer(warnlayer);
             // create new layer
