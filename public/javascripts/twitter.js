@@ -1,19 +1,27 @@
 
 let socket = io();
 const e = React.createElement;
+let setTweets= null;
+
 
 class TwitterList extends React.Component {
     constructor(props) {
         super(props);
         this.state = { tweets: [], timeout: false};
+        setTweets = this.test;
     }
 
     componentDidMount(){
         this.testTwitter()
     }
 
+    setTweets =(tweets) => {
+        this.setState({tweets: tweets})
+    };
+
     testTwitter= () => {
 
+        console.log(map);
         const self= this;
         socket.on('tweet', function(tweet){
             console.log(tweet);
@@ -22,10 +30,10 @@ class TwitterList extends React.Component {
             self.setState({tweets : tweets2});
         });
         socket.on('timeout', function (timeout){
-            console.log(timeout)
+            console.log(timeout);
             self.setState({timeout : timeout})
         });
-        $.ajax({
+       /* $.ajax({
             url: "/api/v1/twitter/stream", // URL der Abfrage,
             data:{},
             type: "get"
@@ -35,6 +43,7 @@ class TwitterList extends React.Component {
             .fail(function (err) {
                 console.log(err)
             });
+        */
         $.ajax({
             url: "/api/v1/twitter/sandboxSearch", // URL der Abfrage,
             data:{"bbox" : {
@@ -71,7 +80,7 @@ class TwitterList extends React.Component {
                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
                    }
                 }
-                cards.unshift(e(Card, null, item.text,  e("br"), "Author: " + item.author.name, e("br"),
+                cards.unshift(e(Card, {id: "Card" + item.Nid}, item.text,  e("br"), "Author: " + item.author.name, e("br"),
                     e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
                     "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"), media));
                 cards.unshift(e("br", null, null));
@@ -80,7 +89,6 @@ class TwitterList extends React.Component {
         if(this.state.timeout){
             cards.unshift(e("p",null,"Lost Connection to Twitter Stream. Reconnecting ..."))
         }
-
         return cards
     }
 }
