@@ -6,6 +6,7 @@
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 
 var bounds;
+var tweetsInMap=[];
 var mapOptions = {
     center: [51, 10],
     zoom: 6,
@@ -79,6 +80,7 @@ function addTweets(wfsLayers) {
     // example for the tweets
     // TODO: delete example data after loading tweets from mongodb is working
     tweets.push({
+        tweetId : 1,
         places: {
             coordinates: {
                 lng: 13.404954,
@@ -87,9 +89,19 @@ function addTweets(wfsLayers) {
         }
     });
     tweets.push({
+        tweetId : 2,
         places: {
             coordinates: {
                 lng: 14.418540,
+                lat: 50.073658
+            }
+        }
+    });
+    tweets.push({
+        tweetId : 3,
+        places: {
+            coordinates: {
+                lng: 10.418540,
                 lat: 50.073658
             }
         }
@@ -101,11 +113,74 @@ function addTweets(wfsLayers) {
             tweetsInWfsLayers.push(tweets[t]);
         }*/
     }
+    for (var t=0; t<tweetsInMap.length; t++){
+
+        if (!isTweetInMapextend(tweetsInMap[t])){
+            console.log(tweetsInMap[t]);
+            map.removeLayer(tweetsInMap[t]);
+            tweetsInMap.splice(t, 1);
+            console.log(tweetsInMap);
+            t--;
+        }
+        else{
+            console.log(tweetsInMap[t]._leaflet_id);
+        }
+    }
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
-        L.marker([tweetsInWfsLayers[0].places.coordinates.lat, tweetsInWfsLayers[0].places.coordinates.lng]).addTo(map);
+
+        // should only add a marker if not already one with the same id exists
+        var newTweets=[];
+        if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])){
+            newTweets.push(tweetsInWfsLayers[t])
+        }
+        for (var n in newTweets) {
+            var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
+            //TODO: give the marker the attributes of the tweets that it should have
+            marker.tweetId=newTweets[n].tweetId;
+            tweetsInMap.push(marker);
+            //marker.setIcon()
+        }
+
+
     }
 }
 
+/**
+ * checks whether a marker with the same id as the given tweet already exists
+ * @param tweet
+ * @returns {boolean}
+ */
+function isMarkerAlreadyThere(tweet) {
+    for (var i in tweetsInMap){
+        if (tweetsInMap[i].tweetId===tweet.tweetId){
+            return true;
+        }
+    }
+    return false;
+}
+/**
+ * checks if the Tweet is located in the current mapextend
+ * @param marker
+ * @returns {*} boolean
+ */
+function isTweetInMapextend(marker) {
+    var point = {   //convert the tweet location in a readable format for turf
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [marker._latlng.lat, marker._latlng.lng]
+        },
+        properties: {}
+    };
+    var bbox = turf.polygon([[
+        [bounds._southWest.lat, bounds._southWest.lng],
+        [bounds._southWest.lat, bounds._northEast.lng],
+        [bounds._northEast.lat, bounds._northEast.lng],
+        [bounds._northEast.lat, bounds._southWest.lng],
+        [bounds._southWest.lat, bounds._southWest.lng]
+    ]]);
+    return turf.booleanWithin(point, bbox);
+}
 /**
  * checks if the given tweet lays within the given layers and the current mapextend
  * @param tweet
