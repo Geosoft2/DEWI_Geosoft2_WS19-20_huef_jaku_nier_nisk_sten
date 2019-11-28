@@ -16,6 +16,7 @@ class TwitterList extends React.Component {
 
         const self= this;
         socket.on('tweet', function(tweet){
+            console.log(tweet);
             const tweets2 = self.state.tweets;
             tweets2.push(tweet);
             self.setState({tweets : tweets2});
@@ -35,16 +36,16 @@ class TwitterList extends React.Component {
                 console.log(err)
             });
         $.ajax({
-            url: "/api/v1/twitter/search", // URL der Abfrage,
+            url: "/api/v1/twitter/sandboxSearch", // URL der Abfrage,
             data:{"bbox" : {
-                    "southWest": {"lat": 52.46228526678029 , "lng": 13.270111083984375},
+                    coordinate :{"lat": 52.46228526678029 , "lng": 13.270111083984375}, area: "100",
                     "northEast": {"lat": 52.56842095734828 , "lng": 13.493957519531248}},
-                "filter" : "rain",
-                "since" : 21600},
+                "filter" : ""},
             type: "post"
         })
             .done(function (response) {
-                self.setState({tweets: response.tweets})
+                self.setState({tweets: response.tweets});
+                console.log(response)
             })
             .fail(function (err) {
                 console.log(err)
@@ -63,10 +64,12 @@ class TwitterList extends React.Component {
             this.state.tweets.map(function (item, i) {
                 const media=[];
                 for(var mediaItem of item.media){
-                   /* if(mediaItem.type ==="video"){
+                   if(mediaItem.type ==="video"){
                         media.push(e("video", {width:300, height: "auto"}, e("source", {src:mediaItem.url, type: "video/" +mediaItem.url.substr(mediaItem.url.length-3, 3)})))
-                    }*/
-                    media.push(e("img", {src: mediaItem.url, width:300, height: "auto"}))
+                    }
+                   else {
+                       media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}))
+                   }
                 }
                 cards.unshift(e(Card, null, item.text,  e("br"), "Author: " + item.author.name, e("br"),
                     e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),

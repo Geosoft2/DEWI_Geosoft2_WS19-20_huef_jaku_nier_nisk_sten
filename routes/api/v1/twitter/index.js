@@ -22,6 +22,8 @@ TwitterRouter.post("/setStreamFilter", require('./twitter').setStreamFilter);
 
 TwitterRouter.get("/stream", require('./twitter').stream);
 
+TwitterRouter.post("/sandboxSearch", require('./twitter').postSandboxSearch);
+
 
 
 module.exports = TwitterRouter;

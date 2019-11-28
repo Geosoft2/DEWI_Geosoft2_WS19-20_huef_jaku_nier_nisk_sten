@@ -8,7 +8,6 @@ const querystring = require('querystring');
 
 const postExtremeWeather = function(req, res){
 
-  console.log(req.body);
   var bbox = req.body.bbox;
 
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
@@ -34,8 +33,6 @@ const postExtremeWeather = function(req, res){
   var parameters = querystring.stringify(defaultParameters);
   var url = rootUrl + '?' + parameters;
 
-  console.log(url);
-
   request.get(url)
     .on('response', function(response) {
       // concatenate updates from datastream
@@ -45,7 +42,6 @@ const postExtremeWeather = function(req, res){
           body += chunk;
       });
       response.on('end', function(){
-          console.log(JSON.parse(body));
           return res.status(200).send(JSON.parse(body));
       });
     })
