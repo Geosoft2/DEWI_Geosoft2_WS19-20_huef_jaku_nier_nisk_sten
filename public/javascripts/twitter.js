@@ -3,21 +3,19 @@ let socket = io();
 const e = React.createElement;
 let setTweets= ()=>{};
 
-function getTweets() {
+function getTweets(bounds) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
             url: "/api/v1/twitter/sandboxSearch", // URL der Abfrage,
             data: {
-                "bbox": {
-                    coordinate: {"lat": 52.46228526678029, "lng": 13.270111083984375}, area: "100",
-                    "northEast": {"lat": 52.56842095734828, "lng": 13.493957519531248}
-                },
+                "bbox": bounds.bbox,
                 "filter": ""
             },
             type: "post"
         })
             .done(function (response) {
                 setTweets(response.tweets);
+                console.log(response);
                 resolve(response.tweets);
             })
             .fail(function (err) {

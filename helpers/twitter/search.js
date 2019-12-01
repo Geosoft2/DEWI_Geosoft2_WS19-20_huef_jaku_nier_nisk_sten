@@ -29,15 +29,14 @@ const sandboxSearch = function(filter, area) {
         let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&q=';
 
         const q = filter;
-        const bbox = area;
 
         if (!q || typeof q !== "string") {
            // res.status(400).send("filter is a required Parameter and must be a string")
         } else {
             endpoint += q;
         }
-        if(bbox){
-            endpoint+="&geocode=" + String(bbox.coordinate.lat) +","+ String(bbox.coordinate.lng) + "," + String(bbox.area) + "km"
+        if(area){
+            endpoint+="&geocode=" + area.center.lat +","+ area.center.lng + "," + area.radius + "km"
         };
 
         const options = {

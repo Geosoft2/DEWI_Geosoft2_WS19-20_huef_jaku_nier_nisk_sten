@@ -43,7 +43,7 @@ settings button for setting the default map extent
 L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
 
     if (confirm("set actual map extent as new default map extent")) {
-        var cookieValue = JSON.stringify(boundingbox(bounds));
+        var cookieValue = JSON.stringify(bounds);
         // cookie to store the map extent
         setCookie("defaultBbox", cookieValue, 1000000);
     }
@@ -96,7 +96,7 @@ function addTweets(wfsLayers, tweets) {
 
 
     }
-    console.log(tweetsInMap);
+    console.log(tweetsInWfsLayers);
     setTweets(tweetsInWfsLayers);
 }
 
