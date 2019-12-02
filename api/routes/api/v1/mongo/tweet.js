@@ -3,7 +3,7 @@
 "use strict";
 
 const Tweet = require('../../../../models/tweet');
-Tweet.index({text: 'text'});
+// Tweet.index({text: 'text'});
 const {bboxToPolygon} = require('../../../../helpers/geoJSON');
 
 const postTweet = async function (req, res) {
@@ -65,4 +65,4 @@ const getTweets = async function (req, res) {
 module.exports = {
     postTweet,
     getTweets
-}
+};

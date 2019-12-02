@@ -65,7 +65,18 @@ var radarlayer;
 function mapExtendChange(bounds){
   var bbox = boundingbox(bounds);
   var events = $('#selectEvent').val();
+  //updateURL(bbox);
   requestExtremeWeather(bbox, events);
+}
+
+
+function updateURL(bbox) {
+    // URL has to be updated by filter to
+    var lat1 = Math.round(bbox.northEast.lat);
+    var lat2 = Math.round(bbox.southWest.lat);
+    var lng1 = Math.round(bbox.northEast.lng);
+    var lng2 = Math.round(bbox.southWest.lng);
+    window.history.pushState("object or string", "Title", "/?"+lat1+","+lng1+","+lat2+","+lng2);
 }
 
 /**
