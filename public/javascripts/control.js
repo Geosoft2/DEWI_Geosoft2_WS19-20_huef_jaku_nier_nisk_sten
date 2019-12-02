@@ -7,14 +7,12 @@ async function initial(){
     const bbox = getInitialBbox();
     const weatherResponse= await requestExtremeWeather(bbox);
     const circles= getRadii(bbox.bbox);
-    console.log(bbox)
-    console.log(circles);
     for(var circle of circles){
         L.circle([circle.center.lat, circle.center.lng], {radius: circle.radius}).addTo(map);
     }
    const twitterResponse = await getTweets(bbox); //TODO: get the tweets from mongodb and not direct from Twitter
 
-    addTweets(weatherResponse, twitterResponse);
+    addTweets(weatherResponse, twitterResponse.tweets);
 }
 
 /**

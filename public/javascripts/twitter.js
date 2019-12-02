@@ -14,7 +14,7 @@ function getTweets(bounds) {
             type: "post"
         })
             .done(function (response) {
-                setTweets(response.tweets);
+                setTweets(response.tweets.tweets);
                 console.log(response);
                 resolve(response.tweets);
             })
@@ -53,9 +53,12 @@ class TwitterList extends React.Component {
         this.setState({tweets: tweets})
     };
 
+    tweetClicked = () => {
+        console.log("tweetClicked");
+    };
+
     testTwitter = () => {
 
-        console.log(map);
         const self = this;
         socket.on('tweet', function (tweet) {
             console.log(tweet);
@@ -83,10 +86,14 @@ class TwitterList extends React.Component {
 
         render()
         {
-
+            const  self =this;
             const {
-                Card
+                Card,
+                ButtonBase,
+                Paper,
+                CardContent,
             } = window['MaterialUI'];
+
 
             const cards = [];
             cards.unshift(e("br"));
@@ -96,20 +103,26 @@ class TwitterList extends React.Component {
                 for (var mediaItem of item.media) {
                     if (mediaItem.type === "photo") {
                         media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
+                        media.push(e("br"))
                     } else {
                         media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
+                        media.push(e("br"))
                     }
                 }
-                cards.unshift(e(Card, {id: "Card" + item.Nid}, item.text, e("br"), "Author: " + item.author.name, e("br"),
+
+                const content= e(CardContent, null,  item.text, e("br"), "Author: " + item.author.name, e("br"),
                     e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
-                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"), media));
-                cards.unshift(e("br", null, null));
+                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"))
+                cards.unshift(e(Card, {id: "Card" + item.Nid},  e(ButtonBase, {onClick: event => self.tweetClicked(event)},  media, content)));
+                cards.unshift(e("br"));
             });
 
             if (this.state.timeout) {
                 cards.unshift(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."))
             }
-            return cards
+
+            const list=  e(Paper, {id: "list"}, cards)
+            return list
         }
 }
 

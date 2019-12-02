@@ -5,3 +5,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+#list {
+  max-height: 80vh;
+  overflow: auto;
+}

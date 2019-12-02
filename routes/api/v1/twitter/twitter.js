@@ -68,6 +68,8 @@ const postSandboxSearch = async function (req, res){
 
     const result = {tweets: []};
 
+    /**
+
     for (var circle of circles){
         const smallResult= await sandboxSearch(q,circle);
         if(result.code === 500){
@@ -81,7 +83,8 @@ const postSandboxSearch = async function (req, res){
             result.tweets = result.tweets.concat(smallResult.tweets);
             console.log(result.tweets);
         }
-    }
+    } */
+    result.tweets = await sandboxSearch();
         res.json(result);
 };
 
