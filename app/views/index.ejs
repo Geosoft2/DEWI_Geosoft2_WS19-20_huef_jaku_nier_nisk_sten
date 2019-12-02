@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
 
   </head>
-  <body onload="initialExtremeWeather()">
+  <body onload="initialExtremeWeather(), testSocket()">
 
     <a href="/">
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
@@ -47,9 +47,12 @@
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
 <script src="/leafletEasyButton/easy-button.js"></script>
-<script src="/jquery/jquery.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
+<script src="/javascripts/testSocket.js"></script>

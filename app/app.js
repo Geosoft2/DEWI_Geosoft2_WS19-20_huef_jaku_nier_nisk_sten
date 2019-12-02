@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
+app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client/dist'));
 app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));

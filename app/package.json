@@ -33,7 +33,8 @@
     "leaflet.pancontrol": "^1.0.0",
     "morgan": "~1.9.1",
     "popper.js": "^1.15.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",

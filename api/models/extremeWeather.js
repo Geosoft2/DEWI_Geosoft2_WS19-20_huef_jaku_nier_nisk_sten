@@ -32,13 +32,9 @@ const ExtremeWeatherSchema = mongoose.Schema({
     type: Date,
     required: true
   }
+},{
+  versionKey: false
 });
-// },{
-//   // this will automatically add "createdAt" and "updatedAt" fields to the schema.
-//   timestamps: true
-// });
 
-
-// ExtremeWeatherSchema.index({geometry: '2dsphere'});
 
 module.exports = mongoose.model('ExtremeWeather', ExtremeWeatherSchema);

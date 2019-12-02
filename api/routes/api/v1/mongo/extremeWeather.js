@@ -4,6 +4,7 @@
 
 const ExtremeWeather = require('../../../../models/extremeWeather');
 const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../../../../helpers/geoJSON');
+const io = require("../../../../helpers/socket-io").io;
 
 
 const postExtremeWeather = async function(req, res){
@@ -12,27 +13,18 @@ const postExtremeWeather = async function(req, res){
   // only if data are available, data can be stored
   if(features){
     var now = new Date(Date.now());
-    console.log(now);
     var id = [];
     var newEvent = 0;
     var updatedEvent = 0;
     for(var i = 0; i < features.length; i++){
-      var oldWeatherEvent = {
-        type:features[i].type,
-        'geometry.type': features[i].geometry.type,
-        'geometry.coordinates': features[i].geometry.coordinates,
-        properties: features[i].properties,
-        updatedAt: now
-      };
       try{
-        // asynchron?
         var weather = await ExtremeWeather.findOneAndUpdate({
           type:features[i].type,
           'geometry.type': features[i].geometry.type,
           'geometry.coordinates': features[i].geometry.coordinates,
           properties: features[i].properties
         },{
-          $set: oldWeatherEvent,
+          $set: {updatedAt: now},
           $setOnInsert: {createdAt: now}
         },{
           upsert: true,
@@ -54,9 +46,16 @@ const postExtremeWeather = async function(req, res){
         res.status(400).send('Error while storing data in MongoDB.');
       }
     }
-    // id = [];
     var deleteWeather = await ExtremeWeather.deleteMany({_id: {$not: {$in: id}}});
+    io.emit('test', {
+      stats: {
+        new: newEvent,
+        updated: updatedEvent,
+        deleted:  deleteWeather.deletedCount
+      }
+    });
     res.status(200).send({
+      features: features.length,
       msg: 'Everything is updated or stored.',
       stats: {
         new: newEvent,
