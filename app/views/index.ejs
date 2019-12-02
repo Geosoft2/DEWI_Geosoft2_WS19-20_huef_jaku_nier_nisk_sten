@@ -15,6 +15,28 @@
     <a href="/">
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
     </a>
+    <br><button onclick="requestEvent()">Data</button>
+    <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
+    <label>Event:
+			<select multiple id="selectEvent" name="event">
+				<option value="THUNDERSTORM">thunderstorm</option>
+				<option value="WIND">wind</option>
+				<option value="TORNADO">tornado</option>
+				<option value="RAIN">rain</option>
+				<option value="HAIL">hail</option>
+        <option value="SNOWFALL">snowfall</option>
+        <option value="SNOWDRIFT">snowdrift</option>
+        <option value="FOG">fog</option>
+        <option value="FROST">frost</option>
+        <option value="GLAZE">glaze</option>
+        <option value="THAW">thaw</option>
+        <option value="POWERLINEVIBRATION">powerlinevibration</option>
+        <option value="UV">uv</option>
+        <option value="HEAT">heat</option>
+        <option value="TEST">test</option>
+			</select>
+		</label>
+
 
     <div id="loader">
       <div id="mapWFS" style = "width:700px; height:560px;"></div>
@@ -34,4 +56,3 @@
 
 
 <script src="javascripts/wfsDWD.js"></script>
-

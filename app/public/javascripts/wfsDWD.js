@@ -50,10 +50,10 @@ var radarlayer;
  * @desc new extreme weather data are loaded after each change of map-extent
  * @param {json} bounds coordinates of current map-extent
  */
-function mapExtendChange(bounds) {
-    var bbox = boundingbox(bounds);
-    var bboxesArray =bboxes(bbox);
-    requestExtremeWeather(bbox);
+function mapExtendChange(bounds){
+  var bbox = boundingbox(bounds);
+  var events = $('#selectEvent').val();
+  requestExtremeWeather(bbox, events);
 }
 
 /**
@@ -92,46 +92,100 @@ function bboxes(bbox){
  * @param {json} bounds coordinates of current map-extent
  * @return json
  */
-function boundingbox(bounds) {
-    return {
-        bbox: {
-            southWest: {
-                lat: bounds._southWest.lat,
-                lng: bounds._southWest.lng
-            },
-            northEast: {
-                lat: bounds._northEast.lat,
-                lng: bounds._northEast.lng
-            }
-        }
-    };
+function boundingbox(bounds){
+  return {
+    southWest: {
+      lat: bounds._southWest.lat,
+      lng: bounds._southWest.lng
+    },
+    northEast: {
+      lat: bounds._northEast.lat,
+      lng: bounds._northEast.lng
+    }
+  };
+}
+
+
+// function saveDataInMongo(feature){
+//   console.log('feature', feature);
+//   $.ajax({
+//    type: "POST",
+//    url: 'http://localhost:3001/api/v1/mongo/extremeWeather',
+//    // contentType: "application/json",
+//    dataType: 'json',
+//    data: feature
+//   })
+//   .done(function(response) {
+//     console.log(response);
+//   })
+//   .fail(function(err){
+//     console.log(err.responseText);
+//   });
+// }
+
+
+function requestEvent(){
+  bounds = map.getBounds();
+  var bbox = boundingbox(bounds);
+  var events = $('#selectEvent').val();
+  requestExtremeWeather(bbox, events);
 }
 
 /**
- * @desc queries the extreme weather events based on the current map-extent and add it to the map
- * @param {json} bbox coordinates of current map-extent
- */
-function requestExtremeWeather(bbox) {
-    $.ajax({
-        type: "POST",
-        url: '/api/v1/dwd/extremeWeather',
-        // contentType: "application/json",
-        dataType: 'json',
-        data: bbox
-    })
-        .done(function (response) {
-            console.log(response);
-            // remove existing layer
-            removeExistingLayer(warnlayer);
-            // create new layer
-            warnlayer = createLayer(response);
-            // add layer to layerGroup and map
-            extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-        })
-        .fail(function (err) {
-            console.log(err.responseText);
-        });
+* @desc queries the extreme weather events based on the current map-extent and add it to the map
+* @param {json} bbox coordinates of current map-extent
+*/
+function requestExtremeWeather(bbox, events){
+  $.ajax({
+   type: "Get",
+   url:  'http://'+location.hostname+':3001/api/v1/mongo/extremeWeather',
+   data: {
+     events: events,
+     bbox: bbox
+   }
+   // contentType: "application/json",
+  })
+  .done(function(response) {
+    console.log('mongo', response);
+    // remove existing layer
+    removeExistingLayer(warnlayer);
+    // create new layer
+    warnlayer = createLayer(response);
+    // add layer to layerGroup and map
+    extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+  })
+  .fail(function(err){
+    console.log(err.responseText);
+  });
 }
+
+
+
+// /**
+//  * @desc queries the extreme weather events based on the current map-extent and add it to the map
+//  * @param {json} bbox coordinates of current map-extent
+//  */
+// function requestExtremeWeather(bbox){
+//   $.ajax({
+//    type: "POST",
+//    url: 'http://localhost:3001/api/v1/dwd/extremeWeather',
+//    // contentType: "application/json",
+//    dataType: 'json',
+//    data: bbox
+//   })
+//   .done(function(response) {
+//     console.log(response);
+//     // remove existing layer
+//     removeExistingLayer(warnlayer);
+//     // create new layer
+//     warnlayer = createLayer(response);
+//     // add layer to layerGroup and map
+//     extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+//   })
+//   .fail(function(err){
+//     console.log(err.responseText);
+//   });
+// }
 
 /**
  * @desc checks if layer exists and remove it from map
@@ -168,38 +222,41 @@ function createLayer(data) {
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
  *
  */
-function initialExtremeWeather() {
-    // initial bounding box with the area of germany
-    var initialBbox = {
-        bbox: {
-            southWest: {
-                lat: 47.2704, // southWest.lng
-                lng: 6.6553 // southWest.lat
-            },
-            northEast: {
-                lat: 55.0444, // northEast.lng
-                lng: 15.0176 // southWest.lat
-            }
-        }
-    };
+ function initialExtremeWeather(){
+   // get the new default boundingbox
+   var newDefaultBbox = getCookie("defaultBbox");
 
-    // get the new default boundingbox
-    var newDefaultBbox = getCookie("defaultBbox");
+   // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
+   if (newDefaultBbox != "") {
+     newDefaultBbox = JSON.parse(newDefaultBbox);
 
-    // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
-    if (newDefaultBbox != "") {
-        newDefaultBbox = JSON.parse(newDefaultBbox);
+     var northEastLat = newDefaultBbox.bbox.northEast.lat;
+     var northEastLng = newDefaultBbox.bbox.northEast.lng;
+     var southWestLat = newDefaultBbox.bbox.southWest.lat;
+     var southWestLng = newDefaultBbox.bbox.southWest.lng;
 
-        var northEastLat = newDefaultBbox.bbox.northEast.lat;
-        var northEastLng = newDefaultBbox.bbox.northEast.lng;
-        var southWestLat = newDefaultBbox.bbox.southWest.lat;
-        var southWestLng = newDefaultBbox.bbox.southWest.lng;
-
-        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]])
-    } else {
-        requestExtremeWeather(initialBbox);
-    }
-}
+     map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
+   }
+   else {
+     // initial bounding box with the area of germany
+     var initialBbox = {
+       southWest: {
+         lat: 47.2704, // southWest.lng
+         lng: 6.6553 // southWest.lat
+       },
+       northEast: {
+         lat: 55.0444, // northEast.lng
+         lng: 15.0176 // southWest.lat
+       }
+     };
+     var initialEvents = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
+     // "activate" select option
+     for(var initialEvent in initialEvents){
+       $('#selectEvent option[value='+initialEvents[initialEvent]+']').attr('selected', 'selected');
+     }
+     requestExtremeWeather(initialBbox, initialEvents);
+   }
+ }
 
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
