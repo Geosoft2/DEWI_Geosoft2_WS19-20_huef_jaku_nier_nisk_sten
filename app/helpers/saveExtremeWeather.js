@@ -42,16 +42,16 @@ const saveExtremeWeather = function(geoJSON, cb){
       response.on('end', function(){
         if(response.statusCode !== 200){
           console.log(chalk.red(body));
-          return cb();
         }
-        console.log(chalk.green(body));
-        return cb();
+        else{
+          console.log(chalk.green(body));
+        }
       });
     })
     .on('error', function(err) {
       console.log(chalk.red(err));
-      return cb();
   });
+  if(cb) return cb();
 };
 
 

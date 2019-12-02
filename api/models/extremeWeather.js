@@ -23,8 +23,20 @@ const ExtremeWeatherSchema = mongoose.Schema({
   },
   properties: {
     type: mongoose.Mixed
+  },
+  createdAt: {
+    type: Date,
+    required: true
+  },
+  updatedAt: {
+    type: Date,
+    required: true
   }
 });
+// },{
+//   // this will automatically add "createdAt" and "updatedAt" fields to the schema.
+//   timestamps: true
+// });
 
 
 // ExtremeWeatherSchema.index({geometry: '2dsphere'});
