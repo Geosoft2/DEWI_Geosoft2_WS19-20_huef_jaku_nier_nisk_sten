@@ -17,7 +17,7 @@ var mapOptions = {
 
 var map = new L.map('mapWFS', mapOptions);
 
-var osmlayer =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+var osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
 }).addTo(map);
@@ -36,7 +36,7 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
-map.on('moveend', function(e) {
+map.on('moveend', function (e) {
     // function which is triggered automatically when the map gets moved
     bounds = map.getBounds();
     mapExtendChange(bounds);
@@ -45,7 +45,7 @@ map.on('moveend', function(e) {
 /*
 settings button for setting the default map extent
  */
-L.easyButton('<i class="fas fa-cog"></i>',  function(btn, map){
+L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
 
     if (confirm("set actual map extent as new default map extent")) {
         var cookieValue = JSON.stringify(boundingbox(bounds));
@@ -62,21 +62,41 @@ var radarlayer;
  * @desc new extreme weather data are loaded after each change of map-extent
  * @param {json} bounds coordinates of current map-extent
  */
-function mapExtendChange(bounds){
-  var bbox = boundingbox(bounds);
-  var events = $('#selectEvent').val();
-  //updateURL(bbox);
-  requestExtremeWeather(bbox, events);
+function mapExtendChange(bounds) {
+    var bbox = boundingbox(bounds);
+    var events = $('#selectEvent').val();
+    updateURL(bbox);
+    requestExtremeWeather(bbox, events);
 }
 
+function getWindowCoordsFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('bbox');
+    console.log(myParam);
+    if (myParam == null) {
+        return "";
+    }
+    const coords = myParam.split(',');
+    console.log(coords);
+    return {
+        southWest: {
+            lat: parseFloat(coords[1]),
+            lng: parseFloat(coords[0])
+        },
+        northEast: {
+            lat: parseFloat(coords[3]),
+            lng: parseFloat(coords[2])
+        }
+    };
+}
 
 function updateURL(bbox) {
     // URL has to be updated by filter to
-    var lat1 = Math.round(bbox.northEast.lat);
-    var lat2 = Math.round(bbox.southWest.lat);
-    var lng1 = Math.round(bbox.northEast.lng);
-    var lng2 = Math.round(bbox.southWest.lng);
-    window.history.pushState("object or string", "Title", "/?"+lat1+","+lng1+","+lat2+","+lng2);
+    var lat1 = Math.round(bbox.southWest.lat * 10000) / 10000;
+    var lat2 = Math.round(bbox.northEast.lat * 10000) / 10000;
+    var lng1 = Math.round(bbox.southWest.lng * 10000) / 10000;
+    var lng2 = Math.round(bbox.northEast.lng * 10000) / 10000;
+    window.history.pushState("object or string", "Title", "/?bbox=" + lng1 + "," + lat1 + "," + lng2 + "," + lat2);
 }
 
 /**
@@ -84,17 +104,17 @@ function updateURL(bbox) {
  * @param {json} bounds coordinates of current map-extent
  * @return json
  */
-function boundingbox(bounds){
-  return {
-    southWest: {
-      lat: bounds._southWest.lat,
-      lng: bounds._southWest.lng
-    },
-    northEast: {
-      lat: bounds._northEast.lat,
-      lng: bounds._northEast.lng
-    }
-  };
+function boundingbox(bounds) {
+    return {
+        southWest: {
+            lat: bounds._southWest.lat,
+            lng: bounds._southWest.lng
+        },
+        northEast: {
+            lat: bounds._northEast.lat,
+            lng: bounds._northEast.lng
+        }
+    };
 }
 
 
@@ -116,41 +136,40 @@ function boundingbox(bounds){
 // }
 
 
-function requestEvent(){
-  bounds = map.getBounds();
-  var bbox = boundingbox(bounds);
-  var events = $('#selectEvent').val();
-  requestExtremeWeather(bbox, events);
+function requestEvent() {
+    bounds = map.getBounds();
+    var bbox = boundingbox(bounds);
+    var events = $('#selectEvent').val();
+    requestExtremeWeather(bbox, events);
 }
 
 /**
-* @desc queries the extreme weather events based on the current map-extent and add it to the map
-* @param {json} bbox coordinates of current map-extent
-*/
-function requestExtremeWeather(bbox, events){
-  $.ajax({
-   type: "Get",
-   url:  'http://'+location.hostname+':3001/api/v1/mongo/extremeWeather',
-   data: {
-     events: events,
-     bbox: bbox
-   }
-   // contentType: "application/json",
-  })
-  .done(function(response) {
-    console.log('mongo', response);
-    // remove existing layer
-    removeExistingLayer(warnlayer);
-    // create new layer
-    warnlayer = createLayer(response);
-    // add layer to layerGroup and map
-    extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-  })
-  .fail(function(err){
-    console.log(err.responseText);
-  });
+ * @desc queries the extreme weather events based on the current map-extent and add it to the map
+ * @param {json} bbox coordinates of current map-extent
+ */
+function requestExtremeWeather(bbox, events) {
+    $.ajax({
+        type: "Get",
+        url: 'http://' + location.hostname + ':3001/api/v1/mongo/extremeWeather',
+        data: {
+            events: events,
+            bbox: bbox
+        }
+        // contentType: "application/json",
+    })
+        .done(function (response) {
+            console.log('mongo', response);
+            // remove existing layer
+            removeExistingLayer(warnlayer);
+            // create new layer
+            warnlayer = createLayer(response);
+            // add layer to layerGroup and map
+            extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+        })
+        .fail(function (err) {
+            console.log(err.responseText);
+        });
 }
-
 
 
 // /**
@@ -183,30 +202,30 @@ function requestExtremeWeather(bbox, events){
  * @desc checks if layer exists and remove it from map
  * @param {json} layer
  */
-function removeExistingLayer(layer){
-  if(layer){
-    extremeWeatherGroup.removeLayer(layer);
-    layer.remove();
-  }
+function removeExistingLayer(layer) {
+    if (layer) {
+        extremeWeatherGroup.removeLayer(layer);
+        layer.remove();
+    }
 }
 
 /**
  * @desc creates a layer from GeoJson
  * @param {geoJson} data
  */
-function createLayer(data){
-  return L.geoJson(data, {
-    style: function (feature) {
-      return {
-        stroke: false,
-        fillColor: 'FFFFFF',
-        fillOpacity: 0.5
-      };
-    },
-    onEachFeature: function (feature, layer) {
-      layer.bindPopup('<h1>'+feature.properties.HEADLINE+'</h1><p>'+feature.properties.NAME+'</p><p>'+feature.properties.DESCRIPTION+'</p>');
-    }
-  });
+function createLayer(data) {
+    return L.geoJson(data, {
+        style: function (feature) {
+            return {
+                stroke: false,
+                fillColor: 'FFFFFF',
+                fillOpacity: 0.5
+            };
+        },
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p>');
+        }
+    });
 }
 
 /**
@@ -214,41 +233,47 @@ function createLayer(data){
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
  *
  */
- function initialExtremeWeather(){
-   // get the new default boundingbox
-   var newDefaultBbox = getCookie("defaultBbox");
+function initialExtremeWeather() {
+    // get the new default boundingbox
+    var newDefaultBbox = getWindowCoordsFromUrl();
+    console.log(newDefaultBbox);
 
-   // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
-   if (newDefaultBbox != "") {
-     newDefaultBbox = JSON.parse(newDefaultBbox);
+    if (newDefaultBbox == "") {
+        newDefaultBbox = JSON.parse(getCookie("defaultBbox"));
+        console.log(newDefaultBbox);
+    }
 
-     var northEastLat = newDefaultBbox.bbox.northEast.lat;
-     var northEastLng = newDefaultBbox.bbox.northEast.lng;
-     var southWestLat = newDefaultBbox.bbox.southWest.lat;
-     var southWestLng = newDefaultBbox.bbox.southWest.lng;
+    // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
+    if (newDefaultBbox != "") {
+        console.log(newDefaultBbox);
+        //newDefaultBbox = JSON.parse(newDefaultBbox);
 
-     map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
-   }
-   else {
-     // initial bounding box with the area of germany
-     var initialBbox = {
-       southWest: {
-         lat: 47.2704, // southWest.lng
-         lng: 6.6553 // southWest.lat
-       },
-       northEast: {
-         lat: 55.0444, // northEast.lng
-         lng: 15.0176 // southWest.lat
-       }
-     };
-     var initialEvents = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
-     // "activate" select option
-     for(var initialEvent in initialEvents){
-       $('#selectEvent option[value='+initialEvents[initialEvent]+']').attr('selected', 'selected');
-     }
-     requestExtremeWeather(initialBbox, initialEvents);
-   }
- }
+        var northEastLat = newDefaultBbox.northEast.lat;
+        var northEastLng = newDefaultBbox.northEast.lng;
+        var southWestLat = newDefaultBbox.southWest.lat;
+        var southWestLng = newDefaultBbox.southWest.lng;
+
+        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
+    } else {
+        // initial bounding box with the area of germany
+        var initialBbox = {
+            southWest: {
+                lat: 47.2704, // southWest.lng
+                lng: 6.6553 // southWest.lat
+            },
+            northEast: {
+                lat: 55.0444, // northEast.lng
+                lng: 15.0176 // southWest.lat
+            }
+        };
+        var initialEvents = ['TEST', 'HEAT', 'UV', 'POWERLINEVIBRATION', 'THAW', 'GLAZE', 'FROST', 'FOG', 'SNOWDRIFT', 'SNOWFALL', 'HAIL', 'RAIN', 'TORNADO', 'WIND', 'THUNDERSTORM'];
+        // "activate" select option
+        for (var initialEvent in initialEvents) {
+            $('#selectEvent option[value=' + initialEvents[initialEvent] + ']').attr('selected', 'selected');
+        }
+        requestExtremeWeather(initialBbox, initialEvents);
+    }
+}
 
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
@@ -276,9 +301,9 @@ L.control.layers(baseLayers, overLayers).addTo(map);
  * @param exdays number of days until the cookie shall be deleted
  * @source https://www.w3schools.com/js/js_cookies.asp
  */
-function setCookie(cname,cvalue,exdays) {
+function setCookie(cname, cvalue, exdays) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -293,7 +318,7 @@ function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0) == ' ') {
             c = c.substring(1);
