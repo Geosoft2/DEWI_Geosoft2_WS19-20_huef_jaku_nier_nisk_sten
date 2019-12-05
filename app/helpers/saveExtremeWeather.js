@@ -24,7 +24,7 @@ const requestExtremeWeather = function(cb){
         if(body.includes('�')){
           console.log(chalk.red('�������������������������������'));
         }
-        return saveExtremeWeather(JSON.parse(body), cb);
+        return saveExtremeWeather(JSON.parse(body).result, cb);
       });
     })
     .on('error', function(err) {

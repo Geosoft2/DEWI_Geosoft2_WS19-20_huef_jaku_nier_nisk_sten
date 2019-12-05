@@ -45,7 +45,9 @@ const postExtremeWeather = async function(req, res){
       }
       catch(err){
         console.log(err);
-        res.status(400).send('Error while storing data in MongoDB.');
+        res.status(400).send({
+          message: 'Error while storing data in MongoDB.'
+        });
       }
     }
     var deletedEvent = await ExtremeWeather.deleteMany({_id: {$not: {$in: id}}});
@@ -60,14 +62,15 @@ const postExtremeWeather = async function(req, res){
       });
     }
     res.status(200).send({
-      features: features.length,
-      msg: 'Everything is updated or stored.',
+      message: 'Everything is updated or stored.',
       stats: stats
     });
   }
   else {
     await ExtremeWeather.deleteMany({});
-    res.status(200).send('No data - nothing to store.');
+    res.status(200).send({
+      message: 'No data - nothing to store.'
+    });
   }
 };
 
@@ -92,10 +95,14 @@ const getExtremeWeather = async function(req, res){
     }
     const result = await ExtremeWeather.find(query, {_id: 0}); //without _id (ObjectID)
     var geoJSON = makeGeoJSonFromFeatures(result);
-    res.status(200).send(geoJSON);
+    res.status(200).send({
+      result: geoJSON
+    });
   }
   catch(err){
-    res.status(400).send('Error while getting extreme weather events from MongoDB.');
+    res.status(400).send({
+      message: 'Error while getting extreme weather events from MongoDB.'
+    });
   }
 };
 

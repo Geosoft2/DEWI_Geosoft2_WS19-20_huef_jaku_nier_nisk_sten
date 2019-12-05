@@ -148,17 +148,18 @@ function requestExtremeWeather(bbox, events){
    }
    // contentType: "application/json",
   })
-  .done(function(response) {
-    console.log('mongo', response);
+  .done(function(response){
+    console.log('mongo', response.result);
     // remove existing layer
     removeExistingLayer(warnlayer);
     // create new layer
-    warnlayer = createLayer(response);
+    warnlayer = createLayer(response.result);
     // add layer to layerGroup and map
     extremeWeatherGroup.addLayer(warnlayer).addTo(map);
   })
   .fail(function(err){
-    console.log(err.responseText);
+    console.log(err);
+    console.log(err.message);
   });
 }
 
