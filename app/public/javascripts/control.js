@@ -24,6 +24,8 @@ async function initial () {
  */
 function getInitialBbox() {
 
+
+
          // initial bounding box with the area of germany
         var initialBbox = {
             bbox: {
@@ -39,12 +41,15 @@ function getInitialBbox() {
         };
 
         // get the new default boundingbox
-        var newDefaultBbox = getCookie("defaultBbox");
+        var newDefaultBbox = getWindowCoordsFromUrl();
+
+        if(newDefaultBbox == "") {
+            newDefaultBbox = getCookie("defaultBbox");
+            newDefaultBbox = JSON.parse(newDefaultBbox);
+        }
 
         // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
         if (newDefaultBbox != "") {
-
-            newDefaultBbox = JSON.parse(newDefaultBbox);
 
             var northEastLat = newDefaultBbox.bbox.northEast.lat;
             var northEastLng = newDefaultBbox.bbox.northEast.lng;
@@ -75,6 +80,7 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     //await updateTwitterStream(bbox.bbox);
     var events = $('#selectEvent').val();
+    updateURL(bounds)
     wfsLayer= await requestExtremeWeather(bounds,events);
     const twitterResponse= await twitterSandboxSearch(bounds);
     addTweets(wfsLayer, twitterResponse, bounds)
@@ -107,4 +113,36 @@ function startSocket() {
         console.log(tweet);
         addTweets(wfsLayer, [tweet])
     });
+}
+
+function getWindowCoordsFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('bbox');
+    console.log(myParam);
+    if (myParam == null) {
+        return "";
+    }
+    const coords = myParam.split(',');
+    console.log(coords);
+    return {
+        bbox: {
+            southWest: {
+                lat: parseFloat(coords[1]),
+                lng: parseFloat(coords[0])
+            },
+            northEast: {
+                lat: parseFloat(coords[3]),
+                lng: parseFloat(coords[2])
+            }
+        }
+    };
+}
+
+function updateURL(bbox) {
+    // URL has to be updated by filter to
+    var lat1 = Math.round(bbox.bbox.southWest.lat * 10000) / 10000;
+    var lat2 = Math.round(bbox.bbox.northEast.lat * 10000) / 10000;
+    var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
+    var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
+    window.history.pushState("object or string", "Title", "/?bbox=" + lng1 + "," + lat1 + "," + lng2 + "," + lat2);
 }

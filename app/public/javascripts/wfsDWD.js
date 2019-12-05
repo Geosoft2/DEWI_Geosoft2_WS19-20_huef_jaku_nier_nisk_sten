@@ -81,7 +81,6 @@ function addTweets(wfsLayers, tweets, bounds) {
         }
     }
 
-
     console.log(wfsLayers)
     for (var t in tweets) {
         if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
@@ -277,7 +276,6 @@ function requestExtremeWeather(bbox, events) {
             });
     })
 }
-
 
 // /**
 //  * @desc queries the extreme weather events based on the current map-extent and add it to the map
