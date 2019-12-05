@@ -44,8 +44,10 @@ const getExtremeWeather = async function(req, res){
   var events = req.query.events || []; // output: ['FOG', 'FROST']
   var polygon = bboxToPolygon(req.query.bbox);
   try {
+    // create a regular Expression to cover all possible combinations in 'EC_Group' (e.g.: FOG; FROST)
+    var regExEvents = events.map(function(e){ return new RegExp(e, "i"); });
     const result = await ExtremeWeather.find({
-      'properties.EC_GROUP': {$in: events},
+      'properties.EC_GROUP': {$in: regExEvents},
       geometry: {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}}
     }, {_id: 0}); //without _id (ObjectID)
     var geoJSON = makeGeoJSonFromFeatures(result);
