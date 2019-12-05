@@ -85,8 +85,8 @@ function bboxes(bbox){
         }
     }
     return boxes;
-
 }
+
 /**
  * @desc creates a json within the current map-extent as coordinates
  * @param {json} bounds coordinates of current map-extent
@@ -105,7 +105,6 @@ function boundingbox(bounds){
   };
 }
 
-
 // function saveDataInMongo(feature){
 //   console.log('feature', feature);
 //   $.ajax({
@@ -123,11 +122,11 @@ function boundingbox(bounds){
 //   });
 // }
 
-
 function requestEvent(){
   bounds = map.getBounds();
   var bbox = boundingbox(bounds);
   var events = $('#selectEvent').val();
+  console.log(events);
   requestExtremeWeather(bbox, events);
 }
 
@@ -230,10 +229,10 @@ function createLayer(data) {
    if (newDefaultBbox != "") {
      newDefaultBbox = JSON.parse(newDefaultBbox);
 
-     var northEastLat = newDefaultBbox.bbox.northEast.lat;
-     var northEastLng = newDefaultBbox.bbox.northEast.lng;
-     var southWestLat = newDefaultBbox.bbox.southWest.lat;
-     var southWestLng = newDefaultBbox.bbox.southWest.lng;
+     var northEastLat = newDefaultBbox.northEast.lat;
+     var northEastLng = newDefaultBbox.northEast.lng;
+     var southWestLat = newDefaultBbox.southWest.lat;
+     var southWestLng = newDefaultBbox.southWest.lng;
 
      map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
    }
@@ -277,11 +276,13 @@ var overLayers = {
 // Layercontrol-Element erstellen und hinzufügen
 L.control.layers(baseLayers, overLayers, {position: 'topright'}).addTo(map);
 
+/*var selectPickerSpezial;
+selectPickerSpezial = '<select class="selectpicker" multiple data-live-search="true"> <option>Mustard</option> <option>Ketchup</option> <option>Relish</option> </select>';*/
+
 /*
 settings button for setting the settings menu.
 Used label so if you click the text/ description of the checkbox, the checkbox is also checked.
  */
-
 L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
 
     var settings = L.control.window(map, {
@@ -290,7 +291,9 @@ L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
             '<input type="checkbox" id="checkboxMapExtent" onclick="">' +
             '<label for="checkboxMapExtent">set actual map extent as new default map extent</label></p>' +
             '<p><button type="button" id="applyButton" onclick="settingsMenu()">Apply</button></p>' +
-            '<p id="settingsAppliedText" style="visibility: hidden;"><b>new settings were applied</b></p>',
+            '<p id="settingsAppliedText" style="visibility: hidden;"><b>new settings were applied</b></p>' +
+            '<div style="overflow:hidden;"> <select class="selectpicker" data-container="body" style="display: block !important; visibility: visible !important;"> <option value="Mustard">Mustard</option> <option value="Ketchup">Ketchup</option> <option value="Relish">Relish</option></select> </div>' +
+            '<select class="selectpicker" multiple data-live-search="true"> <option>Mustard</option> <option>Ketchup</option> <option>Relish</option> </select>' + selectPickerSpezial,
         visible: true,
         modal: true,
         position: 'topRight'
@@ -299,7 +302,12 @@ L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
     console.log(document.getElementsByClassName("leaflet-control leaflet-control-window control-window"));
     $(".close").click(function(){
         settings.close();
+        console.log(("testddd"));
+
     });
+
+    document.getElementsByClassName("leaflet-control leaflet-control-window control-window")[0].innerHTML = selectPickerSpezial;
+
     /*
         document.getElementsByClassName("leaflet-control leaflet-control-window control-window")[0]._leaflet_pos.x = 500;
         document.getElementsByClassName("leaflet-control leaflet-control-window control-window")[0]._leaflet_pos.y = 500;
@@ -308,6 +316,11 @@ L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
     //var x = document.getElementsByClassName("leaflet-control leaflet-control-window control-window");
 
 },  {position: 'topright'}).addTo(map);
+
+/*var selectPickerSpezial = L.DomUtil.create("div");
+selectPickerSpezial.innerHTML = '<select class="selectpicker" multiple data-live-search="true"> <option>Mustard</option> <option>Ketchup</option> <option>Relish</option> </select>';
+document.getElementsByClassName("content")[0].appendChild(selectPickerSpezial); */
+
 
 
 /**
