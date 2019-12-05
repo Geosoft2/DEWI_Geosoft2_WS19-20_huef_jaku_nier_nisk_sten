@@ -12,7 +12,7 @@ async function initial () {
     startSocket();
     if (bbox) {
     wfsLayer = await requestExtremeWeather(bbox);
-    // const twitterResponse = await twitterSandboxSearch(bbox); //TODO: get the tweets from mongodb and not direct from Twitter
+    const twitterResponse = await twitterSandboxSearch(bbox); //TODO: get the tweets from mongodb and not direct from Twitter
 
     addTweets(wfsLayer, twitterResponse);
     }
@@ -79,7 +79,7 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     //await updateTwitterStream(bbox.bbox);
     wfsLayer= await requestExtremeWeather(bounds);
-    //const twitterResponse= await twitterSandboxSearch(bounds);
+    const twitterResponse= await twitterSandboxSearch(bounds);
     addTweets(wfsLayer, twitterResponse)
 }
 
