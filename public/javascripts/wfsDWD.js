@@ -6,7 +6,8 @@
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 
 var bounds;
-var tweetsInMap=[];
+var markersInMap=[];
+
 var mapOptions = {
     center: [51, 10],
     zoom: 6,
@@ -61,43 +62,54 @@ var radarlayer;
  */
 function addTweets(wfsLayers, tweets) {
     var tweetsInWfsLayers = [];
+    var tweetsInMap = getTweets();
+
+    for (var t=0; t<markersInMap.length; t++){
+
+        if (!isTweetInMapextend(markersInMap[t])){
+            map.removeLayer(markersInMap[t]);
+            for ( var i in tweetsInMap){
+                if (tweetsInMap[i].tweetId === markersInMap[t].tweetId){
+                    console.log(tweetsInMap);
+                    tweetsInMap.splice(i, 1);
+                }
+            }
+            markersInMap.splice(t, 1);
+            t--;
+        }
+        else{
+           // console.log(markersInMap[t]._leaflet_id);
+        }
+    }
+
 
     for (var t in tweets) {
         if (isTweetInWfsLayer(tweets[t], wfsLayers.features)) {
             tweetsInWfsLayers.push(tweets[t]);
         }
     }
-    for (var t=0; t<tweetsInMap.length; t++){
 
-        if (!isTweetInMapextend(tweetsInMap[t])){
-            map.removeLayer(tweetsInMap[t]);
-            tweetsInMap.splice(t, 1);
-            t--;
-        }
-        else{
-           // console.log(tweetsInMap[t]._leaflet_id);
-        }
-    }
-    setTweets(tweetsInWfsLayers);
+    var newTweets=[];
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
 
         // should only add a marker if not already one with the same id exists
-        var newTweets=[];
+
         if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])){
             newTweets.push(tweetsInWfsLayers[t])
         }
-        for (var n in newTweets) {
-            var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
-            //TODO: give the marker the attributes of the tweets that it should have
-            marker.tweetId=newTweets[n].Nid;
-            tweetsInMap.push(marker);
-            //marker.setIcon()
-        }
-
-
     }
-    console.log(tweetsInWfsLayers);
-    setTweets(tweetsInWfsLayers);
+
+    tweetsInMap= tweetsInMap.concat(newTweets);
+    console.log(tweetsInMap);
+    setTweets(tweetsInMap);
+    for (var n in newTweets) {
+        var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
+        //TODO: give the marker the attributes of the tweets that it should have
+        marker.tweetId=newTweets[n].tweetId;
+        markersInMap.push(marker);
+        //marker.setIcon()
+    }
+    console.log(markersInMap);
 }
 
 /**
@@ -106,8 +118,8 @@ function addTweets(wfsLayers, tweets) {
  * @returns {boolean}
  */
 function isMarkerAlreadyThere(tweet) {
-    for (var i in tweetsInMap){
-        if (tweetsInMap[i].tweetId===tweet.tweetId){
+    for (var i in markersInMap){
+        if (markersInMap[i].tweetId===tweet.tweetId){
             return true;
         }
     }

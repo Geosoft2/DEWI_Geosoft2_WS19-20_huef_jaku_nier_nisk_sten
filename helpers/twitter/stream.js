@@ -114,14 +114,14 @@ const setRules = async function(rules) {
  * Connect to the Twitter stream and send information via socket-io
  * @returns the stream
  */
-const streamConnect = function() {
+const streamConnect = function(timeout) {
     // Listen to the stream
     const config = {
         url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys',
         auth: {
             bearer: token,
         },
-        timeout: 20000,
+        timeout: timeout,
     };
 
     const stream = request.get(config);
@@ -130,13 +130,16 @@ const streamConnect = function() {
         try {
             const tweetJSON = JSON.parse(data);
             console.log(tweetJSON);
+            if (tweetJSON.connection_issue){
+                stream.emit('error')
+            }
             if (tweetJSON.data) {
                 io.emit('timeout', false);
                 console.log("Tweet Received");
                 const tweet=tweetJSON.data;
                 const author = await getUserInformation(tweet.author_id);
                 var mongoDB = {
-                    "Nid": tweet.id,
+                    tweetId: tweet.id,
                     "url": "https://twitter.com/i/status/" + tweet.id,
                     "text": tweet.text,
                     "createdAt": tweet.created_at,
@@ -163,7 +166,7 @@ const streamConnect = function() {
                     const place = await getPlaceInformation(tweet.geo.place_id);
                     mongoDB.places = place;
                 }
-                io.emit('tweet', mongoDB);
+                io.emit('tweet', mongoDB)
             }
         }
         catch (e)
@@ -175,10 +178,8 @@ const streamConnect = function() {
 
     }).on('error', error => {
         console.log(error);
-        if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
-            io.emit('timeout', true);
-            stream.emit('timeout');
-        }
+        io.emit('timeout', true);
+        stream.emit('timeout');
     });
 
     return stream;

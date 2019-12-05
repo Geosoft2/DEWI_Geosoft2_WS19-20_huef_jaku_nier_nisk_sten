@@ -2,8 +2,10 @@
 let socket = io();
 const e = React.createElement;
 let setTweets= ()=>{};
+let getTweets= ()=>{};
+let pushTweets= () =>{};
 
-function getTweets(bounds) {
+function twitterSandboxSearch(bounds) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
             url: "/api/v1/twitter/sandboxSearch", // URL der Abfrage,
@@ -14,7 +16,6 @@ function getTweets(bounds) {
             type: "post"
         })
             .done(function (response) {
-                setTweets(response.tweets.tweets);
                 console.log(response);
                 resolve(response.tweets);
             })
@@ -23,6 +24,20 @@ function getTweets(bounds) {
             })
     })
 };
+
+function startStream() {
+    $.ajax({
+        url: "/api/v1/twitter/stream", // URL der Abfrage,
+        data:{},
+        type: "get"
+    })
+        .done(function (response) {
+        })
+        .fail(function (err) {
+            console.log(err)
+        });
+
+}
 
 /**
  * updates the TwitterStream with a new boundingbox
@@ -43,25 +58,44 @@ class TwitterList extends React.Component {
         super(props);
         this.state = {tweets: [], timeout: false};
         setTweets = this.setTweets;
+        getTweets = this.getTweets;
+        pushTweets = this.pushTweets;
     }
 
     componentDidMount() {
-        this.testTwitter()
+        this.startSocket();
     }
 
     setTweets = (tweets) => {
         this.setState({tweets: tweets})
     };
 
+    getTweets = () => {
+        return this.state.tweets
+    };
+
+    pushTweets= () => {
+        const tweets2 = this.state.tweets;
+        tweets2.push(tweet);
+        this.setState({tweets: tweets2});
+    };
+
     tweetClicked = () => {
         console.log("tweetClicked");
     };
 
+    startSocket= () => {
+        const self=this;
+        socket.on('timeout', function (timeout) {
+            self.setState({timeout: timeout})
+        });
+    }
+
+    /**
     testTwitter = () => {
 
         const self = this;
         socket.on('tweet', function (tweet) {
-            console.log(tweet);
             const tweets2 = self.state.tweets;
             tweets2.push(tweet);
             self.setState({tweets: tweets2});
@@ -80,8 +114,8 @@ class TwitterList extends React.Component {
              .fail(function (err) {
                  console.log(err)
              });
-         */
-    }
+
+    } */
 
 
         render()
@@ -113,7 +147,7 @@ class TwitterList extends React.Component {
                 const content= e(CardContent, null,  item.text, e("br"), "Author: " + item.author.name, e("br"),
                     e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
                     "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"))
-                cards.unshift(e(Card, {id: "Card" + item.Nid},  e(ButtonBase, {onClick: event => self.tweetClicked(event)},  media, content)));
+                cards.unshift(e(Card, {id: "Card" + item.tweetId},  e(ButtonBase, {onClick: event => self.tweetClicked(event)},  media, content)));
                 cards.unshift(e("br"));
             });
 

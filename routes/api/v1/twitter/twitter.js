@@ -68,7 +68,7 @@ const postSandboxSearch = async function (req, res){
 
     const result = {tweets: []};
 
-    /**
+
 
     for (var circle of circles){
         const smallResult= await sandboxSearch(q,circle);
@@ -79,12 +79,9 @@ const postSandboxSearch = async function (req, res){
             res.status(400).send(result.error);
         }
         else {
-            console.log(smallResult.tweets);
             result.tweets = result.tweets.concat(smallResult.tweets);
-            console.log(result.tweets);
         }
-    } */
-    result.tweets = await sandboxSearch();
+    }
         res.json(result);
 };
 
@@ -126,13 +123,14 @@ const stream = async function (req, res){
 // router.get("/stream", async (req, res) => {
     let  currentRules;
     const rules = [
-        //{value: "bounding_box: [-118.58230590820312 33.90119657968225 -118.24422607421875 34.14306652783193]"},
+        {value: "bounding_box: [13.099822998046875 52.374760798535036 13.662872314453125 52.67221863915282]"},
         //{value : "\"rain\" has:geo"}
         ];
 
      try {
         // Gets the complete list of rules currently applied to the stream
         currentRules = await getAllRules();
+        console.log(currentRules)
 
         // Delete all rules. Comment this line if you want to keep your existing rules.
         await deleteAllRules(currentRules);
@@ -141,6 +139,7 @@ const stream = async function (req, res){
         await setRules(rules);
     } catch (e) {
         console.error(e);
+        console.log("deleteRules");
         process.exit(-1);
     }
 
@@ -149,16 +148,21 @@ const stream = async function (req, res){
     // To avoid rate limites, this logic implements exponential backoff, so the wait time
     // will increase if the client cannot reconnect to the stream.
 
-    const stream = streamConnect();
-    let timeout = 0;
-    stream.on('timeout', () => {
+    let stream = streamConnect(20000);
+    let timeout = 20000;
+    stream.on('error', () => {
         // Reconnect on error
-        console.log('A connection error occurred. Reconnecting…');
+        console.log('Connection try Failed.');
+        console.log('Next Reconnect in ' + timeout/1000 + "seconds");
         setTimeout(() => {
             timeout++;
-            streamConnect();
+            stream= streamConnect(timeout);
         }, 2 ** timeout);
     });
+    stream.on('timeout', ()=>{
+        console.log('A connection error occurred. Reconnecting…');
+        streamConnect(timeout)
+    })
 };
 
 

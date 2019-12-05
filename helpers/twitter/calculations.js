@@ -18,7 +18,7 @@ function getRadii(bbox){
                         lat: parseInt(bbox.southWest.lat) + j*latMultiplicator,
                         lng: parseInt(bbox.southWest.lng) + i*lngMultiplicator
                     },
-                    radius: mileToMeter(65)
+                    radius: mileToMeter(65)/1000
 
                 }
             );

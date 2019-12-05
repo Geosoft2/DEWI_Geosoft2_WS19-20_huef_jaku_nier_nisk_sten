@@ -26,9 +26,9 @@ const sandboxSearch = function(filter, area) {
     return new Promise(function (resolve, reject) {
 
         //build the endpoint url
-        let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&q=rain filter:media';
+        let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&q=';
 
-       /** const q = filter;
+        const q = filter;
 
         if (!q || typeof q !== "string") {
            // res.status(400).send("filter is a required Parameter and must be a string")
@@ -37,7 +37,7 @@ const sandboxSearch = function(filter, area) {
         }
         if(area){
             endpoint+="&geocode=" + area.center.lat +","+ area.center.lng + "," + area.radius + "km"
-        }; */
+        };
 
         const options = {
             headers: {
@@ -45,6 +45,7 @@ const sandboxSearch = function(filter, area) {
             }
         };
 
+        console.log(endpoint);
         https.get(endpoint, options, (httpResponse) => {
             // concatenate updates from datastream
 
@@ -57,13 +58,14 @@ const sandboxSearch = function(filter, area) {
             httpResponse.on("end", () => {
 
                 try {
+
                     //transform the twitter Response in our specified mongoDB format
                     var twitterResponse = JSON.parse(body);
                     var mongoDBs = {tweets: []};
                     for (var tweet of twitterResponse.statuses) {
-                        //if (tweet.geo || tweet.place) {
+                        if (tweet.geo || tweet.place) {
                             var mongoDB = {
-                                "Nid": tweet.id_str,
+                                tweetId: tweet.id_str,
                                 "url": "https://twitter.com/i/status/" + tweet.id_str,
                                 "text": tweet.text,
                                 "createdAt": tweet.created_at,
@@ -94,7 +96,7 @@ const sandboxSearch = function(filter, area) {
                             }
 
                             mongoDBs.tweets.push(mongoDB)
-                        //}
+                        }
                     }
                     resolve(mongoDBs);
                 } catch (err) {
@@ -164,7 +166,7 @@ const premiumSearch = async function(query, bbox, since) {
                     var mongoDBs = {tweets: []};
                     for (var tweet of twitterResponse.results) {
                         var mongoDB = {
-                            "Nid": tweet.id_str,
+                            tweetId: tweet.id_str,
                             "url": "https://twitter.com/i/status/" + tweet.id_str,
                             "text": tweet.text,
                             "createdAt": tweet.created_at,
