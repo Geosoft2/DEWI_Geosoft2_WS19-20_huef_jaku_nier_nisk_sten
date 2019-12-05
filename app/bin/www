@@ -32,7 +32,7 @@ requestExtremeWeather(function(){
   setIntervalPromise(function(){
     console.log(chalk.yellow.inverse('Wiederholung'));
     requestExtremeWeather();
-  }, 1000*60*2); // every 2 minutes
+  }, 1000*60*Number(process.env.INTERVALL));
 
    /*
     * Create HTTP APP-server.

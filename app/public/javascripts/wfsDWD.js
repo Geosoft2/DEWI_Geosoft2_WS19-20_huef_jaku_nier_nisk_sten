@@ -123,6 +123,16 @@ function requestEvent(){
   requestExtremeWeather(bbox, events);
 }
 
+const socket = io('http://'+location.hostname+':3001');
+
+function testSocket(){
+  socket.on('weatherchanges', function (data) {
+    console.log('Weather changed');
+    console.log(data.stats);
+    requestEvent();
+  });
+}
+
 /**
 * @desc queries the extreme weather events based on the current map-extent and add it to the map
 * @param {json} bbox coordinates of current map-extent
@@ -133,7 +143,8 @@ function requestExtremeWeather(bbox, events){
    url:  'http://'+location.hostname+':3001/api/v1/mongo/extremeWeather',
    data: {
      events: events,
-     bbox: bbox
+     bbox: bbox,
+     minutes: 0.2 // value must match interval time /bin/www
    }
    // contentType: "application/json",
   })
@@ -246,7 +257,8 @@ function createLayer(data){
      for(var initialEvent in initialEvents){
        $('#selectEvent option[value='+initialEvents[initialEvent]+']').attr('selected', 'selected');
      }
-     requestExtremeWeather(initialBbox, initialEvents);
+     // if events are not defined, the API returns all events as default
+     requestExtremeWeather(initialBbox);
    }
  }
 

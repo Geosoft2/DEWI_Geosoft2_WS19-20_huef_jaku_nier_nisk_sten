@@ -6,8 +6,10 @@ const request = require('request');
 const chalk = require('chalk');
 
 const requestExtremeWeather = function(cb){
-  var url = process.env.API_Domain + '/api/v1/dwd/extremeWeather';
-  request.post(url/*, {form: req.body}*/) // BBOX is not necessary
+  const options = {
+    url: process.env.API_Domain + '/api/v1/dwd/extremeWeather',
+  };
+  request.get(options/*, {form: req.body}*/) // BBOX is not necessary
     .on('response', function(response) {
       // concatenate updates from datastream
       var body = '';
@@ -18,6 +20,9 @@ const requestExtremeWeather = function(cb){
       response.on('end', function(){
         if(response.statusCode !== 200){
           return console.log(chalk.red(body));
+        }
+        if(body.includes('�')){
+          console.log(chalk.red('�������������������������������'));
         }
         return saveExtremeWeather(JSON.parse(body), cb);
       });
@@ -30,8 +35,11 @@ const requestExtremeWeather = function(cb){
 
 
 const saveExtremeWeather = function(geoJSON, cb){
-  var url = process.env.API_Domain + '/api/v1/mongo/extremeWeather';
-  request.post(url, {form: geoJSON})
+  const options = {
+    url: process.env.API_Domain + '/api/v1/mongo/extremeWeather',
+    form: geoJSON
+  };
+  request.post(options)
     .on('response', function(response) {
       // concatenate updates from datastream
       var body = '';
