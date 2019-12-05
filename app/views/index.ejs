@@ -3,14 +3,16 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+      <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
     <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
     <link rel="stylesheet" href="/leafletControlWindow/L.Control.Window.css" />
+      <link rel="stylesheet" href="/bootstrapSelect/dist/css/bootstrap-select.min.css" media="screen">
 
   </head>
-  <body onload="initialExtremeWeather()">
+  <body onload="initialExtremeWeather()" id="body">
 
     <a href="/">
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
@@ -42,7 +44,14 @@
       <div id="mapWFS" style = "width:700px; height:560px;"></div>
     </div>
 
-    <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
+    <select class="selectpicker" multiple data-live-search="true">
+        <option>Mustard</option>
+        <option>Ketchup</option>
+        <option>Relish</option>
+    </select>
+
+
+    <div id="selecter"></div>
 
   </body>
 </html>
@@ -53,6 +62,8 @@
 <script src="/leafletEasyButton/easy-button.js"></script>
 <script src="/leafletControlWindow/L.Control.Window.js"></script>
 <script src="/leafletControlCustom/Leaflet.Control.Custom.js"></script>
-
+<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/bootstrapSelect/dist/js/bootstrap-select.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
+

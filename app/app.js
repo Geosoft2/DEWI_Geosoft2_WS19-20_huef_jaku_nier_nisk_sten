@@ -34,6 +34,7 @@ app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
 app.use("/leafletControlWindow", express.static(__dirname + "/node_modules/leaflet-control-window/src"));
 app.use("/leafletControlCustom", express.static(__dirname + "/node_modules/leaflet-control-custom/"));
+app.use("/bootstrapSelect", express.static(__dirname + "/node_modules/bootstrap-select/"));
 
 // setup routes
 app.use('/', require('./routes'));
