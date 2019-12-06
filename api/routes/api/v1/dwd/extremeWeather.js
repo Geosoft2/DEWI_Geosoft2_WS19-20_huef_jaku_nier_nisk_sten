@@ -4,6 +4,8 @@
 
 const request = require('request');
 const querystring = require('querystring');
+const StringDecoder = require('string_decoder').StringDecoder;
+const chalk = require('chalk');
 
 
 const getExtremeWeather = function(req, res){
@@ -16,7 +18,8 @@ const getExtremeWeather = function(req, res){
     request: 'GetFeature',
     typeName: 'dwd:Warnungen_Gemeinden_vereinigt',
     outputFormat: 'application/json',
-    srsName:'EPSG:4326',
+    format_option: 'charset:UTF-8',
+    srsName: 'EPSG:4326',
     cql_filter: // Filter BBOX
                 // 'BBOX(dwd:THE_GEOM, '+bbox.southWest.lat+','+bbox.southWest.lng+','+bbox.northEast.lat+','+bbox.northEast.lng+')'+
                 // 'And '+
@@ -40,13 +43,16 @@ const getExtremeWeather = function(req, res){
     .on('response', function(response) {
       // concatenate updates from datastream
       var body = '';
+      var decoder = new StringDecoder('utf8');
       response.on('data', function(chunk){
           // console.log("chunk: " + chunk);
-          body += chunk;
+          // @see: https://stackoverflow.com/questions/12121775/convert-streamed-buffers-to-utf8-string
+          //       https://nodejs.org/api/string_decoder.html
+          body += decoder.write(chunk);
       });
       response.on('end', function(){
         if(body.includes('�')){ //Replacement character
-          console.log('�������������������������������');
+          console.log(chalk.red('�������������������������������'));
         }
         return res.status(200).send({
           result: JSON.parse(body)
@@ -55,7 +61,7 @@ const getExtremeWeather = function(req, res){
     })
     .on('error', function(err) {
       return res.status(500).send({
-        message: 'Error: DWD WFS is not working'
+        message: 'Error: DWD WFS is not working.'
       });
     });
 };
