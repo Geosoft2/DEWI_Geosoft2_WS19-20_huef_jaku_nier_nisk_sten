@@ -80,13 +80,11 @@ function addTweets(wfsLayers, tweets, bounds) {
             // console.log(markersInMap[t]._leaflet_id);
         }
     }
-
-    console.log(wfsLayers)
     for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+       // if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             console.log("tweet" + tweets[t] + "is in WFS Layer");
             tweetsInWfsLayers.push(tweets[t]);
-        }
+        //}
     }
 
     var newTweets = [];
@@ -364,5 +362,34 @@ function setCookie(cname, cvalue, exdays) {
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var blueIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+function setMarkerColor(coordinates) {
+    for (var marker of markersInMap){
+        if(JSON.stringify(marker._latlng) === JSON.stringify(coordinates)){
+            marker.setIcon(greenIcon)
+        }
+        else{
+            marker.setIcon(blueIcon)
+        }
+    }
 }
 

@@ -10,3 +10,7 @@ a {
   max-height: 80vh;
   overflow: auto;
 }
+
+.highlighted {
+   background-color : rgba(0, 0, 255, 0.3) !important
+}

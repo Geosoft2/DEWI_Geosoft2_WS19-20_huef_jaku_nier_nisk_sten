@@ -12,7 +12,6 @@ async function initial () {
     if (bbox) {
     wfsLayer = await requestExtremeWeather(bbox);
     const twitterResponse = await twitterSandboxSearch(bbox); //TODO: get the tweets from mongodb and not direct from Twitter
-
     addTweets(wfsLayer, twitterResponse, bbox);
     }
 }
