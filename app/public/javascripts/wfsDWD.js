@@ -99,10 +99,10 @@ function addTweets(wfsLayers, tweets, bounds) {
         }
     }
     for (var t in tweets) {
-       // if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             console.log("tweet" + tweets[t] + "is in WFS Layer");
             tweetsInWfsLayers.push(tweets[t]);
-        //}
+        }
     }
 
     var newTweets = [];
