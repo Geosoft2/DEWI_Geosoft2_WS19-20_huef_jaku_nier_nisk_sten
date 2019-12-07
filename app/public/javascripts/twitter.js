@@ -60,7 +60,7 @@ class TwitterList extends React.Component {
         setTweets = this.setTweets;
         getTweets = this.getTweets;
         pushTweets = this.pushTweets;
-        setHighlighted = this.setHigh
+        setHighlighted = this.setHighlighted;
 
     }
 
