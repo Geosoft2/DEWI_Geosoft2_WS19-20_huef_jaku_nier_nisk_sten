@@ -9,9 +9,13 @@ async function initial () {
     const bbox = getInitialBbox();
     startStream();
     startSocket();
+    let twitterResponse;
     if (bbox) {
-    wfsLayer = await requestExtremeWeather(bbox);
-    const twitterResponse = await twitterSandboxSearch(bbox); //TODO: get the tweets from mongodb and not direct from Twitter
+        // Start 2 "jobs" in parallel and wait for both of them to complete
+        await Promise.all([
+            (async()=>wfsLayer = await requestExtremeWeather(bbox))(),
+            (async()=>twitterResponse = await twitterSandboxSearch(bbox))() //TODO: get the tweets from mongodb and not direct from Twitter
+        ]);
     addTweets(wfsLayer, twitterResponse, bbox);
     }
 }
@@ -79,9 +83,14 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     //await updateTwitterStream(bbox.bbox);
     var events = $('#selectEvent').val();
-    updateURL(bounds)
-    wfsLayer= await requestExtremeWeather(bounds,events);
-    const twitterResponse= await twitterSandboxSearch(bounds);
+    updateURL(bounds);
+    let twitterResponse;
+    await Promise.all([
+        (async()=>wfsLayer = await requestExtremeWeather(bounds))(),
+        (async()=>twitterResponse = await twitterSandboxSearch(bounds))(),//TODO: get the tweets from mongodb and not direct from Twitter
+        (async()=>console.log(Date.now() +"1"))(),
+        (async()=>console.log(Date.now() + "2"))()
+    ]);
     addTweets(wfsLayer, twitterResponse, bounds)
 }
 
@@ -109,8 +118,10 @@ function getCookie(cname) {
 
 function startSocket() {
     socket.on('tweet', function (tweet) {
+        var bounds = map.getBounds();
+        bounds = boundingbox(bounds);
         console.log(tweet);
-        addTweets(wfsLayer, [tweet])
+        addTweets(wfsLayer, [tweet], bounds)
     });
 }
 
