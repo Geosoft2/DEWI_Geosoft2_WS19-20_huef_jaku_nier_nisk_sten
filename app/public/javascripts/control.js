@@ -88,8 +88,6 @@ async function mapExtendChange(bounds) {
     await Promise.all([
         (async()=>wfsLayer = await requestExtremeWeather(bounds))(),
         (async()=>twitterResponse = await twitterSandboxSearch(bounds))(),//TODO: get the tweets from mongodb and not direct from Twitter
-        (async()=>console.log(Date.now() +"1"))(),
-        (async()=>console.log(Date.now() + "2"))()
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
 }
