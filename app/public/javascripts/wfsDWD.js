@@ -74,7 +74,7 @@ var warnlayer;
 var radarlayer;
 
 function removeTweets(wfsLayers, bounds){
-    var tweetsInMap = getTweets();
+    var tweetsInMap = getState("tweets");
 
     for (var t = 0; t < markersInMap.length; t++) {
         if (!isTweetInMapextend(markersInMap[t], bounds)) {
@@ -115,7 +115,7 @@ function addTweets(wfsLayers, tweets, bounds) {
         }
     }
 
-    var tweetsInMap = getTweets();
+    var tweetsInMap = getState("tweets");
     tweetsInMap = tweetsInMap.concat(newTweets);
     setTweets(tweetsInMap);
     for (var n in newTweets) {
@@ -123,8 +123,16 @@ function addTweets(wfsLayers, tweets, bounds) {
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
-            setMarkerColor(e.target._latlng);
-            setHighlighted(e.target._latlng);
+            console.log(JSON.stringify(e.target._latlng));
+            console.log(JSON.stringify(getState('highlighted')));
+            if(JSON.stringify(e.target._latlng) === JSON.stringify(getState('highlighted'))){
+                setMarkerColor(null);
+                setHighlighted(null);
+            }
+            else {
+                setMarkerColor(e.target._latlng);
+                setHighlighted(e.target._latlng);
+            }
         });
         markersInMap.push(marker);
         //marker.setIcon()

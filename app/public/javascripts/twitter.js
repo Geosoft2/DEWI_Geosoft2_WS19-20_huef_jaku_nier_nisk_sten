@@ -1,7 +1,7 @@
 
 const e = React.createElement;
 let setTweets= ()=>{};
-let getTweets= ()=>{};
+let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
@@ -61,7 +61,7 @@ class TwitterList extends React.Component {
         super(props);
         this.state = {tweets: [], timeout: false, highlighted : null};
         setTweets = this.setTweets;
-        getTweets = this.getTweets;
+        getState = this.getState;
         pushTweets = this.pushTweets;
         setHighlighted = this.setHighlighted;
 
@@ -75,8 +75,8 @@ class TwitterList extends React.Component {
         this.setState({tweets: tweets})
     };
 
-    getTweets = () => {
-        return this.state.tweets
+    getState = (state) => {
+        return this.state[state]
     };
 
     pushTweets= () => {
@@ -90,9 +90,14 @@ class TwitterList extends React.Component {
     };
 
     tweetClicked = (tweet) => {
-        this.setHighlighted(tweet.places.coordinates);
-        setMarkerColor(tweet.places.coordinates);
-
+        if(JSON.stringify(this.state.highlighted)=== JSON.stringify(tweet.places.coordinates)){
+            this.setHighlighted(null);
+            setMarkerColor(null);
+        }
+        else {
+            this.setHighlighted(tweet.places.coordinates);
+            setMarkerColor(tweet.places.coordinates);
+        }
     };
 
     startSocket= () => {

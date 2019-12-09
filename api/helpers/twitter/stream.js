@@ -191,13 +191,11 @@ const streamConnect = function() {
         }
         catch (e)
         {
-            console.log(e)
             console.log(chalk.blue("Twitter Heartbeat received")); // Heartbeat received. Do nothing.
         }
 
 
     }).on('error', error => {
-        console.log((error))
         if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
             io.emit('timeout', true);
             stream.emit('timeout');
