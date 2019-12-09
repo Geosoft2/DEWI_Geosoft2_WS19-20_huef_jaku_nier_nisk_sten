@@ -3,6 +3,7 @@ const e = React.createElement;
 let setTweets= ()=>{};
 let getTweets= ()=>{};
 let pushTweets= () =>{};
+let setHighlighted=  () => {};
 
 function twitterSandboxSearch(bounds) {
     return new Promise(function (resolve, restrict) {
@@ -55,10 +56,12 @@ function updateTwitterStream(bbox) {
 class TwitterList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {tweets: [], timeout: false};
+        this.state = {tweets: [], timeout: false, highlighted : null};
         setTweets = this.setTweets;
         getTweets = this.getTweets;
         pushTweets = this.pushTweets;
+        setHighlighted = this.setHighlighted;
+
     }
 
     componentDidMount() {
@@ -79,8 +82,14 @@ class TwitterList extends React.Component {
         this.setState({tweets: tweets2});
     };
 
-    tweetClicked = () => {
-        console.log("tweetClicked");
+    setHighlighted= (coordinates) => {
+        this.setState({highlighted: coordinates})
+    };
+
+    tweetClicked = (tweet) => {
+        this.setHighlighted(tweet.places.coordinates);
+        setMarkerColor(tweet.places.coordinates);
+
     };
 
     startSocket= () => {
@@ -145,8 +154,12 @@ class TwitterList extends React.Component {
 
                 const content= e(CardContent, null,  item.text, e("br"), "Author: " + item.author.name, e("br"),
                     e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
-                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"))
-                cards.unshift(e(Card, {id: "Card" + item.tweetId},  e(ButtonBase, {onClick: event => self.tweetClicked(event)},  media, content)));
+                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"));
+                let highlighted=null;
+                if(JSON.stringify(item.places.coordinates)=== JSON.stringify(self.state.highlighted)){
+                    highlighted="highlighted";
+                }
+                cards.unshift(e(Card, {id: "Card" + item.tweetId, className: highlighted},  e(ButtonBase, {onClick: () => self.tweetClicked(item)},  media, content)));
                 cards.unshift(e("br"));
             });
 

@@ -145,25 +145,25 @@ const stream = async function (req, res){
 
     // Listen to the stream.
     // This reconnection logic will attempt to reconnect when a disconnection is detected.
-    // To avoid rate limites, this logic implements exponential backoff, so the wait time
-    // will increase if the client cannot reconnect to the stream.
 
-    let stream = streamConnect(20000);
-    let timeout = 20000;
-    stream.on('error', () => {
-        // Reconnect on error
-        console.log('Connection try Failed.');
-        console.log('Next Reconnect in ' + timeout/1000 + "seconds");
-        setTimeout(() => {
-            timeout++;
-            stream= streamConnect(timeout);
-        }, 2 ** timeout);
-    });
+    let stream = streamConnect();
     stream.on('timeout', ()=>{
         console.log('A connection error occurred. Reconnecting…');
-        streamConnect(timeout)
-    })
+        loopStreamConnect();
+    });
 };
+
+const loopStreamConnect = () => {
+        console.log('Next Connection try in 20 seconds');
+        setTimeout(() => {
+            console.log('New try to Connect');
+            let stream = streamConnect();
+            stream.on('timeout', ()=>{
+                console.log('A connection error occurred. Reconnecting…');
+                loopStreamConnect();
+            });
+        }, 20000);
+}
 
 
 module.exports = {

@@ -5,6 +5,24 @@
 "use strict";
 let socket = io('http://' + location.hostname + ':3001');
 
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var blueIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 
 var markersInMap = [];
@@ -55,17 +73,10 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
-
-/**
- * adds the Tweets to the map that lay within the wfslayers and the current mapextend
- * @param wfsLayers
- */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
+function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getTweets();
 
     for (var t = 0; t < markersInMap.length; t++) {
-
         if (!isTweetInMapextend(markersInMap[t], bounds)) {
             map.removeLayer(markersInMap[t]);
             for (var i in tweetsInMap) {
@@ -80,32 +91,41 @@ function addTweets(wfsLayers, tweets, bounds) {
             // console.log(markersInMap[t]._leaflet_id);
         }
     }
+    setTweets(tweetsInMap);
+}
 
-    console.log(wfsLayers)
+/**
+ * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @param wfsLayers
+ */
+function addTweets(wfsLayers, tweets, bounds) {
+    var tweetsInWfsLayers = [];
+
     for (var t in tweets) {
         if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-            console.log("tweet" + tweets[t] + "is in WFS Layer");
             tweetsInWfsLayers.push(tweets[t]);
         }
     }
 
     var newTweets = [];
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
-
         // should only add a marker if not already one with the same id exists
-
         if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
             newTweets.push(tweetsInWfsLayers[t])
         }
     }
 
+    var tweetsInMap = getTweets();
     tweetsInMap = tweetsInMap.concat(newTweets);
-    console.log(tweetsInMap);
     setTweets(tweetsInMap);
     for (var n in newTweets) {
         var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
+        marker.on("click", function (e) {
+            setMarkerColor(e.target._latlng);
+            setHighlighted(e.target._latlng);
+        });
         markersInMap.push(marker);
         //marker.setIcon()
     }
@@ -364,5 +384,16 @@ function setCookie(cname, cvalue, exdays) {
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function setMarkerColor(coordinates) {
+    for (var marker of markersInMap){
+        if(JSON.stringify(marker._latlng) === JSON.stringify(coordinates)){
+            marker.setIcon(greenIcon)
+        }
+        else{
+            marker.setIcon(blueIcon)
+        }
+    }
 }
 
