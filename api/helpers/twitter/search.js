@@ -37,7 +37,7 @@ const sandboxSearch = function(filter, area) {
         }
         if(area){
             endpoint+="&geocode=" + area.center.lat +","+ area.center.lng + "," + area.radius + "km"
-        };
+        }
 
         const options = {
             headers: {
@@ -45,7 +45,6 @@ const sandboxSearch = function(filter, area) {
             }
         };
 
-        console.log(endpoint);
         https.get(endpoint, options, (httpResponse) => {
             // concatenate updates from datastream
 

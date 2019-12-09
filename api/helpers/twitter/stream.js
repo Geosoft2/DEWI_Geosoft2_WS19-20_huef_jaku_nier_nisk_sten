@@ -2,6 +2,8 @@ const OAuth = require('oauth');
 const OAuth2 = OAuth.OAuth2;
 const request = require('request');
 const util = require('util');
+const turf= require('@turf/turf');
+const chalk = require('chalk');
 
 const get = util.promisify(request.get);
 const post = util.promisify(request.post);
@@ -17,6 +19,9 @@ var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, '
 //specify the twitter Endpoint to set/delete and get rules
 const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
+let bbox;
+let keyword;
+
 var token;
 //create twitter access Token
 oauth2.getOAuthAccessToken('', {
@@ -24,6 +29,12 @@ oauth2.getOAuthAccessToken('', {
 }, function (e, access_token) {
     token = access_token;
 });
+
+const setRules = (rules) => {
+    console.log(chalk.blue("Stream Rules are set to" + JSON.stringify(rules)));
+    bbox = rules.bbox;
+    keyword = rules.keyword;
+};
 
 /**
  * Get all active rules of the twitter stream
@@ -89,7 +100,7 @@ const deleteAllRules = async function(rules) {
  * @param rules to set
  * @returns {Promise<*>}
  */
-const setRules = async function(rules) {
+const setTwitterRules = async function(rules) {
     const requestConfig = {
         url: rulesURL,
         auth: {
@@ -117,11 +128,13 @@ const setRules = async function(rules) {
 const streamConnect = function() {
     // Listen to the stream
     const config = {
-        url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys',
+        url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys,geo.place_id,author_id',
         auth: {
             bearer: token,
         },
         timeout: 20000,
+        agent: false,
+        pool: {maxSockets: 100}
     };
 
     const stream = request.get(config);
@@ -129,7 +142,6 @@ const streamConnect = function() {
     stream.on('data', async data => {
         try {
             const tweetJSON = JSON.parse(data);
-            console.log(tweetJSON);
             if (tweetJSON.connection_issue){
                 stream.emit("timeout")
             }
@@ -137,7 +149,8 @@ const streamConnect = function() {
                 io.emit('timeout', false);
                 console.log("Tweet Received");
                 const tweet=tweetJSON.data;
-                const author = await getUserInformation(tweet.author_id);
+                const userData=tweetJSON.includes.users[0];
+                const author = getUserInformation(userData);
                 var mongoDB = {
                     tweetId: tweet.id,
                     "url": "https://twitter.com/i/status/" + tweet.id,
@@ -149,7 +162,7 @@ const streamConnect = function() {
                         "coordinates": {"lat": null, "lng": null},
                     },
                 };
-                if(tweetJSON.includes) {
+                if(tweetJSON.includes.media) {
                     for (var media of tweetJSON.includes.media) {
                         if(media.type=== "photo"){
                             mongoDB.media.push({"id": media.media_key, "url": media.url , type: media.type});
@@ -163,21 +176,28 @@ const streamConnect = function() {
                     mongoDB.places.coordinates.lat = tweet.geo.coordinates.coordinates[1];
                     mongoDB.places.coordinates.lng = tweet.geo.coordinates.coordinates[0];
                 } else {
-                    const place = await getPlaceInformation(tweet.geo.place_id);
+                    const place = getPlaceInformation(tweetJSON.includes.places[0]);
                     mongoDB.places = place;
                 }
-                io.emit('tweet', mongoDB)
+                console.log(mongoDB);
+                if(matchesTweetFilter(mongoDB, keyword, bbox)) {
+                    console.log(chalk.blue("Tweet matches filter"));
+                    io.emit('tweet', mongoDB)
+                }
+                else{
+                    console.log(chalk.blue("Tweet don't matches filter"));
+                }
             }
         }
         catch (e)
         {
-            console.log(e);
-            console.log("Twitter Heartbeat received"); // Heartbeat received. Do nothing.
+            console.log(e)
+            console.log(chalk.blue("Twitter Heartbeat received")); // Heartbeat received. Do nothing.
         }
 
 
     }).on('error', error => {
-        console.log(error);
+        console.log((error))
         if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
             io.emit('timeout', true);
             stream.emit('timeout');
@@ -187,9 +207,49 @@ const streamConnect = function() {
     return stream;
 };
 
+function matchesTweetFilter(tweet, keyword, bbox){
+    console.log(chalk.blue("Proof Tweet against Keyword " + keyword + " and BBOX " + JSON.stringify(bbox)));
+    if(keyword){
+        if(!tweet.text.includes(keyword)){
+            return false;
+        }
+    }
+    if(bbox){
+        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
+            return false;
+        }
+    }
+    return true;
+}
+/**
+ * checks if the Tweet is located in the current mapextend
+ * @param marker
+ * @returns {*} boolean
+ */
+function isTweetInMapextend(tweetCoordinates, bounds) {
+    var point = {   //convert the tweet location in a readable format for turf
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [tweetCoordinates.lat, tweetCoordinates.lng]
+        },
+        properties: {}
+    };
+    var bbox = turf.polygon([[
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.northEast.lng],
+        [bounds.bbox.northEast.lat, bounds.bbox.southWest.lng],
+        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
+    ]]);
+    return turf.booleanWithin(point, bbox);
+}
+
+
 module.exports = {
     getAllRules,
     deleteAllRules,
     setRules,
+    setTwitterRules,
     streamConnect,
 };

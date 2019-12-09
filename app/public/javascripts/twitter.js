@@ -25,6 +25,8 @@ function twitterSandboxSearch(bounds) {
     })
 };
 
+/**
+
 function startStream() {
     $.ajax({
         url: "http://" +location.hostname+':3001/api/v1/twitter/stream', // URL der Abfrage,
@@ -38,18 +40,19 @@ function startStream() {
         });
 
 }
+ */
 
 /**
  * updates the TwitterStream with a new boundingbox
  * @param bbox
  */
-function updateTwitterStream(bbox) {
+function updateTwitterStream(bbox, keyword) {
     $.ajax({
         type: "POST",
-        url: 'http://'+location.hostname+':3001/api/v1/twitter/setStreamFilter',
+        url: 'http://'+location.hostname+':3001/api/v1/twitter/stream',
         // contentType: "application/json",
         dataType: 'json',
-        data: bbox
+        data: {bbox :bbox, keyword: keyword}
     })
 }
 

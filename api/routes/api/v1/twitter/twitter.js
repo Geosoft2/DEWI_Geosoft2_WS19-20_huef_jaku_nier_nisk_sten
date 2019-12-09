@@ -2,6 +2,8 @@
 // jshint node: true
 "use strict";
 
+const chalk = require('chalk');
+
 const {
     premiumSearch,
     sandboxSearch,
@@ -11,6 +13,7 @@ const {
     getAllRules,
     deleteAllRules,
     setRules,
+    setTwitterRules,
     streamConnect,
 } = require('../../../../helpers/twitter/stream');
 
@@ -64,11 +67,13 @@ const postSandboxSearch = async function (req, res){
     const  q = req.body.filter;
     const bbox= req.body.bbox;
 
+    if(!bbox){
+        req.status(404).send("bbox is required")
+    }
+
     const circles =getRadii(bbox);
 
     const result = {tweets: []};
-
-
 
     for (var circle of circles){
         const smallResult= await sandboxSearch(q,circle);
@@ -87,59 +92,31 @@ const postSandboxSearch = async function (req, res){
 
 
 const setStreamFilter = async function (req, res){
-// router.post("/setStreamFilter", (req,res) => {
-    var bbox = req.body.bbox;
-    const rules = [];
-    // if (bbox) {
-    //     rules.push({"value" :  " bounding_box: [" + String(bbox.southWest.lng) + " " + String(bbox.southWest.lat) + " " + String(bbox.northEast.lng) + " " + String(bbox.northEast.lat) + "]"});
-    // }
-    var boboxes = bboxes(bbox);
-    var circles = getRadii(bbox);
-    for (var i in boboxes){
-        rules.push({"value" :  " bounding_box: ["
-                + String(boboxes[i].southWest.lng) + " "
-                + String(boboxes[i].southWest.lat)  + " "
-                + String(boboxes[i].northEast.lng) + " "
-                + String(boboxes[i].northEast.lat) + "]"});
-    }
-    try {
-        // Gets the complete list of rules currently applied to the stream
-        let currentRules = await getAllRules();
-
-        // Delete all rules. Comment this line if you want to keep your existing rules.
-        await deleteAllRules(currentRules);
-
-        // Add rules to the stream. Comment this line if you want to keep your existing rules.
-        await setRules(rules);
-    } catch (e) {
-        console.error(e);
-        process.exit(-1);
-    }
+    const rules = {bbox : req.body.bbox, keyword : req.body.keyword};
+    setRules(rules);
+    res.status(200).end()
 };
 
 
 
 const stream = async function (req, res){
-// router.get("/stream", async (req, res) => {
+    console.log(chalk.blue("Connecting to Twitter Stream"));
     let  currentRules;
     const rules = [
-        {value: "bounding_box: [13.099822998046875 52.374760798535036 13.662872314453125 52.67221863915282]"},
+        {value: "place_country:DE"},
         //{value : "\"rain\" has:geo"}
         ];
 
      try {
         // Gets the complete list of rules currently applied to the stream
         currentRules = await getAllRules();
-        console.log(currentRules);
-
         // Delete all rules. Comment this line if you want to keep your existing rules.
         await deleteAllRules(currentRules);
 
         // Add rules to the stream. Comment this line if you want to keep your existing rules.
-        await setRules(rules);
+        await setTwitterRules(rules);
     } catch (e) {
         console.error(e);
-        console.log("deleteRules");
         process.exit(-1);
     }
 
@@ -148,22 +125,23 @@ const stream = async function (req, res){
 
     let stream = streamConnect();
     stream.on('timeout', ()=>{
-        console.log('A connection error occurred. Reconnecting…');
+        console.log(chalk.blue('A connection error occurred. Reconnecting…'));
         loopStreamConnect();
     });
 };
 
 const loopStreamConnect = () => {
-        console.log('Next Connection try in 20 seconds');
+        console.log(chalk.blue('Next Connection try in 20 seconds'));
         setTimeout(() => {
-            console.log('New try to Connect');
+            console.log(chalk.blue('New try to Connect'));
             let stream = streamConnect();
             stream.on('timeout', ()=>{
-                console.log('A connection error occurred. Reconnecting…');
+                console.log(chalk.blue('A connection error occurred. Reconnecting…'));
                 loopStreamConnect();
             });
         }, 20000);
-}
+};
+
 
 
 module.exports = {

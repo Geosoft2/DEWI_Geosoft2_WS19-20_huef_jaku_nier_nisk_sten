@@ -18,7 +18,7 @@ TwitterRouter.get("/getUser/:id", require('./twitter').getUser);
 
 TwitterRouter.post("/search", require('./twitter').postSearch);
 
-TwitterRouter.post("/setStreamFilter", require('./twitter').setStreamFilter);
+TwitterRouter.post("/stream", require('./twitter').setStreamFilter);
 
 TwitterRouter.get("/stream", require('./twitter').stream);
 
