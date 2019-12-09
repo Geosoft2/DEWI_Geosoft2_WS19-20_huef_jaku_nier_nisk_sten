@@ -6,8 +6,8 @@ const request = require('request');
 const querystring = require('querystring');
 const StringDecoder = require('string_decoder').StringDecoder;
 const chalk = require('chalk');
-const {saveExtremeWeatherInMongo, getExtremeWeatherFromMongo} = require('../../../../helpers/mongo/extremeWeather');
-const {bboxToPolygon} = require('../../../../helpers/geoJSON');
+const {saveExtremeWeatherInMongo, getExtremeWeatherFromMongo} = require('../../../../../../helpers/mongo/extremeWeather');
+const {bboxToPolygon} = require('../../../../../../helpers/geoJSON');
 
 
 const postExtremeWeather = function(req, res){

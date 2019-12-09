@@ -2,88 +2,19 @@
 // jshint node: true
 "use strict";
 
-const {
-    premiumSearch,
-    sandboxSearch,
-} = require('../../../../helpers/twitter/search');
 
 const {
     getAllRules,
     deleteAllRules,
     setRules,
     streamConnect,
-} = require('../../../../helpers/twitter/stream');
-
-const {
-    getPlaceInformation,
-    getUserInformation,
-} = require('../../../../helpers/twitter/additionalInformation');
+} = require('../../../../../../helpers/twitter/stream');
 
 const {
     getRadii,
     bboxes
-} = require('../../../../helpers/twitter/calculations');
+} = require('../../../../../../helpers/twitter/calculations');
 
-const getPlaceCoord = async function (req, res){
-// router.get("/getPlaceCoord/:placeId", async (req, res) => {
-    const result= await getPlaceInformation(req.params.placeId);
-    res.json(result);
-};
-
-const getUser = async function (req, res){
-// router.get("/getUser/:id", async (req, res) => {
-    const result= await getUserInformation(req.params.id);
-    res.json(result);
-};
-
-
-const postSearch = async function (req, res){
-// router.post("/search",  async (req,res) => {
-
-    const  q = req.body.filter;
-    const bbox= req.body.bbox;
-    const since= req.body.since;
-
-    const result = await premiumSearch(q,bbox,since);
-
-    //Proof if request had an error
-    if(result.code === 500){
-        res.status(500).send(result.error);
-    }
-    else if(result.code === 400){
-        res.status(400).send(result.error);
-    }
-    else{
-        res.json(result);
-    }
-};
-
-const postSandboxSearch = async function (req, res){
-// router.post("/search",  async (req,res) => {
-
-    const  q = req.body.filter;
-    const bbox= req.body.bbox;
-
-    const circles =getRadii(bbox);
-
-    const result = {tweets: []};
-
-
-
-    for (var circle of circles){
-        const smallResult= await sandboxSearch(q,circle);
-        if(result.code === 500){
-            res.status(500).send(result.error);
-        }
-        else if(result.code === 400){
-            res.status(400).send(result.error);
-        }
-        else {
-            result.tweets = result.tweets.concat(smallResult.tweets);
-        }
-    }
-        res.json(result);
-};
 
 
 const setStreamFilter = async function (req, res){
@@ -163,14 +94,10 @@ const loopStreamConnect = () => {
                 loopStreamConnect();
             });
         }, 20000);
-}
+};
 
 
 module.exports = {
-  getPlaceCoord,
-  getUser,
-  postSearch,
   setStreamFilter,
-  stream,
-  postSandboxSearch,
+  stream
 };

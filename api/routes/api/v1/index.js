@@ -12,7 +12,7 @@ const express = require('express');
 const V1Router = express.Router();
 
 // Put route handels here;
-V1Router.use('/dwd', require('./dwd'));
-V1Router.use('/twitter', require('./twitter'));
+V1Router.use('/weather', require('./weather'));
+V1Router.use('/social', require('./social'));
 
 module.exports = V1Router;

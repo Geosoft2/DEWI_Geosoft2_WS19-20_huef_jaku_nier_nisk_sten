@@ -7,7 +7,7 @@ const chalk = require('chalk');
 
 const saveExtremeWeather = function(cb){
   const options = {
-    url: process.env.API_Domain + '/api/v1/dwd/extremeWeather',
+    url: process.env.API_Domain + '/api/v1/weather/events/dwd',
   };
   request.post(options/*, {form: req.body}*/) // BBOX is not necessary
     .on('response', function(response) {
