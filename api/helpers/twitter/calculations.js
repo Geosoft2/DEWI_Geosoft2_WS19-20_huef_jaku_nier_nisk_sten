@@ -1,3 +1,5 @@
+const turf = require('@turf/turf');
+
 /**
  * calculates an array of circles that covers the given bounding box
  * @param bbox
@@ -13,19 +15,34 @@ function getRadii(bbox){
     var latMultiplicator= (bbox.northEast.lat - bbox.southWest.lat)/nordSuedDiff;
     for (var i=0; i<(westOstDiff+1); i++){
         for (var j=0; j<(nordSuedDiff+1);j++){
-            boxes.push(
-                {center:{
-                        lat: parseInt(bbox.southWest.lat) + j*latMultiplicator,
-                        lng: parseInt(bbox.southWest.lng) + i*lngMultiplicator
-                    },
-                    radius: mileToMeter(65)/1000
+            var lat= +bbox.southWest.lat + j*latMultiplicator;
+            var lng= +bbox.southWest.lng + i*lngMultiplicator;
+            var a={center:{
+                    lat:lat,
+                    lng:lng
+                },
+                radius: mileToMeter(71)/1000
 
-                }
-            );
+            };
+            if (circleIntersectsWithGermany(a)){
+                boxes.push(a);
+            }
         }
     }
     return boxes;
+}
 
+function circleIntersectsWithGermany(circles) {
+    var boundingboxGermany= turf.polygon([[
+        [45.967, 5.867],
+        [55.133, 5.867],
+        [55.133, 15.033],
+        [45.967, 15.033],
+        [45.967, 5.867]
+    ]]);
+    var options = {steps: 10, units: 'meters', properties: {foo: 'bar'}};
+    var a=turf.circle([circles.center.lat,circles.center.lng],circles.radius, options);
+    return !turf.booleanDisjoint(a, boundingboxGermany);
 }
 
 /**
