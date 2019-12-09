@@ -15,10 +15,10 @@
     <a href="/">
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
     </a>
-    <br><button onclick="requestEvent()">Data</button>
+    <br>
     <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
     <label>Event:
-			<select multiple id="selectEvent" name="event">
+			<select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
 				<option value="THUNDERSTORM">thunderstorm</option>
 				<option value="WIND">wind</option>
 				<option value="TORNADO">tornado</option>
@@ -40,30 +40,41 @@
 
     <div class="row">
 
-      <div class="col-md-6" style="margin-top: 20px;">
-          <div class="row">
+      <div class="col-md-6">
+          <div class="row" style="margin-top: 20px;">
 
-              <div class="col-md-6" style="margin-top: 20px;">
+              <div class="col-md-4">
                   <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
 
-              <div class="col-md-6" style="margin-top: 20px;">
-                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">set default map extent</button>
+              <div class="col-md-4">
+                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
               </div>
 
-              <div class="col-md-6" style="margin-top: 20px;">Hello</div>
-
+              <div class="col-md-4">Hello</div>
 
           </div>
 
-          <div id="mapWFS" style="height:560px;"></div>
+          <div class="row" style="margin-top: 20px;">
+            <div class="col-12" id="mapWFS" style="height:560px;"></div>
+          </div>
 
         <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
 
       </div>
 
+
       <div class="col-md-6">
-        <div id="tweets">
+
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-md-4">
+            <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-12" id="tweets" style="height:560px;">
+          </div>
         </div>
       </div>
 

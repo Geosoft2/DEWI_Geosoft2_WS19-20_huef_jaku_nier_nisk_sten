@@ -247,12 +247,12 @@ function boundingbox(bounds) {
 // }
 
 
-function requestEvent() {
-    var bounds = map.getBounds();
-    var bbox = boundingbox(bounds);
-    var events = $('#selectEvent').val();
-    requestExtremeWeather(bbox, events);
-}
+// function requestEvent() {
+//     var bounds = map.getBounds();
+//     var bbox = boundingbox(bounds);
+//     var events = $('#selectEvent').val();
+//     requestExtremeWeather(bbox, events);
+// }
 
 
 function testSocket() {

@@ -113,14 +113,21 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     //await updateTwitterStream(bbox.bbox);
     var events = $('#selectEvent').val();
+    var filter = $('#textFilter').val();
     removeTweets(wfsLayer, bounds);
-    updateURL(bounds, events);
+    updateURL(bounds, events, filter);
     let twitterResponse;
     await Promise.all([
         (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
         (async()=>twitterResponse = await twitterSandboxSearch(bounds))(),//TODO: get the tweets from mongodb and not direct from Twitter
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
+}
+
+function eventsOrFilterChanged() {
+  var bounds = map.getBounds();
+  bounds = boundingbox(bounds);
+  mapExtendChange(bounds);
 }
 
 /**
