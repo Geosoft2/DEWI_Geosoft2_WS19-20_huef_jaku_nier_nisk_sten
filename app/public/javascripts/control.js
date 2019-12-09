@@ -5,19 +5,39 @@
 "use strict";
 let wfsLayer;
 
-async function initial () {
-    const bbox = getInitialBbox();
-    // startStream();
-    startSocket();
-    let twitterResponse;
-    if (bbox) {
-        // Start 2 "jobs" in parallel and wait for both of them to complete
-        await Promise.all([
-            (async()=>wfsLayer = await requestExtremeWeather(bbox))(),
-            (async()=>twitterResponse = await twitterSandboxSearch(bbox))() //TODO: get the tweets from mongodb and not direct from Twitter
-        ]);
-    addTweets(wfsLayer, twitterResponse, bbox);
-    }
+async function initial (bbox, events, filter) {
+  // TODO: checking parameter serverside or clientside??
+  //- longitute: max 180.0, min -180.0
+  // - latitude: max 90.0, min -90.0
+  var regEx = /^\s*(-?(([0-9]{1,2}|[1][0-7][0-9])(\.[0-9]*)?|180(\.0*)?))\s*,\s*(-?(([0-9]|[0-8][0-9])(\.[0-9]*)?|90(\.0*)?))\s*,\s*(-?(([0-9]{1,2}|[1][0-7][0-9])(\.[0-9]*)?|180(\.0*)?))\s*,\s*(-?(([0-9]|[0-8][0-9])(\.[0-9]*)?|90(\.0*)?))\s*$/;
+  if(!(bbox && regEx.test(bbox))){
+    bbox = getInitialBbox();
+  }
+
+  if(!events) {
+    events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
+  }
+  else{
+    events = JSON.parse(events);
+  }
+  // "activate" select option
+  for(var initialEvent in events){
+    $('#selectEvent option[value='+events[initialEvent]+']').attr('selected', 'selected');
+  }
+
+  // if(!filter) {console.log('filter', filter);}
+
+  startStream();
+  startSocket();
+  let twitterResponse;
+  if (bbox) {
+      // Start 2 "jobs" in parallel and wait for both of them to complete
+      await Promise.all([
+          (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
+          (async()=>twitterResponse = await twitterSandboxSearch(bbox))() //TODO: get the tweets from mongodb and not direct from Twitter
+      ]);
+  addTweets(wfsLayer, twitterResponse, bbox);
+  }
 }
 
 /**
@@ -94,10 +114,10 @@ async function mapExtendChange(bounds) {
     //await updateTwitterStream(bbox.bbox);
     var events = $('#selectEvent').val();
     removeTweets(wfsLayer, bounds);
-    updateURL(bounds);
+    updateURL(bounds, events);
     let twitterResponse;
     await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds))(),
+        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
         (async()=>twitterResponse = await twitterSandboxSearch(bounds))(),//TODO: get the tweets from mongodb and not direct from Twitter
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
@@ -157,11 +177,28 @@ function getWindowCoordsFromUrl() {
     };
 }
 
-function updateURL(bbox) {
+function updateURL(bbox, events, filter) {
+
+  var parameters = {};
+
+  if(bbox){
     // URL has to be updated by filter to
     var lat1 = Math.round(bbox.bbox.southWest.lat * 10000) / 10000;
     var lat2 = Math.round(bbox.bbox.northEast.lat * 10000) / 10000;
     var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
     var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
-    window.history.pushState("object or string", "Title", "/?bbox=" + lng1 + "," + lat1 + "," + lng2 + "," + lat2);
+    console.log(events);
+    bbox = lng1 + "," + lat1 + "," + lng2 + "," + lat2;
+    parameters.bbox = bbox;
+  }
+  if(events[0]){
+    parameters.events = JSON.stringify(events);
+  }
+  if(filter){
+    parameters.textfilter = filter;
+  }
+  // create querystring
+  var querystring = $.param(parameters);
+  // new URL
+  window.history.pushState("object or string", "Title", "/?" + querystring);
 }
