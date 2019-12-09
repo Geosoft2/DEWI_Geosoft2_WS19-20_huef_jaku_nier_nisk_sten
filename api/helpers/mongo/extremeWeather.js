@@ -2,13 +2,13 @@
 // jshint node: true
 "use strict";
 
-const ExtremeWeather = require('../../../../models/extremeWeather');
+const ExtremeWeather = require('../models/extremeWeather');
 const moment = require('moment');
-const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../../../../helpers/geoJSON');
-const io = require("../../../../helpers/socket-io").io;
+const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../geoJSON');
+const io = require("../helpers/socket-io").io;
 
 
-const postExtremeWeather = async function(req, res){
+const saveExtremeWeather = async function(req, res){
 
   var features = req.body.features;
   // only if data are available, data can be stored
@@ -109,6 +109,6 @@ const getExtremeWeather = async function(req, res){
 
 
 module.exports = {
-  postExtremeWeather,
+  saveExtremeWeather,
   getExtremeWeather
 };

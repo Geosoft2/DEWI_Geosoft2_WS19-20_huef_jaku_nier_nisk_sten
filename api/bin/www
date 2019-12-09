@@ -13,7 +13,7 @@ const http = require('http');
 const debug = require('debug')('app:server');
 const chalk = require('chalk');
 
-const {connectMongoDB} = require('../helpers/mongoConnection');
+const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
 
 /**
  * Get port from environment and store in Express.
