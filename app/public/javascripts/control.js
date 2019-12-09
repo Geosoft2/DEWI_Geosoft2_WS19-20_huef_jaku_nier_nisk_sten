@@ -7,7 +7,7 @@ let wfsLayer;
 
 async function initial () {
     const bbox = getInitialBbox();
-    startStream();
+    // startStream();
     startSocket();
     if (bbox) {
     wfsLayer = await requestExtremeWeather(bbox);
@@ -23,8 +23,6 @@ async function initial () {
  *
  */
 function getInitialBbox() {
-
-
 
          // initial bounding box with the area of germany
         var initialBbox = {
@@ -44,24 +42,36 @@ function getInitialBbox() {
         var newDefaultBbox = getWindowCoordsFromUrl();
 
         if(newDefaultBbox == "") {
-            newDefaultBbox = getCookie("defaultBbox");
-            newDefaultBbox = JSON.parse(newDefaultBbox);
+
+            if (getBoundingBboxFromCookie()) {
+                return (null);
+            }
+            else {
+                return (initialBbox);
+            }
+
         }
+}
 
-        // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
-        if (newDefaultBbox != "") {
+function getBoundingBboxFromCookie() {
+    var newDefaultBbox = getCookie("defaultBbox");
 
-            var northEastLat = newDefaultBbox.bbox.northEast.lat;
-            var northEastLng = newDefaultBbox.bbox.northEast.lng;
-            var southWestLat = newDefaultBbox.bbox.southWest.lat;
-            var southWestLng = newDefaultBbox.bbox.southWest.lng;
+    if (newDefaultBbox != "") {
+        newDefaultBbox = JSON.parse(newDefaultBbox);
+    }
 
-            map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
-            return(null);
-        } else {
-            return(initialBbox);
-        }
+    // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
+    if (newDefaultBbox != "") {
 
+        var northEastLat = newDefaultBbox.bbox.northEast.lat;
+        var northEastLng = newDefaultBbox.bbox.northEast.lng;
+        var southWestLat = newDefaultBbox.bbox.southWest.lat;
+        var southWestLng = newDefaultBbox.bbox.southWest.lng;
+
+        map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
+        return (true);
+    }
+    return (false);
 }
 
 map.on('moveend', function (e) {

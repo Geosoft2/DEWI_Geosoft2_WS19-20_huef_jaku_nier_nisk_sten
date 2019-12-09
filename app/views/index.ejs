@@ -41,9 +41,25 @@
     <div class="row">
 
       <div class="col-md-6" style="margin-top: 20px;">
-        <div id="mapWFS" style="height:560px;">
-        </div>
+          <div class="row">
+
+              <div class="col-md-6" style="margin-top: 20px;">
+                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
+              </div>
+
+              <div class="col-md-6" style="margin-top: 20px;">
+                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">set default map extent</button>
+              </div>
+
+              <div class="col-md-6" style="margin-top: 20px;">Hello</div>
+
+
+          </div>
+
+          <div id="mapWFS" style="height:560px;"></div>
+
         <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
+
       </div>
 
       <div class="col-md-6">

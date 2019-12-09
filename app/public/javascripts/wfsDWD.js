@@ -38,23 +38,20 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
+function changeDefaultMapExtent() {
+    var bounds = map.getBounds();
+    var bbox = boundingbox(bounds);
+    var cookieValue = JSON.stringify(bbox);
+    setCookie("defaultBbox", cookieValue, 1000000);
+}
 
-/*
-settings button for setting the default map extent
- */
-L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
-
-    if (confirm("set actual map extent as new default map extent")) {
-        var cookieValue = JSON.stringify(bounds);
-        // cookie to store the map extent
-        setCookie("defaultBbox", cookieValue, 1000000);
-    }
-}).addTo(map);
+function backToDefaultMapExtent() {
+    getBoundingBboxFromCookie();
+}
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
-
 
 /**
  * adds the Tweets to the map that lay within the wfslayers and the current mapextend
