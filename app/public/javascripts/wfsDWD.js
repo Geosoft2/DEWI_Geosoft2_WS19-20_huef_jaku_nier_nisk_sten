@@ -73,17 +73,10 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
-
-/**
- * adds the Tweets to the map that lay within the wfslayers and the current mapextend
- * @param wfsLayers
- */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
+function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getTweets();
 
     for (var t = 0; t < markersInMap.length; t++) {
-
         if (!isTweetInMapextend(markersInMap[t], bounds)) {
             map.removeLayer(markersInMap[t]);
             for (var i in tweetsInMap) {
@@ -98,25 +91,32 @@ function addTweets(wfsLayers, tweets, bounds) {
             // console.log(markersInMap[t]._leaflet_id);
         }
     }
+    setTweets(tweetsInMap);
+}
+
+/**
+ * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @param wfsLayers
+ */
+function addTweets(wfsLayers, tweets, bounds) {
+    var tweetsInWfsLayers = [];
+
     for (var t in tweets) {
         if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-            console.log("tweet" + tweets[t] + "is in WFS Layer");
             tweetsInWfsLayers.push(tweets[t]);
         }
     }
 
     var newTweets = [];
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
-
         // should only add a marker if not already one with the same id exists
-
         if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
             newTweets.push(tweetsInWfsLayers[t])
         }
     }
 
+    var tweetsInMap = getTweets();
     tweetsInMap = tweetsInMap.concat(newTweets);
-    console.log(tweetsInMap);
     setTweets(tweetsInMap);
     for (var n in newTweets) {
         var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);

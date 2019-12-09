@@ -83,6 +83,7 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     //await updateTwitterStream(bbox.bbox);
     var events = $('#selectEvent').val();
+    removeTweets(wfsLayer, bounds);
     updateURL(bounds);
     let twitterResponse;
     await Promise.all([
