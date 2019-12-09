@@ -11,6 +11,7 @@ const express = require('express');
 const DWDRouter = express.Router();
 
 DWDRouter.get('/extremeWeather', require('./extremeWeather').getExtremeWeather);
+DWDRouter.post('/extremeWeather', require('./extremeWeather').postExtremeWeather);
 
 
 module.exports = DWDRouter;

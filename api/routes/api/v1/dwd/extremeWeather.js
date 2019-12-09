@@ -6,10 +6,11 @@ const request = require('request');
 const querystring = require('querystring');
 const StringDecoder = require('string_decoder').StringDecoder;
 const chalk = require('chalk');
+const {saveExtremeWeatherInMongo, getExtremeWeatherFromMongo} = require('../../../../helpers/mongo/extremeWeather');
+const {bboxToPolygon} = require('../../../../helpers/geoJSON');
 
 
-const getExtremeWeather = function(req, res){
-
+const postExtremeWeather = function(req, res){
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
   var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
   var defaultParameters = {
@@ -54,9 +55,7 @@ const getExtremeWeather = function(req, res){
         if(body.includes('�')){ //Replacement character
           console.log(chalk.red('�������������������������������'));
         }
-        return res.status(200).send({
-          result: JSON.parse(body)
-        });
+        saveExtremeWeatherInMongo(JSON.parse(body).features, res);
       });
     })
     .on('error', function(err) {
@@ -66,6 +65,15 @@ const getExtremeWeather = function(req, res){
     });
 };
 
+
+const getExtremeWeather = function(req, res){
+  var polygon = bboxToPolygon(req.query.bbox);
+  var events = req.query.events; // output: ['FOG', 'FROST']
+  var minutes = req.query.minutes;
+  getExtremeWeatherFromMongo(polygon, events, minutes, res);
+};
+
 module.exports = {
-  getExtremeWeather,
+  postExtremeWeather,
+  getExtremeWeather
 };

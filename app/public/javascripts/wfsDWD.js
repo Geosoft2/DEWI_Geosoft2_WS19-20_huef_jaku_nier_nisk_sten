@@ -272,7 +272,7 @@ function requestExtremeWeather(bbox, events) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
             type: "Get",
-            url: 'http://' + location.hostname + ':3001/api/v1/mongo/extremeWeather',
+            url: 'http://' + location.hostname + ':3001/api/v1/dwd/extremeWeather',
             data: {
                 events: events,
                 bbox: bbox.bbox,
@@ -396,4 +396,3 @@ function setMarkerColor(coordinates) {
         }
     }
 }
-
