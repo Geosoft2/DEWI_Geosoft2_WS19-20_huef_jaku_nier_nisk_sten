@@ -5,6 +5,24 @@
 "use strict";
 let socket = io('http://' + location.hostname + ':3001');
 
+var greenIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var blueIcon = new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 // https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
 
 var markersInMap = [];
@@ -53,16 +71,10 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
-/**
- * adds the Tweets to the map that lay within the wfslayers and the current mapextend
- * @param wfsLayers
- */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
+function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getTweets();
 
     for (var t = 0; t < markersInMap.length; t++) {
-
         if (!isTweetInMapextend(markersInMap[t], bounds)) {
             map.removeLayer(markersInMap[t]);
             for (var i in tweetsInMap) {
@@ -77,8 +89,16 @@ function addTweets(wfsLayers, tweets, bounds) {
             // console.log(markersInMap[t]._leaflet_id);
         }
     }
+    setTweets(tweetsInMap);
+}
 
-    console.log(wfsLayers)
+/**
+ * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @param wfsLayers
+ */
+function addTweets(wfsLayers, tweets, bounds) {
+    var tweetsInWfsLayers = [];
+
     for (var t in tweets) {
         if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             console.log("tweet" + tweets[t] + "is in WFS Layer");
@@ -88,14 +108,13 @@ function addTweets(wfsLayers, tweets, bounds) {
 
     var newTweets = [];
     for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
-
         // should only add a marker if not already one with the same id exists
-
         if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
             newTweets.push(tweetsInWfsLayers[t])
         }
     }
 
+    var tweetsInMap = getTweets();
     tweetsInMap = tweetsInMap.concat(newTweets);
     console.log(tweetsInMap);
     setTweets(tweetsInMap);
@@ -103,6 +122,10 @@ function addTweets(wfsLayers, tweets, bounds) {
         var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
+        marker.on("click", function (e) {
+            setMarkerColor(e.target._latlng);
+            setHighlighted(e.target._latlng);
+        });
         markersInMap.push(marker);
         //marker.setIcon()
     }
@@ -249,7 +272,7 @@ function requestExtremeWeather(bbox, events) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
             type: "Get",
-            url: 'http://' + location.hostname + ':3001/api/v1/mongo/extremeWeather',
+            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
             data: {
                 events: events,
                 bbox: bbox.bbox,
@@ -274,31 +297,6 @@ function requestExtremeWeather(bbox, events) {
     })
 }
 
-// /**
-//  * @desc queries the extreme weather events based on the current map-extent and add it to the map
-//  * @param {json} bbox coordinates of current map-extent
-//  */
-// function requestExtremeWeather(bbox){
-//   $.ajax({
-//    type: "POST",
-//    url: 'http://localhost:3001/api/v1/dwd/extremeWeather',
-//    // contentType: "application/json",
-//    dataType: 'json',
-//    data: bbox
-//   })
-//   .done(function(response) {
-//     console.log(response);
-//     // remove existing layer
-//     removeExistingLayer(warnlayer);
-//     // create new layer
-//     warnlayer = createLayer(response);
-//     // add layer to layerGroup and map
-//     extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-//   })
-//   .fail(function(err){
-//     console.log(err.responseText);
-//   });
-// }
 
 /**
  * @desc checks if layer exists and remove it from map
@@ -363,3 +361,13 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+function setMarkerColor(coordinates) {
+    for (var marker of markersInMap){
+        if(JSON.stringify(marker._latlng) === JSON.stringify(coordinates)){
+            marker.setIcon(greenIcon)
+        }
+        else{
+            marker.setIcon(blueIcon)
+        }
+    }
+}
