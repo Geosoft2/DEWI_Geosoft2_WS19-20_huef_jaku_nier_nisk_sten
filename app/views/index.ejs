@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
+    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
+    <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+
+  </head>
+  <body onload="initial(), testSocket()">
+
+    <a href="/">
+      <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
+    </a>
+    <br><button onclick="requestEvent()">Data</button>
+    <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
+    <label>Event:
+			<select multiple id="selectEvent" name="event">
+				<option value="THUNDERSTORM">thunderstorm</option>
+				<option value="WIND">wind</option>
+				<option value="TORNADO">tornado</option>
+				<option value="RAIN">rain</option>
+				<option value="HAIL">hail</option>
+        <option value="SNOWFALL">snowfall</option>
+        <option value="SNOWDRIFT">snowdrift</option>
+        <option value="FOG">fog</option>
+        <option value="FROST">frost</option>
+        <option value="GLAZE">glaze</option>
+        <option value="THAW">thaw</option>
+        <option value="POWERLINEVIBRATION">powerlinevibration</option>
+        <option value="UV">uv</option>
+        <option value="HEAT">heat</option>
+        <option value="TEST">test</option>
+			</select>
+		</label>
+
+
+    <div class="row">
+
+      <div class="col-md-6" style="margin-top: 20px;">
+        <div id="mapWFS" style="height:560px;">
+        </div>
+        <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
+      </div>
+
+      <div class="col-md-6">
+        <div id="tweets">
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+</html>
+
+<script src="/jquery/jquery.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="/leaflet/leaflet.js"></script>
+<script src="/leafletPan/L.Control.Pan.js"></script>
+<script src="/leafletEasyButton/easy-button.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/react/react.development.js"></script>
+<script src="/react-dom/react-dom.development.js"></script>
+<script src="/material-ui/material-ui.development.js"></script>
+<script src="/turf/turf/turf.min.js"></script>
+
+<script src="javascripts/wfsDWD.js"></script>
+<script src="javascripts/twitter.js"></script>
+<script src="javascripts/control.js"></script>

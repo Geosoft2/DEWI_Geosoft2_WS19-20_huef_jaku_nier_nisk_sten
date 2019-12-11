@@ -1,0 +1,16 @@
+body {
+  padding-left: 50px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#list {
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.highlighted {
+    background-color: rgba(0, 128, 0, 0.3) !important;
+}
