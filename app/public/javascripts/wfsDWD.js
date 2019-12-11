@@ -123,8 +123,6 @@ function addTweets(wfsLayers, tweets, bounds) {
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
-            console.log(JSON.stringify(e.target._latlng));
-            console.log(JSON.stringify(getState('highlighted')));
             if(JSON.stringify(e.target._latlng) === JSON.stringify(getState('highlighted'))){
                 setMarkerColor(null);
                 setHighlighted(null);
@@ -237,23 +235,6 @@ function boundingbox(bounds) {
     };
 }
 
-// function saveDataInMongo(feature){
-//   console.log('feature', feature);
-//   $.ajax({
-//    type: "POST",
-//    url: 'http://localhost:3001/api/v1/mongo/extremeWeather',
-//    // contentType: "application/json",
-//    dataType: 'json',
-//    data: feature
-//   })
-//   .done(function(response) {
-//     console.log(response);
-//   })
-//   .fail(function(err){
-//     console.log(err.responseText);
-//   });
-// }
-
 
 function requestEvent() {
     var bounds = map.getBounds();
@@ -280,7 +261,7 @@ function requestExtremeWeather(bbox, events) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
             type: "Get",
-            url: 'http://' + location.hostname + ':3001/api/v1/mongo/extremeWeather',
+            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
             data: {
                 events: events,
                 bbox: bbox.bbox,
@@ -305,31 +286,6 @@ function requestExtremeWeather(bbox, events) {
     })
 }
 
-// /**
-//  * @desc queries the extreme weather events based on the current map-extent and add it to the map
-//  * @param {json} bbox coordinates of current map-extent
-//  */
-// function requestExtremeWeather(bbox){
-//   $.ajax({
-//    type: "POST",
-//    url: 'http://localhost:3001/api/v1/dwd/extremeWeather',
-//    // contentType: "application/json",
-//    dataType: 'json',
-//    data: bbox
-//   })
-//   .done(function(response) {
-//     console.log(response);
-//     // remove existing layer
-//     removeExistingLayer(warnlayer);
-//     // create new layer
-//     warnlayer = createLayer(response);
-//     // add layer to layerGroup and map
-//     extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-//   })
-//   .fail(function(err){
-//     console.log(err.responseText);
-//   });
-// }
 
 /**
  * @desc checks if layer exists and remove it from map
@@ -404,4 +360,3 @@ function setMarkerColor(coordinates) {
         }
     }
 }
-

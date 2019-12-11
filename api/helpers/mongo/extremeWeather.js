@@ -2,15 +2,14 @@
 // jshint node: true
 "use strict";
 
-const ExtremeWeather = require('../../../../models/extremeWeather');
+const ExtremeWeather = require('../../models/extremeWeather');
 const moment = require('moment');
-const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../../../../helpers/geoJSON');
-const io = require("../../../../helpers/socket-io").io;
+const {makeGeoJSonFromFeatures} = require('../geoJSON');
+const io = require("../../helpers/socket-io").io;
 
 
-const postExtremeWeather = async function(req, res){
+const saveExtremeWeatherInMongo = async function(features, res){
 
-  var features = req.body.features;
   // only if data are available, data can be stored
   if(features){
     // console.log(moment());
@@ -75,13 +74,11 @@ const postExtremeWeather = async function(req, res){
 };
 
 
-const getExtremeWeather = async function(req, res){
-  var polygon = bboxToPolygon(req.query.bbox);
-  var events = req.query.events; // output: ['FOG', 'FROST']
-  var minutes = req.query.minutes;
+const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, minutes, res){
+  console.log(events);
   try {
     var query = {};
-    query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}};
+    query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [bboxPoylgon]}}};
     // optional search-parameter events
     if(events){
       // create a regular Expression to cover all possible combinations in 'EC_Group' (e.g.: FOG; FROST)
@@ -101,7 +98,7 @@ const getExtremeWeather = async function(req, res){
   }
   catch(err){
     res.status(400).send({
-      message: 'Error while getting extreme weather events from MongoDB.'
+      message: 'Error while getting extreme weather events.'
     });
   }
 };
@@ -109,6 +106,6 @@ const getExtremeWeather = async function(req, res){
 
 
 module.exports = {
-  postExtremeWeather,
-  getExtremeWeather
+  saveExtremeWeatherInMongo,
+  getExtremeWeatherFromMongo
 };

@@ -8,7 +8,7 @@ let setHighlighted=  () => {};
 function twitterSandboxSearch(bounds) {
     return new Promise(function (resolve, restrict) {
         $.ajax({
-            url: "http://" +location.hostname +':3001/api/v1/twitter/sandboxSearch', // URL der Abfrage,
+            url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
                 "filter": ""
@@ -29,7 +29,7 @@ function twitterSandboxSearch(bounds) {
 
 function startStream() {
     $.ajax({
-        url: "http://" +location.hostname+':3001/api/v1/twitter/stream', // URL der Abfrage,
+        url: "http://" +location.hostname+':3001/api/v1/social/twitter/stream', // URL der Abfrage,
         data:{},
         type: "get"
     })
@@ -49,7 +49,7 @@ function startStream() {
 function updateTwitterStream(bbox, keyword) {
     $.ajax({
         type: "POST",
-        url: 'http://'+location.hostname+':3001/api/v1/twitter/stream',
+        url: 'http://'+location.hostname+':3001/api/v1/social/twitter/stream',
         // contentType: "application/json",
         dataType: 'json',
         data: {bbox :bbox, keyword: keyword}

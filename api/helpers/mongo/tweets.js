@@ -2,25 +2,28 @@
 // jshint node: true
 "use strict";
 
-const Tweet = require('../../../../models/tweet');
+const Tweet = require('../../models/tweet');
 // Tweet.index({text: 'text'});
-const {bboxToPolygon} = require('../../../../helpers/geoJSON');
+const {bboxToPolygon} = require('../geoJSON');
 
-const postTweet = async function (req, res) {
-    var tweet = res.body.tweet;
+
+const postTweet = async function (tweet) {
     var coordinates = [];
     var geometry = {};
     geometry['type'] = 'Point';
+    console.log(tweet);
+    console.log("Storing Tweet..");
 
     if (tweet) {
+        // mongoose: findOneAndUpdate
         if (Tweet.find({tweetId: tweet.tweetId}).limit(1).size() > 0) {
-            res.status(400).send('Tweet is already stored in database.');
+            return "Tweet is already stored in database.";
         } else {
             coordinates.push(tweet.places.coordinates.lng);
             coordinates.push(tweet.places.coordinates.lat);
             geometry['coordinates'] = coordinates;
             var newTweet = new Tweet({
-                tweetId: tweet.Nid,
+                tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
                 createdAt: tweet.createdAt,
@@ -32,16 +35,15 @@ const postTweet = async function (req, res) {
             });
             try {
                 await newTweet.save();
+                return "tweet has been stored in db.";
             } catch (e) {
-                console.log(e);
-                res.status(400).send('Error while storing Tweet in MongoDB.');
+                return e;
             }
         }
     }
 };
 
-const getTweets = async function (req, res) {
-    var filter = req.query.filter;
+const getTweets = async function (filter, bbox) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
     var words = filter[0];
@@ -50,15 +52,15 @@ const getTweets = async function (req, res) {
             words = filter[i] + " " + words;
         }
     }
-    var polygon = bboxToPolygon(req.query.bbox);
+    var polygon = bboxToPolygon(bbox);
     try {
         const result = await Tweet.find({
             $text: {$search: words},
             geometry: {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}}
         }, {_id: 0}); //without _id (ObjectID)
-        res.status(200).send(result);
+        console.log("Tweet has been stored to MongoDB.");
     } catch (err) {
-        res.status(400).send('Error while getting extreme weather events from MongoDB.');
+        console.log(err);
     }
 };
 

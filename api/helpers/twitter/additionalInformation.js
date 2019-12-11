@@ -17,8 +17,6 @@ const getUserInformation =  function(userData){
  *
  */
 const getPlaceInformation = function(placeInformation){
-
-    console.log(placeInformation)
                     const parsedResult = {
                         "name": placeInformation.full_name,
                         "coordinates": {
