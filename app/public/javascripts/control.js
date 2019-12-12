@@ -5,31 +5,32 @@
 "use strict";
 let wfsLayer;
 
-async function initial (bbox, events, filter) {
-  // TODO: checking parameter serverside or clientside??
-  //- longitute: max 180.0, min -180.0
-  // - latitude: max 90.0, min -90.0
-  var regEx = /^\s*(-?(([0-9]{1,2}|[1][0-7][0-9])(\.[0-9]*)?|180(\.0*)?))\s*,\s*(-?(([0-9]|[0-8][0-9])(\.[0-9]*)?|90(\.0*)?))\s*,\s*(-?(([0-9]{1,2}|[1][0-7][0-9])(\.[0-9]*)?|180(\.0*)?))\s*,\s*(-?(([0-9]|[0-8][0-9])(\.[0-9]*)?|90(\.0*)?))\s*$/;
-  if(!(bbox && regEx.test(bbox))){
-    bbox = getInitialBbox();
-  }
+async function initial (boundingbox, events, filter) {
 
   if(!events) {
+    // events = getInitialEvent();
     events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
   }
   else{
     events = JSON.parse(events);
   }
+  console.log(events);
   // "activate" select option
   for(var initialEvent in events){
     $('#selectEvent option[value='+events[initialEvent]+']').attr('selected', 'selected');
   }
 
-  // if(!filter) {console.log('filter', filter);}
+  if(!filter){
+    // filter = getInitialFilter();
+  }
+  $('#textFilter').val(filter);
 
   startStream();
   startSocket();
   let twitterResponse;
+
+  var bbox = getInitialBbox(boundingbox);
+
   if (bbox) {
       // Start 2 "jobs" in parallel and wait for both of them to complete
       await Promise.all([
@@ -45,36 +46,31 @@ async function initial (bbox, events, filter) {
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
  *
  */
-function getInitialBbox() {
+ function getInitialBbox(bbox) {
 
-         // initial bounding box with the area of germany
-        var initialBbox = {
-            bbox: {
-                southWest: {
-                    lat: 47.2704, // southWest.lng
-                    lng: 6.6553 // southWest.lat
-                },
-                northEast: {
-                    lat: 55.0444, // northEast.lng
-                    lng: 15.0176 // southWest.lat
-                }
-            }
-        };
-
-        // get the new default boundingbox
-        var newDefaultBbox = getWindowCoordsFromUrl();
-
-        if(newDefaultBbox == "") {
-
-            if (getBoundingBboxFromCookie()) {
-                return (null);
-            }
-            else {
-                return (initialBbox);
-            }
-
-        }
-}
+   if(bbox){
+     getBoundingBoxFromUrl(bbox);
+     return null;
+   }
+   else if(getBoundingBboxFromCookie()) {
+     return (null);
+   }
+   else {
+     // initial bounding box with the area of germany
+     return {
+       bbox: {
+         southWest: {
+           lat: 47.2704, // southWest.lng
+           lng: 6.6553 // southWest.lat
+         },
+         northEast: {
+           lat: 55.0444, // northEast.lng
+           lng: 15.0176 // southWest.lat
+         }
+       }
+     };
+   }
+ }
 
 function getBoundingBboxFromCookie() {
     var newDefaultBbox = getCookie("defaultBbox");
@@ -161,27 +157,23 @@ function startSocket() {
     });
 }
 
-function getWindowCoordsFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const myParam = urlParams.get('bbox');
-    console.log(myParam);
-    if (myParam == null) {
-        return "";
+function getBoundingBoxFromUrl(bbox) {
+  var splitBbox = bbox.split(',');
+  // bounding box from URL
+  bbox = {
+    bbox: {
+      southWest: {
+        lat: parseFloat(splitBbox[1]),
+        lng: parseFloat(splitBbox[0])
+      },
+      northEast: {
+        lat: parseFloat(splitBbox[3]),
+        lng: parseFloat(splitBbox[2])
+      }
     }
-    const coords = myParam.split(',');
-    console.log(coords);
-    return {
-        bbox: {
-            southWest: {
-                lat: parseFloat(coords[1]),
-                lng: parseFloat(coords[0])
-            },
-            northEast: {
-                lat: parseFloat(coords[3]),
-                lng: parseFloat(coords[2])
-            }
-        }
-    };
+  };
+  map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
+  return bbox;
 }
 
 function updateURL(bbox, events, filter) {

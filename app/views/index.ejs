@@ -16,6 +16,17 @@
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
     </a>
     <br>
+
+    <!-- TODO:  snackbar???-->
+    <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
+      <div class="col-12" style="margin-top: 20px;">
+      <% for(var i=0; i < errormessage.length; i++) {%>
+        <div class="alert alert-danger">
+          <%= errormessage[i] %>
+        </div>
+      <% } %>
+    <% } %>
+
     <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
     <label>Event:
 			<select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
