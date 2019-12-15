@@ -31,7 +31,7 @@ const getMainPage = function(req, res){
   }
 
   res.render('index', {
-    title: 'DEWI',
+    title: 'Home',
     bbox: bbox,
     events: events,
     textfilter: textfilter,

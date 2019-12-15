@@ -2,6 +2,10 @@
 <html>
   <head>
     <title><%= title %></title>
+
+    <meta name="author" content="Jan, Luc, Nick, Phil, Tom"/>
+    <meta charset="UTF-8">
+
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
@@ -10,91 +14,97 @@
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
 
   </head>
+
   <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>'), testSocket()">
 
-    <a href="/">
-      <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
-    </a>
-    <br>
+    <div class="wrapper">
 
-    <!-- TODO:  snackbar???-->
-    <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
-      <div class="col-12" style="margin-top: 20px;">
-      <% for(var i=0; i < errormessage.length; i++) {%>
-        <div class="alert alert-danger">
-          <%= errormessage[i] %>
+      <% include partials/header.ejs %>
+
+      <main role="main" class="container-fluid" id="main">
+      <!-- TODO:  snackbar???-->
+      <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
+        <div class="row">
+          <div class="col-12" style="margin-top: 20px;">
+          <% for(var i=0; i < errormessage.length; i++) {%>
+            <div class="alert alert-danger">
+              <%= errormessage[i] %>
+            </div>
+          <% } %>
         </div>
       <% } %>
-    <% } %>
-
-    <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
-    <label>Event:
-			<select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
-				<option value="THUNDERSTORM">thunderstorm</option>
-				<option value="WIND">wind</option>
-				<option value="TORNADO">tornado</option>
-				<option value="RAIN">rain</option>
-				<option value="HAIL">hail</option>
-        <option value="SNOWFALL">snowfall</option>
-        <option value="SNOWDRIFT">snowdrift</option>
-        <option value="FOG">fog</option>
-        <option value="FROST">frost</option>
-        <option value="GLAZE">glaze</option>
-        <option value="THAW">thaw</option>
-        <option value="POWERLINEVIBRATION">powerlinevibration</option>
-        <option value="UV">uv</option>
-        <option value="HEAT">heat</option>
-        <option value="TEST">test</option>
-			</select>
-		</label>
 
 
-    <div class="row">
+        <div class="row">
 
-      <div class="col-md-6">
-          <div class="row" style="margin-top: 20px;">
+          <div class="col-md-6">
 
-              <div class="col-md-4">
-                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
+            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+              <div class="col-4">
+                <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
+                <label>Event:
+                  <select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
+                    <option value="THUNDERSTORM">thunderstorm</option>
+                    <option value="WIND">wind</option>
+                    <option value="TORNADO">tornado</option>
+                    <option value="RAIN">rain</option>
+                    <option value="HAIL">hail</option>
+                    <option value="SNOWFALL">snowfall</option>
+                    <option value="SNOWDRIFT">snowdrift</option>
+                    <option value="FOG">fog</option>
+                    <option value="FROST">frost</option>
+                    <option value="GLAZE">glaze</option>
+                    <option value="THAW">thaw</option>
+                    <option value="POWERLINEVIBRATION">powerlinevibration</option>
+                    <option value="UV">uv</option>
+                    <option value="HEAT">heat</option>
+                    <option value="TEST">test</option>
+                  </select>
+                </label>
               </div>
-
               <div class="col-md-4">
-                  <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
+                <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
+              <div class="col-md-4">
+                <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
+              </div>
+            </div>
 
-              <div class="col-md-4">Hello</div>
+            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
+              <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
+            </div>
+
+            <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
 
           </div>
 
-          <div class="row" style="margin-top: 20px;">
-            <div class="col-12" id="mapWFS" style="height:560px;"></div>
+
+          <div class="col-md-6">
+
+            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+              <div class="col-md-4">
+                <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
+              </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
+              <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
+              </div>
+            </div>
           </div>
 
-        <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
-
-      </div>
-
-
-      <div class="col-md-6">
-
-        <div class="row" style="margin-top: 20px;">
-          <div class="col-md-4">
-            <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
-          </div>
         </div>
 
-        <div class="row" style="margin-top: 20px;">
-          <div class="col-12" id="tweets" style="height:560px;">
-          </div>
-        </div>
-      </div>
-
+      </main>
     </div>
 
-  </body>
+    <% include partials/footer.ejs %>
+
+    </body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
+<script src="/popper/umd/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
