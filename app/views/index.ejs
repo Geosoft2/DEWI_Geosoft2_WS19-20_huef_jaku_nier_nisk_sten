@@ -32,38 +32,16 @@
               <%= errormessage[i] %>
             </div>
           <% } %>
-        </div>
+          </div>
         </div>
       <% } %>
 
 
         <div class="row">
 
-          <div class="col-md-6">
+          <div class="col-md-6 order-md-1">
 
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <!-- <div class="col-4">
-                possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown
-                <label>Event:
-                  <select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
-                    <option value="THUNDERSTORM">thunderstorm</option>
-                    <option value="WIND">wind</option>
-                    <option value="TORNADO">tornado</option>
-                    <option value="RAIN">rain</option>
-                    <option value="HAIL">hail</option>
-                    <option value="SNOWFALL">snowfall</option>
-                    <option value="SNOWDRIFT">snowdrift</option>
-                    <option value="FOG">fog</option>
-                    <option value="FROST">frost</option>
-                    <option value="GLAZE">glaze</option>
-                    <option value="THAW">thaw</option>
-                    <option value="POWERLINEVIBRATION">powerlinevibration</option>
-                    <option value="UV">uv</option>
-                    <option value="HEAT">heat</option>
-                    <option value="TEST">test</option>
-                  </select>
-                </label>
-              </div> -->
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
@@ -90,27 +68,22 @@
                 </select>
               </div>
             </div>
-
-            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
-              <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
-            </div>
-
-            <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
-
           </div>
 
+          <div class="col-md-6 order-md-3" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
+            <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
+          </div>
 
-          <div class="col-md-6">
-
+          <div class="col-md-6 order-md-2">
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
               </div>
             </div>
+          </div>
 
-            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
-              <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
-              </div>
+          <div class="col-md-6 order-md-4" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
+            <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
             </div>
           </div>
 
@@ -121,7 +94,7 @@
 
     <% include partials/footer.ejs %>
 
-    </body>
+  </body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
