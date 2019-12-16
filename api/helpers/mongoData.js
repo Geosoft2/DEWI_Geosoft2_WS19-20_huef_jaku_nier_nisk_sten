@@ -16,12 +16,32 @@ const postTweet = async function (tweet) {
 
     if (tweet) {
         // mongoose: findOneAndUpdate
-        if (Tweet.find({tweetId: tweet.tweetId}).limit(1).size() > 0) {
+        /*try {
+            var savedTweet = await Tweet.findOneAndUpdate({
+                tweetId: tweet.tweetId
+            }, {
+                tweet
+            }, {
+                new: true,
+                upsert: true,
+                rawResult: true,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(400).send({
+                message: 'Error while storing data in MongoDB.'
+            });
+        }*/
+        var tweetsWithId = await Tweet.find({tweetId: tweet.tweetId});
+        console.log("size: " + tweetsWithId.length);
+
+        if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
             coordinates.push(tweet.places.coordinates.lng);
             coordinates.push(tweet.places.coordinates.lat);
             geometry['coordinates'] = coordinates;
+            console.log(" Geometry: " + JSON.stringify(geometry));
             var newTweet = new Tweet({
                 tweetId: tweet.tweetId,
                 url: tweet.url,
@@ -34,8 +54,9 @@ const postTweet = async function (tweet) {
                 // author und media noch splitten oder einfach als Mixed definieren??
             });
             try {
+                console.log(newTweet);
                 await newTweet.save();
-                return "tweet has been stored in db.";
+                return "tweet stored in db.";
             } catch (e) {
                 return e;
             }
@@ -43,7 +64,7 @@ const postTweet = async function (tweet) {
     }
 };
 
-const getTweets = async function (filter, bbox) {
+const getTweetsFromMongo = async function (filter, bbox) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
     var words = filter[0];
@@ -52,13 +73,17 @@ const getTweets = async function (filter, bbox) {
             words = filter[i] + " " + words;
         }
     }
-    var polygon = bboxToPolygon(bbox);
+    var polygonCoords = [bboxToPolygon(bbox)];
+    var polygon = {type: 'Polygon', coordinates: polygonCoords};
+    console.log(polygon);
     try {
         const result = await Tweet.find({
             $text: {$search: words},
-            geometry: {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [polygon]}}}
-        }, {_id: 0}); //without _id (ObjectID)
-        console.log("Tweet has been stored to MongoDB.");
+            geometry: {$geoWithin: {$geometry: polygon}}
+        });
+        console.log("filtered Tweets: ");
+        console.log(result);
+        return result;
     } catch (err) {
         console.log(err);
     }
@@ -66,5 +91,5 @@ const getTweets = async function (filter, bbox) {
 
 module.exports = {
     postTweet,
-    getTweets
+    getTweetsFromMongo
 };
