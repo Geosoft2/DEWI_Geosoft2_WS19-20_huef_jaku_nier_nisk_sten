@@ -33,6 +33,7 @@
             </div>
           <% } %>
         </div>
+        </div>
       <% } %>
 
 
@@ -63,14 +64,14 @@
                   </select>
                 </label>
               </div> -->
-              <div class="col-md-4">
+              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
               </div>
-              <div class="col-md-4">
-                <select class="selectpicker" multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
+              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+                <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
                   <option value="THUNDERSTORM">thunderstorm</option>
                   <option value="WIND">wind</option>
                   <option value="TORNADO">tornado</option>
@@ -102,7 +103,7 @@
           <div class="col-md-6">
 
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <div class="col-md-4">
+              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
               </div>
             </div>
