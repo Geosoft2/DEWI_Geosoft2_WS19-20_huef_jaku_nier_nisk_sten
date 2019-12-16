@@ -7,15 +7,9 @@ let wfsLayer;
 
 async function initial (boundingbox, events, filter) {
 
-  if(!events) {
-    // events = getInitialEvent();
-    events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
-  }
-  else{
-    events = JSON.parse(events);
-  }
-  console.log(events);
-  // "activate" select option
+    events = getInitialEvents(events);
+
+    // "activate" select option
   for(var initialEvent in events){
     $('#selectEvent option[value='+events[initialEvent]+']').attr('selected', 'selected');
   }
@@ -42,12 +36,37 @@ async function initial (boundingbox, events, filter) {
 }
 
 /**
+ * @desc function which is called in the intitial function. If there is an event is the link it is used. If not
+ * but there is a cookie with an event this is used. If there is no event in the link and in the cookie all events are
+ * activated.
+ * a cookie
+ * @param events
+ * @returns {string[]|any}
+ */
+function getInitialEvents(events) {
+
+    var newDefaultEvents = getCookie("defaultEvents");
+
+    if(events) {
+        return JSON.parse(events);
+    }
+
+    if (newDefaultEvents!="") {
+        return JSON.parse(newDefaultEvents);
+    }
+    else  {
+        events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
+        return events;
+        }
+}
+/**
  * @desc Queries the extreme weather events with predefined bbox and add it to the map - if the page is reloaded. The
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
  *
  */
  function getInitialBbox(bbox) {
 
+     console.log(map.getBounds());
    if(bbox){
      getBoundingBoxFromUrl(bbox);
      return null;
@@ -186,7 +205,7 @@ function updateURL(bbox, events, filter) {
     var lat2 = Math.round(bbox.bbox.northEast.lat * 10000) / 10000;
     var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
     var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
-    console.log(events);
+
     bbox = lng1 + "," + lat1 + "," + lng2 + "," + lat2;
     parameters.bbox = bbox;
   }

@@ -56,6 +56,9 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
+/**
+ * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
+ */
 function changeDefaultMapExtent() {
     var bounds = map.getBounds();
     var bbox = boundingbox(bounds);
@@ -63,8 +66,29 @@ function changeDefaultMapExtent() {
     setCookie("defaultBbox", cookieValue, 1000000);
 }
 
+/**
+ * @desc function which sets the map back to the defaultMapExtent. If there is no default map extent set by the user,
+ * its the initial map extent.
+ */
 function backToDefaultMapExtent() {
     getBoundingBboxFromCookie();
+
+    var isThereCookie = getBoundingBboxFromCookie();
+    console.log(isThereCookie);
+
+    if (isThereCookie == false) {
+        map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
+    }
+}
+
+/**
+ * @desc function which creates a cookie if the button setDefaultEvents is pushed.
+ */
+function setDefaultEvents() {
+    var events = $('#selectEvent').val();
+    var cookieValue = JSON.stringify(events);
+    console.log(cookieValue);
+    setCookie("defaultEvents", cookieValue, 1000000);
 }
 
 var extremeWeatherGroup = L.layerGroup();

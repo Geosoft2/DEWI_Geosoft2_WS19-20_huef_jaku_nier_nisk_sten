@@ -38,36 +38,13 @@
 
         <div class="row">
 
-          <div class="col-md-6">
-
+          <div id="mapSection" class="col-md-6">
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <!-- <div class="col-4">
-                possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown
-                <label>Event:
-                  <select multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()">
-                    <option value="THUNDERSTORM">thunderstorm</option>
-                    <option value="WIND">wind</option>
-                    <option value="TORNADO">tornado</option>
-                    <option value="RAIN">rain</option>
-                    <option value="HAIL">hail</option>
-                    <option value="SNOWFALL">snowfall</option>
-                    <option value="SNOWDRIFT">snowdrift</option>
-                    <option value="FOG">fog</option>
-                    <option value="FROST">frost</option>
-                    <option value="GLAZE">glaze</option>
-                    <option value="THAW">thaw</option>
-                    <option value="POWERLINEVIBRATION">powerlinevibration</option>
-                    <option value="UV">uv</option>
-                    <option value="HEAT">heat</option>
-                    <option value="TEST">test</option>
-                  </select>
-                </label>
-              </div> -->
               <div class="col-md-4">
                 <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
               <div class="col-md-4">
-                <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
+                <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
               </div>
               <div class="col-md-4">
                 <select class="selectpicker" multiple id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
@@ -88,25 +65,28 @@
                   <option value="TEST">test</option>
                 </select>
               </div>
+              <div class="col-md-4">
+                <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
+              </div>
             </div>
-
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
-              <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
+              <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;">
+              </div>
             </div>
-
-            <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
-
           </div>
 
-
-          <div class="col-md-6">
-
+          <div id="twitterSection" class="col-md-6">
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
               <div class="col-md-4">
                 <input placeholder="search in tweets ..." title="textfilter to filter the tweets" type="text" id="textFilter" onchange="eventsOrFilterChanged()" />
               </div>
+              <div class="col-md-4">
+                <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord" onclick="" style="">set default search word</button>
+              </div>
+              <div class="col-md-4">
+                <button title="by pushing the button, the default search word is deleted" type="button" id="deleteDefaultSearchWord" onclick="" style="">delete default search word</button>
+              </div>
             </div>
-
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
               <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
               </div>
@@ -114,8 +94,9 @@
           </div>
 
         </div>
-
+        </div>
       </main>
+
     </div>
 
     <% include partials/footer.ejs %>
