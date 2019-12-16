@@ -3,7 +3,7 @@ const OAuth2 = OAuth.OAuth2;
 const https = require('https');
 
 const twitterToken = require('../../private/token.js').token.twitter_config;
-const {postTweet, getTweetsFromMongo} = require('../mongoData.js')
+const {postTweet, getTweetsFromMongo} = require('../mongo/tweets.js');
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
@@ -104,8 +104,8 @@ const sandboxSearch = function(filter, area) {
                             }
                             //proof if coordinates are specified in the tweet or just place information
                             if (tweet.geo) {
-                                mongoDB.places.coordinates.lat = tweet.geo.coordinates[1];
-                                mongoDB.places.coordinates.lng = tweet.geo.coordinates[0];
+                                mongoDB.places.coordinates.lat = tweet.geo.coordinates[0];
+                                mongoDB.places.coordinates.lng = tweet.geo.coordinates[1];
                             } else if (tweet.place) {
                                 mongoDB.places.coordinates.lat = ((tweet.place.bounding_box.coordinates[0][0][1] + tweet.place.bounding_box.coordinates[0][1][1]) / 2);
                                 mongoDB.places.coordinates.lng = ((tweet.place.bounding_box.coordinates[0][0][0] + tweet.place.bounding_box.coordinates[0][2][0]) / 2);
@@ -243,4 +243,3 @@ module.exports = {
     premiumSearch,
     sandboxSearch
 };
-

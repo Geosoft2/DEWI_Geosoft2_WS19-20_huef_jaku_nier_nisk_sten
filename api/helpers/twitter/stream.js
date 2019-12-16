@@ -114,14 +114,14 @@ const setRules = async function(rules) {
  * Connect to the Twitter stream and send information via socket-io
  * @returns the stream
  */
-const streamConnect = function(timeout) {
+const streamConnect = function() {
     // Listen to the stream
     const config = {
         url: 'https://api.twitter.com/labs/1/tweets/stream/filter?format=detailed&expansions=attachments.media_keys',
         auth: {
             bearer: token,
         },
-        timeout: timeout,
+        timeout: 20000,
     };
 
     const stream = request.get(config);
@@ -131,7 +131,7 @@ const streamConnect = function(timeout) {
             const tweetJSON = JSON.parse(data);
             console.log(tweetJSON);
             if (tweetJSON.connection_issue){
-                stream.emit('error')
+                stream.emit("timeout")
             }
             if (tweetJSON.data) {
                 io.emit('timeout', false);
@@ -178,8 +178,10 @@ const streamConnect = function(timeout) {
 
     }).on('error', error => {
         console.log(error);
-        io.emit('timeout', true);
-        stream.emit('timeout');
+        if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
+            io.emit('timeout', true);
+            stream.emit('timeout');
+        }
     });
 
     return stream;

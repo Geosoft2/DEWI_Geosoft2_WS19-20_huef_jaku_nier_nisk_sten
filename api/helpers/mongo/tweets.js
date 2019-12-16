@@ -2,9 +2,9 @@
 // jshint node: true
 "use strict";
 
-const Tweet = require('../models/tweet');
+const Tweet = require('../../models/tweet');
 // Tweet.index({text: 'text'});
-const {bboxToPolygon} = require('./geoJSON');
+const {bboxToPolygon} = require('../geoJSON');
 
 
 const postTweet = async function (tweet) {
