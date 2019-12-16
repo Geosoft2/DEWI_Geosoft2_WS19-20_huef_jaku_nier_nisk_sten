@@ -21,8 +21,13 @@ a {
   color: #00B7FF;
 }
 
-a.imprint:link, a.imprint:visited {
+a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
   color: black;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  color: black !important;
 }
 
 #list {
