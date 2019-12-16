@@ -79,6 +79,10 @@ class TwitterList extends React.Component {
         return this.state[state]
     };
 
+    goToTweet = (url) =>{
+        window.open(url);
+    };
+
     pushTweets= () => {
         const tweets2 = this.state.tweets;
         tweets2.push(tweet);
@@ -105,7 +109,7 @@ class TwitterList extends React.Component {
         socket.on('timeout', function (timeout) {
             self.setState({timeout: timeout})
         });
-    }
+    };
 
     /**
     testTwitter = () => {
@@ -142,6 +146,10 @@ class TwitterList extends React.Component {
                 ButtonBase,
                 Paper,
                 CardContent,
+                CardHeader,
+                Avatar,
+                IconButton,
+                Icon,
             } = window['MaterialUI'];
 
 
@@ -160,14 +168,22 @@ class TwitterList extends React.Component {
                     }
                 }
 
-                const content= e(CardContent, null,  item.text, e("br"), "Author: " + item.author.name, e("br"),
-                    e("a", {href: item.url, target: "_blank"}, "Go to Tweet"), e("br"),
-                    "Coordinates: " + JSON.stringify(item.places.coordinates), e("br"));
+                const avatar = e(Avatar, {src: item.author.profileImage, className:"avatar"});
+                const header= e(CardHeader, {avatar: avatar,
+                        className: "header",
+                        title: e("a", {href: item.author.url, target: "_blank"}, item.author.name, ),
+                        subheader: item.createdAt,
+                        action: e(IconButton, {onClick: ()=> self.goToTweet(item.url)}, e("i", {className: "fab fa-twitter icon", "aria-hidden":"true"}))});
+                const content= e(CardContent, null,  item.text);
                 let highlighted=null;
                 if(JSON.stringify(item.places.coordinates)=== JSON.stringify(self.state.highlighted)){
                     highlighted="highlighted";
                 }
-                cards.unshift(e(Card, {id: "Card" + item.tweetId, className: highlighted},  e(ButtonBase, {onClick: () => self.tweetClicked(item)},  media, content)));
+                else{
+                    highlighted="cards"
+                }
+                const card = e(Card, {id: "Card" + item.tweetId, className: highlighted}, header, media, content);
+                cards.unshift(e("div", null, e(ButtonBase, {className: "cards", onClick: () => self.tweetClicked(item)}, card,)));
                 cards.unshift(e("br"));
             });
 
@@ -175,7 +191,7 @@ class TwitterList extends React.Component {
                 cards.unshift(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."))
             }
 
-            const list=  e(Paper, {id: "list"}, cards)
+            const list=  e(Paper, {id: "list"}, cards);
             return list
         }
 }

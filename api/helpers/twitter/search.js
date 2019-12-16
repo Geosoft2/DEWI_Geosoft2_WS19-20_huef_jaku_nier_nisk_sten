@@ -27,7 +27,7 @@ const sandboxSearch = function(filter, area) {
     return new Promise(function (resolve, reject) {
 
         //build the endpoint url
-        let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&q=';
+        let endpoint = 'https://api.twitter.com/1.1/search/tweets.json?count=1000&result_type=recent&enteties=true&q=';
 
         const q = filter;
 
@@ -63,6 +63,7 @@ const sandboxSearch = function(filter, area) {
                     var twitterResponse = JSON.parse(body);
                     var mongoDBs = {tweets: []};
                     for (var tweet of twitterResponse.statuses) {
+                        console.log(tweet);
                         if (tweet.geo || tweet.place) {
                             var mongoDB = {
                                 tweetId: tweet.id_str,
@@ -72,7 +73,8 @@ const sandboxSearch = function(filter, area) {
                                 "author": {
                                     "id": tweet.user.id,
                                     "name": tweet.user.name,
-                                    "url": "https://twitter.com/" + tweet.user.screen_name
+                                    "url": "https://twitter.com/" + tweet.user.screen_name,
+                                    profileImage: tweet.user.profile_image_url
                                 },
                                 "media": [],
                                 "places": {
@@ -81,7 +83,7 @@ const sandboxSearch = function(filter, area) {
                             };
                             //check if media is embedded in the tweet
                             if (tweet.entities.media) {
-                                for (var media of tweet.entities.media) {
+                                for (var media of tweet.extended_entities.media) {
                                     mongoDB.media.push({"id": media.id, "url": media.media_url, type: media.type})
                                 }
                             }

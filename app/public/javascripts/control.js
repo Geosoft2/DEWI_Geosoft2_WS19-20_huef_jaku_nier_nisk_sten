@@ -48,7 +48,12 @@ function getInitialBbox() {
 
         if(newDefaultBbox == "") {
             newDefaultBbox = getCookie("defaultBbox");
-            newDefaultBbox = JSON.parse(newDefaultBbox);
+            try {
+                newDefaultBbox = JSON.parse(newDefaultBbox);
+            }
+            catch (e) {
+
+            }
         }
 
         // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used

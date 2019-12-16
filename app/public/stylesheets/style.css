@@ -13,4 +13,33 @@ a {
 
 .highlighted {
     background-color: rgba(0, 128, 0, 0.3) !important;
+    width: 100%;
+}
+
+
+.avatar {
+    width: 55px !important;
+    height: 55px !important;
+}
+
+.cards {
+    width: 100%;
+}
+
+.MuiTypography-body2{
+    text-align: initial;
+    font-size: 40px !important;
+}
+
+.icon{
+    color: rgb(29, 161, 242);
+    font-size: 1.8em;
+}
+
+.MuiCardHeader-subheader{
+    font-size: 14px !important;
+}
+
+.MuiCardHeader-action{
+    margin-top: 4px !important;
 }
