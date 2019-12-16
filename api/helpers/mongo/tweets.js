@@ -6,7 +6,11 @@ const Tweet = require('../../models/tweet');
 // Tweet.index({text: 'text'});
 const {bboxToPolygon} = require('../geoJSON');
 
-
+/**
+ * save tweet in database if it is not already stored
+ * @param tweet
+ * @returns {Promise<string|*>}
+ */
 const postTweet = async function (tweet) {
     var coordinates = [];
     var geometry = {};
@@ -64,6 +68,12 @@ const postTweet = async function (tweet) {
     }
 };
 
+/**
+ * get all Tweets from the database, fitting to the filter and boundingbox
+ * @param filter: array with filter words
+ * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
+ * @returns {Promise<void>}
+ */
 const getTweetsFromMongo = async function (filter, bbox) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
@@ -88,6 +98,14 @@ const getTweetsFromMongo = async function (filter, bbox) {
         console.log(err);
     }
 };
+
+/**
+ * remove all Tweets from database except the example data, created by DEWI
+ * @returns {Promise<void>}
+ */
+const deleteTweets = async function() {
+    await Tweet.remove({author: { name : {$ne: "DEWI"} } });
+}
 
 module.exports = {
     postTweet,
