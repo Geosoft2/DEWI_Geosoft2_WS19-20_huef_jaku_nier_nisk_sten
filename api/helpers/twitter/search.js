@@ -3,7 +3,7 @@ const OAuth2 = OAuth.OAuth2;
 const https = require('https');
 
 const twitterToken = require('../../private/token.js').token.twitter_config;
-const {postTweet} = require('../mongo/tweets.js');
+const {postTweet, getTweetsFromMongo} = require('../mongo/tweets.js');
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
@@ -23,6 +23,22 @@ oauth2.getOAuthAccessToken('', {
  * @returns {Promise<tweets>}
  */
 const sandboxSearch = function(filter, area) {
+
+    /*
+    var mongoFilter = ["ein", "und", "am", "bei"];
+    var bbox = {
+        southWest: {
+            lat: 49.816,
+            lng: 6.663
+        },
+        northEast: {
+            lat: 52.261,
+            lng: 9.701
+        }
+    };
+    var mongoTweets = getTweetsFromMongo(mongoFilter, bbox);
+*/
+
 
     return new Promise(function (resolve, reject) {
 
@@ -103,6 +119,11 @@ const sandboxSearch = function(filter, area) {
                             mongoDBs.tweets.push(mongoDB);
                         }
                     }
+
+                    /*
+                    console.log("Tweets from Mongo: ");
+                    console.log(mongoTweets);
+*/
                     resolve(mongoDBs);
                 } catch (err) {
                     console.log(err);

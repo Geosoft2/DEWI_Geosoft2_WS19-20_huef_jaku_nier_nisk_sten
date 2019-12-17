@@ -44,12 +44,11 @@ const TweetSchema = mongoose.Schema({
             default: 'Point'
         },
         coordinates: {
-            type: [[[Number]]]
+            type: [Number]
         }
     },
     placeName: {
-        type: String,
-        required: true
+        type: String
     },
     author: {
         type: mongoose.Mixed
