@@ -30,6 +30,29 @@ a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
   color: black !important;
 }
 
+/* if home is not shown */
+.nav-link.home.inactive {
+  border-top-color: rgb(222, 226, 230) !important;
+  border-right-color: rgb(255, 255, 255) !important;
+  border-left-color: rgb(222, 226, 230) !important;
+  border-bottom: none !important;
+}
+
+/* if faq is not shown */
+.nav-link.faq.inactive {
+  border-top-color: rgb(222, 226, 230) !important;
+  border-right-color: rgb(222, 226, 230) !important;
+  border-left-color: rgb(255, 255, 255) !important;
+  border-bottom: none !important;
+}
+
+/* if home and FAQ is not shown */
+.nav-link.home.faq.inactive {
+  border-color: rgb(222, 226, 230) !important;
+  border-bottom: none !important;
+}
+
+
 #list {
   max-height: 80vh;
   overflow: auto;

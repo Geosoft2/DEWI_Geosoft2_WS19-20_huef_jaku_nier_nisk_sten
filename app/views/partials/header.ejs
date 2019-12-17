@@ -9,10 +9,10 @@
       <!-- navigation links -->
       <div style="display: flex; padding-left: 15px;">
         <li class="nav-item" style="align-self: flex-end;">
-          <a class="nav-link <% if (title == 'Home') {%>active<% } %>" href="/">Home</a>
+          <a class="nav-link home <% if (title == 'Home') {%>active<% } else { if(title != 'FAQ') {%>faq <% } %>inactive<% } %>" href="/">Home</a>
         </li>
         <li class="nav-item"  style="align-self: flex-end;">
-          <a class="nav-link <% if (title == 'FAQ') {%>active<% } %>" href="/faq">FAQ</a>
+          <a class="nav-link faq <% if (title == 'FAQ') {%>active<% } else { %>inactive<% } %>" href="/faq">FAQ</a>
         </li>
       </div>
     </ul>
