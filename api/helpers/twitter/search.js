@@ -139,6 +139,12 @@ const sandboxSearch = function(filter, area) {
     });
 };
 
+const mongoSearch = async function (filter, bbox) {
+    var tweets = await getTweetsFromMongo(filter, bbox);
+    console.log(tweets);
+    return tweets;
+}
+
 /**
  * Performs the premium Search request
  * @param query keywords to filter
@@ -242,5 +248,6 @@ const premiumSearch = async function(query, bbox, since) {
 
 module.exports = {
     premiumSearch,
-    sandboxSearch
+    sandboxSearch,
+    mongoSearch
 };

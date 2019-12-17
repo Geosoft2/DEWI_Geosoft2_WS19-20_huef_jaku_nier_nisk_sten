@@ -7,6 +7,7 @@ let setHighlighted=  () => {};
 
 function twitterSandboxSearch(bounds) {
     return new Promise(function (resolve, restrict) {
+        console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
@@ -94,13 +95,14 @@ class TwitterList extends React.Component {
     };
 
     tweetClicked = (tweet) => {
-        if(JSON.stringify(this.state.highlighted)=== JSON.stringify(tweet.places.coordinates)){
+        const coordinates = {lat: tweet.geometry.coordinates[1], lng: tweet.geometry.coordinates[0]};
+        if(JSON.stringify(this.state.highlighted)=== JSON.stringify(coordinates)){
             this.setHighlighted(null);
             setMarkerColor(null);
         }
         else {
-            this.setHighlighted(tweet.places.coordinates);
-            setMarkerColor(tweet.places.coordinates);
+            this.setHighlighted(coordinates);
+            setMarkerColor(coordinates);
         }
     };
 
@@ -176,7 +178,8 @@ class TwitterList extends React.Component {
                         action: e(IconButton, {onClick: ()=> self.goToTweet(item.url)}, e("i", {className: "fab fa-twitter icon", "aria-hidden":"true"}))});
                 const content= e(CardContent, null,  item.text);
                 let highlighted=null;
-                if(JSON.stringify(item.places.coordinates)=== JSON.stringify(self.state.highlighted)){
+                const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
+                if(JSON.stringify(coordinates)=== JSON.stringify(self.state.highlighted)){
                     highlighted="highlighted";
                 }
                 else{

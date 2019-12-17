@@ -102,9 +102,9 @@ function addTweets(wfsLayers, tweets, bounds) {
     var tweetsInWfsLayers = [];
 
     for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+        //if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             tweetsInWfsLayers.push(tweets[t]);
-        }
+        //}
     }
 
     var newTweets = [];
@@ -119,7 +119,7 @@ function addTweets(wfsLayers, tweets, bounds) {
     tweetsInMap = tweetsInMap.concat(newTweets);
     setTweets(tweetsInMap);
     for (var n in newTweets) {
-        var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
+        var marker = L.marker([newTweets[n].geometry.coordinates[1], newTweets[n].geometry.coordinates[0]]).addTo(map);
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
@@ -187,7 +187,7 @@ function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
         type: 'Feature',
         geometry: {
             type: 'Point',
-            coordinates: [tweet.places.coordinates.lat, tweet.places.coordinates.lng]
+            coordinates: [tweet.geometry.coordinates[1], tweet.geometry.coordinates[0]]
         },
         properties: {}
     };

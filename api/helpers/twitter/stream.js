@@ -9,6 +9,7 @@ const get = util.promisify(request.get);
 const post = util.promisify(request.post);
 
 const {getUserInformation, getPlaceInformation} = require("./additionalInformation");
+const {postTweet} = require('../mongo/tweets.js');
 
 const io = require("../socket-io").io;
 
@@ -141,6 +142,7 @@ const streamConnect = function() {
 
     stream.on('data', async data => {
         try {
+            console.log(data);
             const tweetJSON = JSON.parse(data);
             if (tweetJSON.connection_issue){
                 stream.emit("timeout")
@@ -175,10 +177,12 @@ const streamConnect = function() {
                 if (tweet.geo.coordinates) {
                     mongoDB.places.coordinates.lat = tweet.geo.coordinates.coordinates[1];
                     mongoDB.places.coordinates.lng = tweet.geo.coordinates.coordinates[0];
+                    mongoDB.geometry.coordinates = tweet.geo.coordinates.coordinates;
                 } else {
                     const place = getPlaceInformation(tweetJSON.includes.places[0]);
                     mongoDB.places = place;
                 }
+                postTweet(mongoDB);
                 console.log(mongoDB);
                 if(matchesTweetFilter(mongoDB, keyword, bbox)) {
                     console.log(chalk.blue("Tweet matches filter"));
@@ -191,6 +195,7 @@ const streamConnect = function() {
         }
         catch (e)
         {
+            console.log(e);
             console.log(chalk.blue("Twitter Heartbeat received")); // Heartbeat received. Do nothing.
         }
 

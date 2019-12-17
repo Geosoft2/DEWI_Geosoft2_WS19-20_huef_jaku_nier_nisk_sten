@@ -87,13 +87,15 @@ const getTweetsFromMongo = async function (filter, bbox) {
     var polygon = {type: 'Polygon', coordinates: polygonCoords};
     console.log(polygon);
     try {
-        const result = await Tweet.find({
-            $text: {$search: words},
-            geometry: {$geoWithin: {$geometry: polygon}}
-        });
+        var query = {};
+        query.geometry = {$geoWithin: {$geometry: polygon}};
+        if (words) {
+            query.$text = {$search: words};
+        }
+        return await Tweet.find(query);
         console.log("filtered Tweets: ");
         console.log(result);
-        return result;
+        //return result;
     } catch (err) {
         console.log(err);
     }
