@@ -163,6 +163,7 @@ const streamConnect = function() {
                     "places": {
                         "coordinates": {"lat": null, "lng": null},
                     },
+                    geometry: {coordinates: []}
                 };
                 if(tweetJSON.includes.media) {
                     for (var media of tweetJSON.includes.media) {
@@ -180,6 +181,7 @@ const streamConnect = function() {
                     mongoDB.geometry.coordinates = tweet.geo.coordinates.coordinates;
                 } else {
                     const place = getPlaceInformation(tweetJSON.includes.places[0]);
+                    mongoDB.geometry.coordinates = [place.coordinates.lng, place.coordinates.lat];
                     mongoDB.places = place;
                 }
                 postTweet(mongoDB);
