@@ -74,7 +74,6 @@ function backToDefaultMapExtent() {
     getBoundingBboxFromCookie();
 
     var isThereCookie = getBoundingBboxFromCookie();
-    console.log(isThereCookie);
 
     if (isThereCookie == false) {
         map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
@@ -87,8 +86,27 @@ function backToDefaultMapExtent() {
 function setDefaultEvents() {
     var events = $('#selectEvent').val();
     var cookieValue = JSON.stringify(events);
-    console.log(cookieValue);
     setCookie("defaultEvents", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
+ */
+function setDefaultSearchWord() {
+    var searchWord = $('#textFilter').val();
+    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var cookieValue = JSON.stringify(searchWord);
+    setCookie("defaultSearchWord", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
+ */
+function deleteDefaultSearchWord() {
+    $('#textFilter').attr("placeholder", "search in tweets ...");
+    $('#textFilter').val("");
+    var name = "defaultSearchWord";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 var extremeWeatherGroup = L.layerGroup();
