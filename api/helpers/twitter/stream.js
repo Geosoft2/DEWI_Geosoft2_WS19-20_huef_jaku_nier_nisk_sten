@@ -13,7 +13,7 @@ const {postTweet} = require('../mongo/tweets.js');
 
 const io = require("../socket-io").io;
 
-const twitterToken = require('../../private/token.js').token.twitter_config;
+const twitterToken = require('../../../private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
