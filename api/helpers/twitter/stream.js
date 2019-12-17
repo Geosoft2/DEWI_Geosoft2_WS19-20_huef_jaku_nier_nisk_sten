@@ -24,13 +24,21 @@ let bbox;
 let keyword;
 
 var token;
-//create twitter access Token
-oauth2.getOAuthAccessToken('', {
-    'grant_type': 'client_credentials'
-}, function (e, access_token) {
-    console.log(token);
-    token = access_token;
-});
+const getToken= function(){
+    //create twitter access Token
+    return new Promise(
+        function (resolve, restrict) {
+            oauth2.getOAuthAccessToken('', {
+                'grant_type': 'client_credentials'
+            }, function (e, access_token) {
+                console.log(token);
+                token = access_token;
+                resolve(e);
+            });
+        }
+    )
+};
+
 
 const setRules = (rules) => {
     console.log(chalk.blue("Stream Rules are set to" + JSON.stringify(rules)));
@@ -254,6 +262,7 @@ function isTweetInMapextend(tweetCoordinates, bounds) {
 
 
 module.exports = {
+    getToken,
     getAllRules,
     deleteAllRules,
     setRules,
