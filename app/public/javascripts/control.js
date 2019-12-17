@@ -140,6 +140,7 @@ async function mapExtendChange(bounds) {
 }
 
 function eventsOrFilterChanged() {
+    console.log("Hello");
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
   mapExtendChange(bounds);

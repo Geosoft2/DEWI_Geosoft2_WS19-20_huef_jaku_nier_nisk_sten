@@ -172,5 +172,37 @@ class TwitterList extends React.Component {
         }
 }
 
+/**
+ * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
+ */
+function setDefaultSearchWord() {
+    var searchWord = $('#textFilter').val();
+    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var cookieValue = JSON.stringify(searchWord);
+    setCookie("defaultSearchWord", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
+ */
+function deleteDefaultSearchWord() {
+    $('#textFilter').attr("placeholder", "search in tweets ...");
+    $('#textFilter').val("");
+    var name = "defaultSearchWord";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+/**
+ * @desc event, if in the textFilter the "Enter"-key is pressed, a corresponding function id called which starts the
+ * twiiter search
+ */
+$(textFilter).keypress(function(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+        console.log("keyevent");
+        eventsOrFilterChanged();
+    }
+})
+
 const domContainer = document.querySelector('#tweets');
 ReactDOM.render(e(TwitterList), domContainer);
