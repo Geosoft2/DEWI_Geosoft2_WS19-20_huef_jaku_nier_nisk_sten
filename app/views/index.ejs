@@ -39,16 +39,16 @@
 
         <div class="row">
 
-          <div id="mapSection" class="col-md-6 order-md-1">
+          <div id="mapSection" class="col-md-8 order-md-1">
 
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
               </div>
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
               </div>
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
                 <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
                   <option value="THUNDERSTORM">thunderstorm</option>
                   <option value="WIND">wind</option>
@@ -67,7 +67,7 @@
                   <option value="TEST">test</option>
                 </select>
               </div>
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
               </div>
             </div>
@@ -77,10 +77,10 @@
             <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
           </div>
 
-          <div id="twitterSection" class="col-md-6 order-md-2">
+          <div id="twitterSection" class="col-md-4 order-md-2">
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
-                <input placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' type="text" id="textFilter" onclick="eventsOrFilterChanged()" />
+                <input style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' type="text" id="textFilter" onclick="eventsOrFilterChanged()" />
               </div>
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord" onclick="setDefaultSearchWord()" style="">set default search word</button>
