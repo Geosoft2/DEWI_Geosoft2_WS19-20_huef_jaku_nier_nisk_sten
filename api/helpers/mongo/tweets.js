@@ -79,14 +79,15 @@ const getTweetsFromMongo = async function (filter, bbox) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
 
-    console.log(chalk.yellow("Searching for Tweets with keyword:" +filter +""))
+
     var words = filter[0];
     if (filter.length > 0) {
         for (var i = 1; i < filter.length; i++) {
             words = filter[i] + " " + words;
         }
     }
-    console.log(words)
+    console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""))
+    console.log(words);
     var polygonCoords = [bboxToPolygon(bbox)];
     var polygon = {type: 'Polygon', coordinates: polygonCoords};
     console.log(polygon);
@@ -94,7 +95,7 @@ const getTweetsFromMongo = async function (filter, bbox) {
         var query = {};
         query.geometry = {$geoWithin: {$geometry: polygon}};
         if (words) {
-            query.$text = {$search: filter};
+            query.$text = {$search: words};
         }
         const result= await Tweet.find(query);
         console.log("filtered Tweets: ");

@@ -6,13 +6,21 @@ let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
 function twitterSandboxSearch(bounds, filter) {
+
+    let words= [];
+    while(filter.indexOf(" ") !== -1){
+        const word= filter.substring(0, filter.indexOf(" "));
+        filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
+        words.push(word);
+    }
+    words.push(filter);
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": filter
+                "filter": words
             },
             type: "post"
         })

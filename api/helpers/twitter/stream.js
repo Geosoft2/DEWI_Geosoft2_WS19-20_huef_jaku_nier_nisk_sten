@@ -197,12 +197,9 @@ const streamConnect = function() {
                 postTweet(mongoDB);
                 console.log(mongoDB);
                 if(matchesTweetFilter(mongoDB, keyword, bbox)) {
-                    console.log(chalk.blue("Tweet matches filter"));
                     io.emit('tweet', mongoDB)
                 }
-                else{
-                    console.log(chalk.blue("Tweet don't matches filter"));
-                }
+
             }
         }
         catch (e)
@@ -222,17 +219,30 @@ const streamConnect = function() {
     return stream;
 };
 
-function matchesTweetFilter(tweet, keyword, bbox){
+function matchesTweetFilter(tweet, filter, bbox){
     console.log(chalk.blue("Proof Tweet against Keyword " + keyword + " and BBOX " + JSON.stringify(bbox)));
-    if(keyword){
-        if(!tweet.text.includes(keyword)){
+    if(bbox){
+        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
+            console.log(chalk.blue("Tweet don't matches BBOX"));
             return false;
         }
     }
-    if(bbox){
-        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
-            return false;
+    const words = [];
+    if(filter) {
+        while (filter.indexOf(" ") !== -1) {
+            const word = filter.substring(0, filter.indexOf(" "));
+            filter = filter.substring(filter.indexOf(" ") + 1, filter.length);
+            words.push(word);
         }
+        words.push(filter);
+        for (var word of words) {
+                if (tweet.text.includes(word)) {
+                    console.log(chalk.blue("Tweet matches keyword: " + word));
+                    return true;
+                }
+        }
+        console.log(chalk.blue("Tweet don't matches keyword"));
+        return false;
     }
     return true;
 }
