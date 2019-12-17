@@ -117,7 +117,7 @@ function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getState("tweets");
 
     for (var t = 0; t < tweetsInMap.length; t++) {
-        if (!isTweetInWfsLayer(tweetsInMap[t], wfsLayers, bounds)) {
+        if (!isTweetInWfsLayer(tweetsInMap[t], wfsLayers.features, bounds)) {
             for (var i in markersInMap) {
                 if (tweetsInMap[t].tweetId === markersInMap[i].tweetId) {
                     map.removeLayer(markersInMap[i]);
@@ -238,10 +238,9 @@ function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
         [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
     ]]);
 
-    console.log(wfsLayers);
-    for (var w in wfsLayers.features) {
+    for (var w in wfsLayers) {
         var p=[];
-        for (var i of wfsLayers.features[w].geometry.coordinates[0][0]){
+        for (var i of wfsLayers[w].geometry.coordinates[0][0]){
             p.push([i[1],i[0]]);
         }
         var polygon = turf.polygon([

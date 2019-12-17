@@ -90,8 +90,13 @@ class TwitterList extends React.Component {
         this.setState({tweets: tweets2});
     };
 
-    setHighlighted= (coordinates) => {
-        this.setState({highlighted: coordinates})
+    setHighlighted= (coordinates, scroll) => {
+        this.setState({highlighted: coordinates}, () =>{
+            if(scroll){
+                var element = document.getElementsByClassName("highlighted");
+                if(element[0]) {element[0].scrollIntoView()};
+            }
+        })
     };
 
     tweetClicked = (tweet) => {
