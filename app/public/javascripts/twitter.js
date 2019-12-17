@@ -5,14 +5,14 @@ let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
-function twitterSandboxSearch(bounds) {
+function twitterSandboxSearch(bounds, filter) {
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": ""
+                "filter": filter
             },
             type: "post"
         })

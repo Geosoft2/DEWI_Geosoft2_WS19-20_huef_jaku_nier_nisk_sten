@@ -56,18 +56,58 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
-
-/*
-settings button for setting the default map extent
+/**
+ * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
  */
-L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
+function changeDefaultMapExtent() {
+    var bounds = map.getBounds();
+    var bbox = boundingbox(bounds);
+    var cookieValue = JSON.stringify(bbox);
+    setCookie("defaultBbox", cookieValue, 1000000);
+}
 
-    if (confirm("set actual map extent as new default map extent")) {
-        var cookieValue = JSON.stringify(bounds);
-        // cookie to store the map extent
-        setCookie("defaultBbox", cookieValue, 1000000);
+/**
+ * @desc function which sets the map back to the defaultMapExtent. If there is no default map extent set by the user,
+ * its the initial map extent.
+ */
+function backToDefaultMapExtent() {
+    getBoundingBboxFromCookie();
+
+    var isThereCookie = getBoundingBboxFromCookie();
+
+    if (isThereCookie == false) {
+        map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
     }
-}).addTo(map);
+}
+
+/**
+ * @desc function which creates a cookie if the button setDefaultEvents is pushed.
+ */
+function setDefaultEvents() {
+    var events = $('#selectEvent').val();
+    var cookieValue = JSON.stringify(events);
+    setCookie("defaultEvents", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
+ */
+function setDefaultSearchWord() {
+    var searchWord = $('#textFilter').val();
+    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var cookieValue = JSON.stringify(searchWord);
+    setCookie("defaultSearchWord", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
+ */
+function deleteDefaultSearchWord() {
+    $('#textFilter').attr("placeholder", "search in tweets ...");
+    $('#textFilter').val("");
+    var name = "defaultSearchWord";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
@@ -76,16 +116,15 @@ var radarlayer;
 function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getState("tweets");
 
-    for (var t = 0; t < markersInMap.length; t++) {
-        if (!isTweetInMapextend(markersInMap[t], bounds)) {
-            map.removeLayer(markersInMap[t]);
-            for (var i in tweetsInMap) {
-                if (tweetsInMap[i].tweetId === markersInMap[t].tweetId) {
-                    console.log(tweetsInMap);
-                    tweetsInMap.splice(i, 1);
+    for (var t = 0; t < tweetsInMap.length; t++) {
+        if (!isTweetInWfsLayer(tweetsInMap[t], wfsLayers, bounds)) {
+            for (var i in markersInMap) {
+                if (tweetsInMap[t].tweetId === markersInMap[i].tweetId) {
+                    map.removeLayer(markersInMap[i]);
+                    markersInMap.splice(i, 1);
                 }
             }
-            markersInMap.splice(t, 1);
+            tweetsInMap.splice(t, 1);
             t--;
         } else {
             // console.log(markersInMap[t]._leaflet_id);
@@ -102,9 +141,9 @@ function addTweets(wfsLayers, tweets, bounds) {
     var tweetsInWfsLayers = [];
 
     for (var t in tweets) {
-        //if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             tweetsInWfsLayers.push(tweets[t]);
-        //}
+        }
     }
 
     var newTweets = [];
@@ -199,9 +238,10 @@ function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
         [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
     ]]);
 
-    for (var w in wfsLayers) {
+    console.log(wfsLayers);
+    for (var w in wfsLayers.features) {
         var p=[];
-        for (var i of wfsLayers[w].geometry.coordinates[0][0]){
+        for (var i of wfsLayers.features[w].geometry.coordinates[0][0]){
             p.push([i[1],i[0]]);
         }
         var polygon = turf.polygon([
@@ -235,22 +275,6 @@ function boundingbox(bounds) {
     };
 }
 
-
-function requestEvent() {
-    var bounds = map.getBounds();
-    var bbox = boundingbox(bounds);
-    var events = $('#selectEvent').val();
-    requestExtremeWeather(bbox, events);
-}
-
-
-function testSocket() {
-    socket.on('weatherchanges', function (data) {
-        console.log('Weather changed');
-        console.log(data.stats);
-        requestEvent();
-    });
-}
 
 /**
  * @desc queries the extreme weather events based on the current map-extent and add it to the map
