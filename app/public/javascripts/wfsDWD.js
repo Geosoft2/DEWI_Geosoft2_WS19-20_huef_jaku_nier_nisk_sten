@@ -168,7 +168,7 @@ function addTweets(wfsLayers, tweets, bounds) {
             }
             else {
                 setMarkerColor(e.target._latlng);
-                setHighlighted(e.target._latlng);
+                setHighlighted(e.target._latlng, true);
             }
         });
         markersInMap.push(marker);
