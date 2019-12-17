@@ -39,8 +39,21 @@ const getMainPage = function(req, res){
   });
 };
 
+const getFaq = function(req, res){
+  res.render('faq', {
+    title: 'FAQ'
+  });
+};
+
+const getImprint = function(req, res){
+  res.render('imprint', {
+    title: 'Imprint'
+  });
+};
 
 
 module.exports = {
-  getMainPage
+  getMainPage,
+  getImprint,
+  getFaq
 };
