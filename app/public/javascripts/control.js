@@ -151,11 +151,11 @@ async function eventsOrFilterChanged() {
     updateTwitterStream(bounds, filter);
     updateURL(bounds, events, filter);
     let twitterResponse;
+    removeAllTweets();
     await Promise.all([
         (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
         (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
     ]);
-    removeTweets(wfsLayer, bounds);
     addTweets(wfsLayer, twitterResponse, bounds)
 }
 

@@ -13,7 +13,7 @@ const {postTweet} = require('../mongo/tweets.js');
 
 const io = require("../socket-io").io;
 
-const twitterToken = require('../../../private/token.js').token.twitter_config;
+const twitterToken = require('../../../api/private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
@@ -28,6 +28,7 @@ var token;
 oauth2.getOAuthAccessToken('', {
     'grant_type': 'client_credentials'
 }, function (e, access_token) {
+    console.log(token);
     token = access_token;
 });
 
@@ -42,6 +43,7 @@ const setRules = (rules) => {
  * @returns {Promise<*>}
  */
 const getAllRules = async function() {
+    console.log("Hello")
     const requestConfig = {
         url: rulesURL,
         auth: {

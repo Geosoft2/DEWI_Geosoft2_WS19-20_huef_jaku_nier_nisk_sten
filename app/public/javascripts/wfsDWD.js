@@ -93,6 +93,17 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
+function removeAllTweets(){
+    var tweetsInMap = getState("tweets");
+    for(var i =0; i<tweetsInMap.length; i++){
+        map.removeLayer(markersInMap[i]);
+        markersInMap.splice(i, 1);
+        tweetsInMap.splice(i, 1);
+        i--;
+        console.log(markersInMap);
+    }
+    setTweets([])
+}
 function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getState("tweets");
 
@@ -139,6 +150,7 @@ function addTweets(wfsLayers, tweets, bounds) {
     setTweets(tweetsInMap);
     for (var n in newTweets) {
         var marker = L.marker([newTweets[n].geometry.coordinates[1], newTweets[n].geometry.coordinates[0]]).addTo(map);
+
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
@@ -154,6 +166,7 @@ function addTweets(wfsLayers, tweets, bounds) {
         markersInMap.push(marker);
         //marker.setIcon()
     }
+    setMarkerColor(getState("highlighted"))
     console.log(markersInMap);
 }
 

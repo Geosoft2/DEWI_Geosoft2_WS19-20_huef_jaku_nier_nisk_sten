@@ -1,8 +1,7 @@
 const OAuth = require('oauth');
 const OAuth2 = OAuth.OAuth2;
 const https = require('https');
-
-const twitterToken = require('../../../private/token.js').token.twitter_config;
+const twitterToken = require('../../../api/private/token.js').token.twitter_config;
 const {postTweet, getTweetsFromMongo} = require('../mongo/tweets.js');
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
@@ -143,7 +142,8 @@ const mongoSearch = async function (filter, bbox) {
     var tweets = await getTweetsFromMongo(filter, bbox);
     console.log(tweets);
     return tweets;
-}
+};
+
 
 /**
  * Performs the premium Search request

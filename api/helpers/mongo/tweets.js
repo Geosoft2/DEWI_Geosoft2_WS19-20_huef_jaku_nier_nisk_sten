@@ -3,6 +3,7 @@
 "use strict";
 
 const Tweet = require('../../models/tweet');
+const chalk = require('chalk');
 // Tweet.index({text: 'text'});
 const {bboxToPolygon} = require('../geoJSON');
 
@@ -77,12 +78,15 @@ const postTweet = async function (tweet) {
 const getTweetsFromMongo = async function (filter, bbox) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
+
+    console.log(chalk.yellow("Searching for Tweets with keyword:" +filter +""))
     var words = filter[0];
-    if (filter.length > 1) {
+    if (filter.length > 0) {
         for (var i = 1; i < filter.length; i++) {
             words = filter[i] + " " + words;
         }
     }
+    console.log(words)
     var polygonCoords = [bboxToPolygon(bbox)];
     var polygon = {type: 'Polygon', coordinates: polygonCoords};
     console.log(polygon);
@@ -90,12 +94,12 @@ const getTweetsFromMongo = async function (filter, bbox) {
         var query = {};
         query.geometry = {$geoWithin: {$geometry: polygon}};
         if (words) {
-            query.$text = {$search: words};
+            query.$text = {$search: filter};
         }
-        return await Tweet.find(query);
+        const result= await Tweet.find(query);
         console.log("filtered Tweets: ");
         console.log(result);
-        //return result;
+        return result;
     } catch (err) {
         console.log(err);
     }

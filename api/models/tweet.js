@@ -31,7 +31,8 @@ const TweetSchema = mongoose.Schema({
     },
     text: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     createdAt: {
         type: Date,
