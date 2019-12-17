@@ -67,3 +67,8 @@ a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
 .MuiCardHeader-action{
     margin-top: 4px !important;
 }
+
+/* ensure that the event selectpicker is always visible in the foreground */
+.dropdown.bootstrap-select.show-tick {
+  z-index: 1001;
+}
