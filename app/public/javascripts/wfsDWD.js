@@ -89,26 +89,6 @@ function setDefaultEvents() {
     setCookie("defaultEvents", cookieValue, 1000000);
 }
 
-/**
- * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
- */
-function setDefaultSearchWord() {
-    var searchWord = $('#textFilter').val();
-    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
-    var cookieValue = JSON.stringify(searchWord);
-    setCookie("defaultSearchWord", cookieValue, 1000000);
-}
-
-/**
- * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
- */
-function deleteDefaultSearchWord() {
-    $('#textFilter').attr("placeholder", "search in tweets ...");
-    $('#textFilter').val("");
-    var name = "defaultSearchWord";
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
