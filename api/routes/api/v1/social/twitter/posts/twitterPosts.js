@@ -4,6 +4,7 @@
 
 const {
     sandboxSearch,
+    mongoSearch
 } = require('../../../../../../helpers/twitter/search');
 
 
@@ -40,8 +41,19 @@ const postSandboxSearch = async function (req, res){
         res.json(result);
 };
 
+const postMongoSearch = async function (req, res) {
+    const  q = req.body.filter;
+    const bbox= req.body.bbox;
+
+    const result = {tweets: []};
+
+    result.tweets = await mongoSearch(q, bbox);
+
+    res.json(result);
+}
 
 
 module.exports = {
-  postSandboxSearch
+  postSandboxSearch,
+    postMongoSearch
 };

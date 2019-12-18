@@ -6,7 +6,7 @@
  * @returns <user infromation>
  */
 const getUserInformation =  function(userData){
-        const parsedResult = {"id": userData.id, "name": userData.name, "URL": "https://twitter.com/" + userData.username};
+        const parsedResult = {"id": userData.id, "name": userData.name, "url": "https://twitter.com/" + userData.username, profileImage : userData.profile_image_url };
         return  parsedResult;
 };
 
