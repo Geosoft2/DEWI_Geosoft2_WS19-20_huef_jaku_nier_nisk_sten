@@ -14,10 +14,7 @@ async function initial (boundingbox, events, filter) {
     $('#selectEvent option[value='+events[initialEvent]+']').attr('selected', 'selected');
   }
 
-  if(!filter){
-    // filter = getInitialFilter();
-  }
-   filter = $('#textFilter').val(filter);
+  filter = getInitialFilter(filter);
 
   startSocket();
   let twitterResponse;
@@ -61,6 +58,34 @@ function getInitialEvents(events) {
         return events;
         }
 }
+
+
+/**
+ * @desc function which is called in the intitial function. If there is an textfilter is the link it is used. If not
+ * but there is a cookie with an texfilter this is used. If there is no filter in the link and in the cookie the texfilter is empty
+ * @param filter
+ * @returns {string}
+ */
+ function getInitialFilter(filter) {
+
+   var newDefaultFilter = getCookie("defaultSearchWord");
+
+   if(filter) {
+     $('#textFilter').val(filter);
+     return filter;
+   }
+   else if (newDefaultFilter!="") {
+     newDefaultFilter = JSON.parse(newDefaultFilter);
+     $('#textFilter').val(newDefaultFilter);
+     $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
+     return newDefaultFilter;
+   }
+   else  {
+     return filter;
+   }
+ }
+
+
 /**
  * @desc Queries the extreme weather events with predefined bbox and add it to the map - if the page is reloaded. The
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
@@ -68,7 +93,6 @@ function getInitialEvents(events) {
  */
  function getInitialBbox(bbox) {
 
-     console.log(map.getBounds());
    if(bbox){
      getBoundingBoxFromUrl(bbox);
      return null;
@@ -118,7 +142,6 @@ map.on('moveend', function (e) {
     // function which is triggered automatically when the map gets moved
     var bounds = map.getBounds();
     bounds = boundingbox(bounds);
-    console.log(bounds);
     mapExtendChange(bounds);
 });
 
