@@ -34,6 +34,7 @@
     "leaflet-easybutton": "^2.4.0",
     "leaflet.pancontrol": "^1.0.0",
     "morgan": "~1.9.1",
+    "node-snackbar": "^0.1.16",
     "oauth": "^0.9.15",
     "popper.js": "^1.15.0",
     "react": "^16.12.0",

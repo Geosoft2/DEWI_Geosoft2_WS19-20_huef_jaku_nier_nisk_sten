@@ -266,9 +266,19 @@ function requestExtremeWeather(bbox, events) {
                 events: events,
                 bbox: bbox.bbox,
                 minutes: 0.2 // value must match interval time /bin/www
-            }
+            },
             // contentType: "application/json",
+            xhrFields: {
+                onprogress: function (e) {
+                    if (e.lengthComputable) {
+                        console.log(e);
+                        console.log(e.loaded / e.total * 100 + '%');
+                        document.getElementById("progressbar").value =e.loaded / e.total * 100;
+                    }
+                }
+            }
         })
+
             .done(function (response) {
                 console.log('mongo', response.result);
                 // remove existing layer

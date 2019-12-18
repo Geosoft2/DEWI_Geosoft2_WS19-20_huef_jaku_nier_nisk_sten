@@ -13,7 +13,16 @@ function twitterSandboxSearch(bounds) {
                 "bbox": bounds.bbox,
                 "filter": ""
             },
-            type: "post"
+            type: "post",
+            xhrFields: {
+                onprogress: function (e) {
+                    if (e.lengthComputable) {
+                        console.log(e);
+                        console.log(e.loaded / e.total * 100 + '%');
+                        document.getElementById("progressbar").value =e;
+                    }
+                }
+            }
         })
             .done(function (response) {
                 console.log(response);
@@ -53,6 +62,15 @@ function updateTwitterStream(bbox, keyword) {
         // contentType: "application/json",
         dataType: 'json',
         data: {bbox :bbox, keyword: keyword}
+        ,
+        // xhrFields: {
+        //     onprogress: function (e) {
+        //         if (e.lengthComputable) {
+        //             console.log(e.loaded / e.total * 100 + '%');
+        //             document.getElementById("progressbar").value =e;
+        //         }
+        //     }
+        // }
     })
 }
 

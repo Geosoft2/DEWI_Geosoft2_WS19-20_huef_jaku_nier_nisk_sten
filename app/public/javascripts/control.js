@@ -14,8 +14,11 @@ async function initial () {
         updateTwitterStream(bbox, null);
         await Promise.all([
             (async()=>wfsLayer = await requestExtremeWeather(bbox))(),
-            (async()=>twitterResponse = await twitterSandboxSearch(bbox))() //TODO: get the tweets from mongodb and not direct from Twitter
+            document.getElementById("progressbar").value =40,
+            (async()=>twitterResponse = await twitterSandboxSearch(bbox))(), //TODO: get the tweets from mongodb and not direct from Twitter
+            document.getElementById("progressbar").value =75
         ]);
+        document.getElementById("progressbar").value =100;
     addTweets(wfsLayer, twitterResponse, bbox);
     }
 }
@@ -80,6 +83,14 @@ map.on('moveend', function (e) {
  * @param {json} bounds coordinates of current map-extent
  */
 async function mapExtendChange(bounds) {
+    snackbarWithText("test");
+    document.getElementById("progressbar").value =0;
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    await delay(3000);
+    document.getElementById("progressbar").value =15;
+    await delay(3000);
+    document.getElementById("progressbar").value =30;
+    await delay(3000);
     // TODO: uncomment updateTwitterStream after setStreamfilter works
     updateTwitterStream(bounds);
     var events = $('#selectEvent').val();
@@ -88,7 +99,10 @@ async function mapExtendChange(bounds) {
     let twitterResponse;
     await Promise.all([
         (async()=>wfsLayer = await requestExtremeWeather(bounds))(),
+        document.getElementById("progressbar").value =40,
         (async()=>twitterResponse = await twitterSandboxSearch(bounds))(),//TODO: get the tweets from mongodb and not direct from Twitter
+        document.getElementById("progressbar").value =70,
+
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
 }
@@ -154,4 +168,8 @@ function updateURL(bbox) {
     var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
     var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
     window.history.pushState("object or string", "Title", "/?bbox=" + lng1 + "," + lat1 + "," + lng2 + "," + lat2);
+}
+
+function snackbarWithText(text) {
+    Snackbar.show({pos: 'bottom-left', text: text});
 }

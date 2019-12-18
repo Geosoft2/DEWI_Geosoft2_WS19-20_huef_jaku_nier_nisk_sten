@@ -37,6 +37,7 @@ app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancont
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
 app.use("/turf", express.static(__dirname + "/node_modules/@turf/"));
+app.use("/node-snackbar", express.static(__dirname + "/node_modules/node-snackbar/"));
 
 // setup routes
 app.use('/', require('./routes'));

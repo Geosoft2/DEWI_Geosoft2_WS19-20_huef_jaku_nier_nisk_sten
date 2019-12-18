@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
   <head>
     <title><%= title %></title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
     <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+    <link rel="stylesheet" href="/node-snackbar/dist/snackbar.css" />
 
   </head>
-  <body onload="initial(), testSocket()">
-
+  <progress id="progressbar" value="22" max="100"></progress>
+  <br onload="initial(), testSocket()">
     <a href="/">
       <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
     </a>
@@ -36,8 +37,6 @@
         <option value="TEST">test</option>
 			</select>
 		</label>
-
-
     <div class="row">
 
       <div class="col-md-6" style="margin-top: 20px;">
@@ -52,7 +51,6 @@
       </div>
 
     </div>
-
   </body>
 </html>
 
@@ -66,6 +64,7 @@
 <script src="/react-dom/react-dom.development.js"></script>
 <script src="/material-ui/material-ui.development.js"></script>
 <script src="/turf/turf/turf.min.js"></script>
+<script src="/node-snackbar/dist/snackbar.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
 <script src="javascripts/twitter.js"></script>
