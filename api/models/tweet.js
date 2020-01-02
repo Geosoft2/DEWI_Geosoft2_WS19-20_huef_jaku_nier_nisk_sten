@@ -36,7 +36,8 @@ const TweetSchema = mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        required: true
+        required: true,
+        index: { expires: 3600 }
     },
     geometry: {
         type: {
@@ -70,9 +71,9 @@ const TweetSchema = mongoose.Schema({
     },
     media: {  //[MediaSchema]
         type: mongoose.Mixed
-    }
-}, {timestamps: true});
+    },
+});
 
-TweetSchema.index({text: 'text'}, {createdAt: 1},{expireAfterSeconds: 60});
+TweetSchema.index({text: 'text'});
 
 module.exports = mongoose.model('Tweet', TweetSchema);
