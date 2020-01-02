@@ -5,13 +5,22 @@ let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
-function twitterSandboxSearch(bounds) {
+function twitterSandboxSearch(bounds, filter) {
+
+    let words= [];
+    while(filter.indexOf(" ") !== -1){
+        const word= filter.substring(0, filter.indexOf(" "));
+        filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
+        words.push(word);
+    }
+    words.push(filter);
     return new Promise(function (resolve, restrict) {
+        console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": ""
+                "filter": words
             },
             type: "post"
         })
@@ -89,18 +98,24 @@ class TwitterList extends React.Component {
         this.setState({tweets: tweets2});
     };
 
-    setHighlighted= (coordinates) => {
-        this.setState({highlighted: coordinates})
+    setHighlighted= (coordinates, scroll) => {
+        this.setState({highlighted: coordinates}, () =>{
+            if(scroll){
+                var element = document.getElementsByClassName("highlighted");
+                if(element[0]) {element[0].scrollIntoView()};
+            }
+        })
     };
 
     tweetClicked = (tweet) => {
-        if(JSON.stringify(this.state.highlighted)=== JSON.stringify(tweet.places.coordinates)){
+        const coordinates = {lat: tweet.geometry.coordinates[1], lng: tweet.geometry.coordinates[0]};
+        if(JSON.stringify(this.state.highlighted)=== JSON.stringify(coordinates)){
             this.setHighlighted(null);
             setMarkerColor(null);
         }
         else {
-            this.setHighlighted(tweet.places.coordinates);
-            setMarkerColor(tweet.places.coordinates);
+            this.setHighlighted(coordinates);
+            setMarkerColor(coordinates);
         }
     };
 
@@ -176,7 +191,8 @@ class TwitterList extends React.Component {
                         action: e(IconButton, {onClick: ()=> self.goToTweet(item.url)}, e("i", {className: "fab fa-twitter icon", "aria-hidden":"true"}))});
                 const content= e(CardContent, null,  item.text);
                 let highlighted=null;
-                if(JSON.stringify(item.places.coordinates)=== JSON.stringify(self.state.highlighted)){
+                const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
+                if(JSON.stringify(coordinates)=== JSON.stringify(self.state.highlighted)){
                     highlighted="highlighted";
                 }
                 else{
@@ -195,6 +211,38 @@ class TwitterList extends React.Component {
             return list
         }
 }
+
+/**
+ * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
+ */
+function setDefaultSearchWord() {
+    var searchWord = $('#textFilter').val();
+    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var cookieValue = JSON.stringify(searchWord);
+    setCookie("defaultSearchWord", cookieValue, 1000000);
+}
+
+/**
+ * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
+ */
+function deleteDefaultSearchWord() {
+    $('#textFilter').attr("placeholder", "search in tweets ...");
+    $('#textFilter').val("");
+    var name = "defaultSearchWord";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+/**
+ * @desc event, if in the textFilter the "Enter"-key is pressed, a corresponding function id called which starts the
+ * twiiter search
+ */
+$(textFilter).keypress(function(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == '13') {
+        console.log("keyevent");
+        eventsOrFilterChanged();
+    }
+})
 
 const domContainer = document.querySelector('#tweets');
 ReactDOM.render(e(TwitterList), domContainer);
