@@ -21,7 +21,7 @@ const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort('3001');
+var port = normalizePort(process.env.PORT);
 api.set('port', port);
 
 /**
@@ -46,7 +46,7 @@ api.set('port', port);
     * Listen on provided port, on all network interfaces.
     */
    server.listen(port, () =>  {console.log(chalk.green.inverse("API listening on port " + port + "!"));
-   stream();
+   //stream();
         });
    io.attach(server);
    server.on('error', onError);

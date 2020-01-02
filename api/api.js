@@ -11,6 +11,8 @@ const cors = require('cors');
 
 var api = express();
 
+require('dotenv').config();
+
 api.use(express.json());
 api.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000000 }));
 api.use(cookieParser());

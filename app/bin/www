@@ -16,11 +16,10 @@ const util = require('util');
 const setIntervalPromise = util.promisify(setInterval);
 
 const {saveExtremeWeather} = require('../helpers/saveExtremeWeather');
-
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort('3000');
+var port= process.env.PORT
 app.set('port', port);
 
 /**
