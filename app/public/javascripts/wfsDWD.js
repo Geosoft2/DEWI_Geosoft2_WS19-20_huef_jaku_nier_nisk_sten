@@ -280,8 +280,7 @@ function requestExtremeWeather(bbox, events) {
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
             data: {
                 events: events,
-                bbox: bbox.bbox,
-                minutes: 0.2 // value must match interval time /bin/www
+                bbox: bbox.bbox
             }
             // contentType: "application/json",
         })
