@@ -4,6 +4,7 @@
 
 const ExtremeWeather = require('../../models/extremeWeather');
 const moment = require('moment');
+const config = require('config-yml');
 const chalk = require('chalk');
 const io = require("../socket-io").io;
 const {makeGeoJSonFromFeatures} = require('../geoJSON');
@@ -86,7 +87,7 @@ const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, res){
     var query = {};
     query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [bboxPoylgon]}}};
     // ensures that only current data is output
-    query.updatedAt = {$gt: moment().subtract(1000*60*Number(process.env.INTERVALL), 'minutes')};
+    query.updatedAt = {$gt: moment().subtract(config.weather.dwd.wfs.refreshIntervall, 'seconds')};
     // optional search-parameter events
     if(events){
       // create a regular Expression to cover all possible combinations in 'EC_Group' (e.g.: FOG; FROST)

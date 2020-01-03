@@ -5,6 +5,7 @@
 const request = require('request');
 const querystring = require('querystring');
 const StringDecoder = require('string_decoder').StringDecoder;
+const config = require('config-yml');
 const chalk = require('chalk');
 const util = require('util');
 const setIntervalPromise = util.promisify(setInterval);
@@ -16,25 +17,20 @@ const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather'
  */
 const requestExtremeWeather = function(){
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
-  var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
+  var rootUrl = config.weather.dwd.wfs.url;
   var defaultParameters = {
     service: 'WFS',
-    version: '2.0.0',
+    version: config.weather.dwd.wfs.parameter.version,
     request: 'GetFeature',
-    typeName: 'dwd:Warnungen_Gemeinden_vereinigt',
+    typeName: config.weather.dwd.wfs.parameter.typeName,
     outputFormat: 'application/json',
     format_option: 'charset:UTF-8',
-    srsName: 'EPSG:4326',
-    cql_filter: // Filter BBOX
-    // 'BBOX(dwd:THE_GEOM, '+bbox.southWest.lat+','+bbox.southWest.lng+','+bbox.northEast.lat+','+bbox.northEast.lng+')'+
-    // 'And '+
-    // @see pp.16 https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
-    // Filter Severity
-    "SEVERITY in ('Moderate', 'Minor')" // TODO: must be change into 'Severe', 'Extreme'
-    // 'And '+
-    // // Filter C_GROUP
-    // "C_GROUP in ('THUNDERSTORM ', 'WIND', ...)"
+    srsName: 'EPSG:4326'
   };
+  if(isSeverity()){
+    var severity = readSeverity();
+    defaultParameters.cql_filter = "SEVERITY in ("+severity+")";
+  }
 
   var parameters = querystring.stringify(defaultParameters);
 
@@ -63,6 +59,43 @@ const requestExtremeWeather = function(){
 
 
 /**
+ * @desc if no severity-filter is true than return false, otherwise return true.
+ * @return {Boolean}
+ */
+const isSeverity = function(){
+  if(!config.weather.dwd.wfs.parameter.filter.severity.moderate &&
+     !config.weather.dwd.wfs.parameter.filter.severity.minor &&
+     !config.weather.dwd.wfs.parameter.filter.severity.severe &&
+     !config.weather.dwd.wfs.parameter.filter.severity.extreme){
+    return false;
+  }
+  else{
+    return true;
+  }
+};
+
+/**
+ * @desc creates a string from all options that are set to true.
+ * @return {String}
+ */
+const readSeverity = function(){
+  var severity = "";
+  if(config.weather.dwd.wfs.parameter.filter.severity.moderate){
+    severity += "'Moderate'";
+  }
+  if(config.weather.dwd.wfs.parameter.filter.severity.minor){
+    severity += "'Minor'";
+  }
+  if(config.weather.dwd.wfs.parameter.filter.severity.severe){
+    severity += "'Severe'";
+  }
+  if(config.weather.dwd.wfs.parameter.filter.severity.extreme){
+    severity += "'Extreme'";
+  }
+  return severity.replace(/''/g, "','");
+};
+
+/**
  * @desc requests the WFS service from the DWD at periodic intervals and stores the result.
  */
 const updateExtremeWeather = function(){
@@ -71,7 +104,7 @@ const updateExtremeWeather = function(){
   setIntervalPromise(function(){
     console.log(chalk.yellow.inverse('repetition'));
     requestExtremeWeather();
-  }, 1000*60*Number(process.env.INTERVALL));
+  }, 1000*Number(config.weather.dwd.wfs.refreshIntervall));
 };
 
 

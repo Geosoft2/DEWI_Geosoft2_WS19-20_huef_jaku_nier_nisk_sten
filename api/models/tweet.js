@@ -3,6 +3,7 @@
 "use strict";
 
 const mongoose = require('mongoose');
+const config = require('config-yml');
 
 // All parameters "required" ?
 
@@ -37,7 +38,7 @@ const TweetSchema = mongoose.Schema({
     createdAt: {
         type: Date,
         required: true,
-        index: { expires: 3600 }
+        index: { expires: Number(config.social.twitter.storageDuration) }
     },
     geometry: {
         type: {
