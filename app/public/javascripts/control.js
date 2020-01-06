@@ -24,7 +24,7 @@ async function initial (boundingbox, events, filter) {
 
 
   if (bbox) {
-      updateTwitterStream(bbox, filter);
+      // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
       await Promise.all([
           (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
@@ -71,13 +71,20 @@ function getInitialEvents(events) {
    var newDefaultFilter = getCookie("defaultSearchWord");
 
    if(filter) {
-     $('#textFilter').val(filter);
+     filter = JSON.parse(filter);
+     // $('#textFilter').val(filter);
+     for(var elem in filter){
+       createFilterBadge(filter[elem]);
+     }
      return filter;
    }
    else if (newDefaultFilter!="") {
      newDefaultFilter = JSON.parse(newDefaultFilter);
-     $('#textFilter').val(newDefaultFilter);
-     $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
+     for(var elem in newDefaultFilter){
+       createFilterBadge(newDefaultFilter[elem]);
+     }
+     // $('#textFilter').val(newDefaultFilter);
+     // $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
      return newDefaultFilter;
    }
    else  {
@@ -153,8 +160,8 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
 
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     const tweets= getState('tweets');
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
@@ -170,8 +177,8 @@ async function eventsOrFilterChanged() {
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
@@ -180,6 +187,48 @@ async function eventsOrFilterChanged() {
         (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
+}
+
+function getTweetFilters(){
+  var filters = [];
+  $('.tweetFilter').each(function(index, filter){
+    filters.push(filter.innerText);
+  });
+  return filters;
+}
+
+function searchTweets(){
+  var input = $('#textFilter');
+  if(input.val() !== ""){
+    var filter = input.val();
+    input.val("");
+    var filterTrim = filter.replace(/\s/g,''); // trim all whitespaces
+    if($('#textFilter'+filterTrim).text() === filter){
+      // alert('Filter already exists');
+    }
+    else {
+      createFilterBadge(filter);
+      eventsOrFilterChanged();
+    }
+  }
+}
+
+function createFilterBadge(filter){
+  var filterTrim = filter.replace(/\s/g,''); // trim all whitespaces
+  $('#textFilters').append(
+    '<span id="textFilter'+filterTrim+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
+      filter+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterTrim+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+        '<span class="fas fa-times fa-xs">'+
+        '</span>'+
+      '</button>'+
+    '</span>'
+  );
+}
+
+function removeElementById(id){
+  $('#'+id.toString()).remove();
+  eventsOrFilterChanged();
 }
 
 /**
@@ -217,7 +266,7 @@ function getCookie(cname) {
         console.log('Weather changed');
         console.log(data.stats);
         var events = $('#selectEvent').val();
-        var filter = $('#textFilter').val();
+        var filter = getTweetFilters();
         removeTweets(wfsLayer, bounds);
         let twitterResponse;
         await Promise.all([
@@ -265,8 +314,8 @@ function updateURL(bbox, events, filter) {
   if(events[0]){
     parameters.events = JSON.stringify(events);
   }
-  if(filter){
-    parameters.textfilter = filter;
+  if(filter[0]){
+    parameters.textfilter = JSON.stringify(filter);
   }
   // create querystring
   var querystring = $.param(parameters);

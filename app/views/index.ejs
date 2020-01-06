@@ -79,14 +79,32 @@
 
           <div id="twitterSection" class="col-md-4 order-md-2">
             <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
-                <textarea rows="1" style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' id="textFilter" onchange="eventsOrFilterChanged()"></textarea>
+              <div class="col-md-4">
+                <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
+                  <input id="textFilter" class="form-control" type="text" name="" value="" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)'/>
+                  <div class="input-group-append">
+                    <button id="tweetSearch" class="btn btn-secondary" type="submit" onclick="searchTweets()">
+                      <span class="fas fa-search"></span>
+                    </button>
+                  </div>
+                </div>
               </div>
+
+              <!-- <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+                <textarea rows="1" style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' id="textFilter" onchange="eventsOrFilterChanged()"></textarea>
+              </div> -->
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord" onclick="setDefaultSearchWord()" style="">set default search word</button>
               </div>
               <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <button title="by pushing the button, the default search word is deleted" type="button" id="deleteDefaultSearchWord" onclick="deleteDefaultSearchWord()" style="">delete default search word</button>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top: 0px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+              <div class="col-12">
+                <div id="textFilters">
+                </div>
               </div>
             </div>
           </div>

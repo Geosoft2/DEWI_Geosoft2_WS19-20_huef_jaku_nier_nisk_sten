@@ -87,7 +87,7 @@ const getTweetsFromMongo = async function (filter, bbox) {
     //     }
     // }
     var regExpWords;
-    if(filter[0] !== ""){
+    if(filter && filter.length > 0){
       regExpWords = filter.map(function(e){ return new RegExp(e, "i"); });
     }
 

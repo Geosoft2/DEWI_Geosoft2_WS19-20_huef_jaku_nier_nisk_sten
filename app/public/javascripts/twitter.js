@@ -7,13 +7,17 @@ let setHighlighted=  () => {};
 
 function twitterSandboxSearch(bounds, filter) {
 
-    let words= [];
-    while(filter.indexOf(" ") !== -1){
-        const word= filter.substring(0, filter.indexOf(" "));
-        filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
-        words.push(word);
-    }
-    words.push(filter);
+    var words = filter;
+    if(words){
+    console.log('keyword', words);
+  }
+    // let words= [];
+    // while(filter.indexOf(" ") !== -1){
+    //     const word= filter.substring(0, filter.indexOf(" "));
+    //     filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
+    //     words.push(word);
+    // }
+    // words.push(filter);
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
@@ -25,7 +29,6 @@ function twitterSandboxSearch(bounds, filter) {
             type: "post"
         })
             .done(function (response) {
-                console.log(response);
                 resolve(response.tweets);
             })
             .fail(function (err) {
@@ -216,8 +219,8 @@ class TwitterList extends React.Component {
  * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
  */
 function setDefaultSearchWord() {
-    var searchWord = $('#textFilter').val();
-    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var searchWord = getTweetFilters();
+    // $('#textFilter').attr("placeholder", "default search word: " + searchWord);
     var cookieValue = JSON.stringify(searchWord);
     setCookie("defaultSearchWord", cookieValue, 1000000);
 }
