@@ -38,6 +38,7 @@ app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
 app.use("/turf", express.static(__dirname + "/node_modules/@turf/"));
 app.use("/bootstrapSelect", express.static(__dirname + "/node_modules/bootstrap-select/"));
+app.use("/push", express.static(__dirname + "/node_modules/push.js/bin/"));
 
 // setup routes
 app.use('/', require('./routes'));

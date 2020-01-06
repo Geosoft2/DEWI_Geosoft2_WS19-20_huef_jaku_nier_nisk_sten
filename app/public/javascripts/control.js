@@ -261,6 +261,7 @@ function getCookie(cname) {
         addTweets(wfsLayer, [tweet], bounds)
     });
     socket.on('weatherchanges', async function (data) {
+        browserNotification('Weather changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log('Weather changed');
