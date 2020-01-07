@@ -128,20 +128,20 @@ function removeTweets(wfsLayers, bounds){
  * adds the Tweets to the map that lay within the wfslayers and the current mapextend
  * @param wfsLayers
  */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
-
-    for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-            tweetsInWfsLayers.push(tweets[t]);
-        }
-    }
+function addTweets(tweets) {
+    // var tweetsInWfsLayers = [];
+    //
+    // for (var t in tweets) {
+    //     if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+    //         tweetsInWfsLayers.push(tweets[t]);
+    //     }
+    // }
 
     var newTweets = [];
-    for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
+    for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
         // should only add a marker if not already one with the same id exists
-        if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
-            newTweets.push(tweetsInWfsLayers[t])
+        if (!isMarkerAlreadyThere(tweets[t])) {
+            newTweets.push(tweets[t])
         }
     }
 
@@ -298,7 +298,7 @@ function requestExtremeWeather(bbox, events) {
                 console.log(err);
                 console.log(err.message);
             });
-    })
+    });
 }
 
 

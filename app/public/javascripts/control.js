@@ -26,11 +26,13 @@ async function initial (boundingbox, events, filter) {
   if (bbox) {
       // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
-      await Promise.all([
-          (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
-          (async()=>twitterResponse = await twitterSandboxSearch(bbox, filter))() //TODO: get the tweets from mongodb and not direct from Twitter
-      ]);
-  addTweets(wfsLayer, twitterResponse, bbox);
+
+          (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
+
+
+          (async()=> twitterResponse = await twitterSandboxSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+
+  addTweets(twitterResponse);
   }
 }
 
@@ -71,10 +73,15 @@ function getInitialEvents(events) {
    var newDefaultFilter = getCookie("defaultSearchWord");
 
    if(filter) {
+     console.log(filter);
      filter = JSON.parse(filter);
      // $('#textFilter').val(filter);
      for(var elem in filter){
-       createFilterBadge(filter[elem]);
+       var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
+       if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+        createFilterBadge(filter[elem]);
+       }
      }
      return filter;
    }
@@ -166,11 +173,11 @@ async function mapExtendChange(bounds) {
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
     let twitterResponse;
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse)
 }
 
 async function eventsOrFilterChanged() {
@@ -182,11 +189,11 @@ async function eventsOrFilterChanged() {
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse);
 }
 
 function getTweetFilters(){
@@ -202,11 +209,10 @@ function searchTweets(){
   if(input.val() !== ""){
     var filter = input.val();
     input.val("");
-    var filterTrim = filter.replace(/\s/g,''); // trim all whitespaces
-    if($('#textFilter'+filterTrim).text() === filter){
-      // alert('Filter already exists');
-    }
-    else {
+    var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+    console.log(document.getElementById('textFilter'+encodeURIComponent('#wetter')));
+    if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+      document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
       createFilterBadge(filter);
       eventsOrFilterChanged();
     }
@@ -214,11 +220,11 @@ function searchTweets(){
 }
 
 function createFilterBadge(filter){
-  var filterTrim = filter.replace(/\s/g,''); // trim all whitespaces
+  var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
   $('#textFilters').append(
-    '<span id="textFilter'+filterTrim+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
+    '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
       filter+
-      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterTrim+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
         '<span class="fas fa-times fa-xs">'+
         '</span>'+
       '</button>'+
@@ -227,7 +233,9 @@ function createFilterBadge(filter){
 }
 
 function removeElementById(id){
-  $('#'+id.toString()).remove();
+  var elem = document.getElementById(id);
+  elem.parentNode.removeChild(elem);
+  // $('#'+id.toString()).remove();
   eventsOrFilterChanged();
 }
 
@@ -254,11 +262,13 @@ function getCookie(cname) {
 }
 
  function startSocket() {
-    socket.on('tweet', function (tweet) {
+    socket.on('tweet', async function (tweet) {
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
-        addTweets(wfsLayer, [tweet], bounds)
+        var filter = getTweetFilters();
+        var twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer, tweet.createdAt);
+        addTweets(twitterResponse)
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('Weather changed.');
@@ -268,14 +278,15 @@ function getCookie(cname) {
         console.log(data.stats);
         var events = $('#selectEvent').val();
         var filter = getTweetFilters();
-        removeTweets(wfsLayer, bounds);
+        removeAllTweets();
+        // removeTweets(wfsLayer, bounds);
         let twitterResponse;
-        await Promise.all([
-            (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-            (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-        ]);
-        removeTweets(wfsLayer, bounds);
-        addTweets(wfsLayer, twitterResponse, bounds);
+        // await Promise.all([
+            /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+            /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+        // ]);
+        // removeTweets(wfsLayer, bounds);
+        addTweets(twitterResponse);
     });
 }
 

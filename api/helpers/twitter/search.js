@@ -138,8 +138,8 @@ const sandboxSearch = function(filter, area) {
     });
 };
 
-const mongoSearch = async function (filter, bbox) {
-    var tweets = await getTweetsFromMongo(filter, bbox);
+const mongoSearch = async function (filter, bbox, extremeWeatherEvents, createdAt) {
+    var tweets = await getTweetsFromMongo(filter, bbox, extremeWeatherEvents, createdAt);
     console.log(tweets);
     return tweets;
 };

@@ -4,8 +4,9 @@
 
 const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
+const io = require("../socket-io").io;
 // Tweet.index({text: 'text'});
-const {bboxToPolygon} = require('../geoJSON');
+const {bboxToPolygon, featureCollectionToMultiPolygon} = require('../geoJSON');
 
 /**
  * save tweet in database if it is not already stored
@@ -61,6 +62,7 @@ const postTweet = async function (tweet) {
             try {
                 console.log(newTweet);
                 await newTweet.save();
+                io.emit('tweet', newTweet);
                 return "tweet stored in db.";
             } catch (e) {
                 return e;
@@ -75,7 +77,7 @@ const postTweet = async function (tweet) {
  * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
  * @returns {Promise<void>}
  */
-const getTweetsFromMongo = async function (filter, bbox) {
+const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
 
@@ -93,19 +95,42 @@ const getTweetsFromMongo = async function (filter, bbox) {
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
     var polygonCoords = [bboxToPolygon(bbox)];
-    var polygon = {type: 'Polygon', coordinates: polygonCoords};
-    console.log(polygon);
+    var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+    var multiPolygon = featureCollectionToMultiPolygon(extremeWeatherEvents);
     try {
-        var query = {};
-        query.geometry = {$geoWithin: {$geometry: polygon}};
-        if (regExpWords) {
-            // query.$text = {$search: words};
-            query.text = {$in: regExpWords};
+      var match = [{
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: bboxPolygon}
+          }
         }
-        const result= await Tweet.find(query);
-        console.log("filtered Tweets: ");
-        console.log(result);
-        return result;
+      }, {
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: multiPolygon}
+          }
+        }
+      }];
+
+      if (createdAt) {
+        match.push({
+          $match: {
+            createdAt: {$eq: new Date(createdAt)}
+          }
+        });
+      }
+      if (regExpWords) {
+        match.push({
+          $match: {
+            // $text = {$search: words};
+            text: {$in: regExpWords}
+          }
+        });
+      }
+      const result= await Tweet.aggregate(match);
+      console.log("filtered Tweets: ");
+      console.log(result);
+      return result;
     } catch (err) {
         console.log(err);
     }

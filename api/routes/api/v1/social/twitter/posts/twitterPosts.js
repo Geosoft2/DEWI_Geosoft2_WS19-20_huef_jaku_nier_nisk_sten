@@ -42,15 +42,17 @@ const postSandboxSearch = async function (req, res){
 };
 
 const postMongoSearch = async function (req, res) {
-    const  q = req.body.filter;
+    const filter = req.body.filter;
     const bbox= req.body.bbox;
+    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const createdAt = req.body.createdAt;
 
     const result = {tweets: []};
 
-    result.tweets = await mongoSearch(q, bbox);
+    result.tweets = await mongoSearch(filter, bbox, extremeWeatherEvents, createdAt);
 
     res.json(result);
-}
+};
 
 
 module.exports = {

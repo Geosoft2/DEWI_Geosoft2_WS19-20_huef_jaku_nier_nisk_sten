@@ -195,10 +195,10 @@ const streamConnect = function() {
                     mongoDB.places = place;
                 }
                 postTweet(mongoDB);
-                console.log(mongoDB);
-                if(matchesTweetFilter(mongoDB, keyword, bbox)) {
-                    io.emit('tweet', mongoDB)
-                }
+                // console.log(mongoDB);
+                // if(matchesTweetFilter(mongoDB, keyword, bbox)) {
+                //     io.emit('tweet', mongoDB)
+                // }
 
             }
         }

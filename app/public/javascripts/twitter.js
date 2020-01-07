@@ -5,8 +5,8 @@ let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
-function twitterSandboxSearch(bounds, filter) {
-
+function twitterSandboxSearch(bounds, filter, extremeWeatherEvents, createdAt) {
+    console.log('extremeWeatherEvents', extremeWeatherEvents);
     var words = filter;
     if(words){
     console.log('keyword', words);
@@ -24,7 +24,9 @@ function twitterSandboxSearch(bounds, filter) {
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": words
+                "filter": words,
+                "extremeWeatherEvents": extremeWeatherEvents,
+                "createdAt": createdAt
             },
             type: "post"
         })
@@ -32,10 +34,10 @@ function twitterSandboxSearch(bounds, filter) {
                 resolve(response.tweets);
             })
             .fail(function (err) {
-                console.log(err)
-            })
-    })
-};
+                console.log(err);
+            });
+    });
+}
 
 /**
 
