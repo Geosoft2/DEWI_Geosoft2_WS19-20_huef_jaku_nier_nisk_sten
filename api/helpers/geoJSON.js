@@ -42,26 +42,21 @@ const bboxToPolygon = function(bbox){
  * @return {geoJson} MultiPolygon
  */
 const featureCollectionToMultiPolygon = function(featureCollection){
-  console.log(featureCollection.features[0].geometry.coordinates[0][0][0]);
   var multiPolygon = {
     type: "MultiPolygon"
   };
   var coordinates = [];
   for(var feature in featureCollection.features){
     var coordinatesFloat = coordinatesStringToFloat(featureCollection.features[feature].geometry.coordinates);
-    console.log('coordinatesFloat', coordinatesFloat);
     coordinates.push([coordinatesFloat]);
   }
   multiPolygon.coordinates = coordinates;
-  console.log('multiPolygon', JSON.stringify(multiPolygon));
   return multiPolygon;
 };
 
 
 const coordinatesStringToFloat = function(coordinates){
   var coordinatesFloat = [];
-  // console.log(coordinates);
-  // console.log(coordinates[0].length);
   for(var i = 0; i < coordinates[0][0].length; i++){
     coordinatesFloat.push([parseFloat(coordinates[0][0][i][0]), parseFloat(coordinates[0][0][i][1])]);
   }

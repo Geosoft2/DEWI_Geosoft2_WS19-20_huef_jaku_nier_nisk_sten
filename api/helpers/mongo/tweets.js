@@ -127,7 +127,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
           }
         });
       }
-      const result= await Tweet.aggregate(match);
+      const result= await Tweet.aggregate(match).sort({createdAt: 'ascending'});
       console.log("filtered Tweets: ");
       console.log(result);
       return result;
