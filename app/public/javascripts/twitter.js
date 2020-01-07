@@ -81,6 +81,7 @@ class TwitterList extends React.Component {
     }
 
     setTweets = (tweets) => {
+        tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)})
         this.setState({tweets: tweets})
     };
 
