@@ -90,7 +90,12 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
     // }
     var regExpWords;
     if(filter && filter.length > 0){
-      regExpWords = filter.map(function(e){ return new RegExp(e, "i"); });
+      regExpWords = filter.map(function(e){
+        // @see https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+        var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+        console.log(regExpEscape);
+        return new RegExp(regExpEscape, "i");
+      });
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
