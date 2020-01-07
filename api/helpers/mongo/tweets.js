@@ -80,22 +80,27 @@ const getTweetsFromMongo = async function (filter, bbox) {
     // assumes the filter words format is an array
 
 
-    var words = filter[0];
-    if (filter.length > 0) {
-        for (var i = 1; i < filter.length; i++) {
-            words = filter[i] + " " + words;
-        }
+    // var words = filter[0];
+    // if (filter.length > 1) {
+    //     for (var i = 1; i < filter.length; i++) {
+    //         words = filter[i] + " " + words;
+    //     }
+    // }
+    var regExpWords;
+    if(filter[0] !== ""){
+      regExpWords = filter.map(function(e){ return new RegExp(e, "i"); });
     }
-    console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""))
-    console.log(words);
+
+    // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
     var polygonCoords = [bboxToPolygon(bbox)];
     var polygon = {type: 'Polygon', coordinates: polygonCoords};
     console.log(polygon);
     try {
         var query = {};
         query.geometry = {$geoWithin: {$geometry: polygon}};
-        if (words) {
-            query.$text = {$search: words};
+        if (regExpWords) {
+            // query.$text = {$search: words};
+            query.text = {$in: regExpWords};
         }
         const result= await Tweet.find(query);
         console.log("filtered Tweets: ");
@@ -112,7 +117,7 @@ const getTweetsFromMongo = async function (filter, bbox) {
  */
 const deleteTweets = async function() {
     await Tweet.remove({author: { name : {$ne: "DEWI"} } });
-}
+};
 
 module.exports = {
     postTweet,
