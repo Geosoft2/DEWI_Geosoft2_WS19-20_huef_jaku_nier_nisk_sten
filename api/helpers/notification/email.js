@@ -33,8 +33,8 @@ const emailNotification = function(weatherChanges){
             '<li>There were <b>' + weatherChanges.deleted + '</b> extreme weather events deleted,</li>' +
             '<li>and there were <b>' + weatherChanges.new + '</b> new extreme weather events.</li>' +
             '</ul></p>' +
-            '<p>If you like to have an overview about what has changed, simply visit:<br>' +
-            '<a href="http://localhost:3000" target="_blank"></a></p>' + //TODO docker
+            '<p>If you like to have an overview about what has changed, simply visit our ' +
+            '<a href="http://localhost:3000" target="_blank">Homepage</a>.</p>' + //TODO docker
             '<p>Best, <br> your DEWI team!</p>' +
             '<img src="cid:DEWILogo" alt="DEWI Logo" style="width: 200px;">',
         attachments: [{
