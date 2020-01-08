@@ -8,7 +8,7 @@ const config = require('config-yml');
 const chalk = require('chalk');
 const io = require("../socket-io").io;
 const {makeGeoJSonFromFeatures} = require('../geoJSON');
-
+const {emailNotification} = require('../notification/email');
 
 /**
  * @desc stores the features in MongoDB if they are not yet existing. Also ensures
@@ -63,6 +63,7 @@ const saveExtremeWeatherInMongo = async function(features){
       io.emit('weatherchanges', {
         stats: stats
       });
+      emailNotification(stats);
     }
     console.log(chalk.green(JSON.stringify({
       message: 'Everything is updated or stored.',

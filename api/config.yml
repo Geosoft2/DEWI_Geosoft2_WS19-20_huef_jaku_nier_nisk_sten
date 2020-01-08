@@ -48,3 +48,21 @@ social:
     #   consumerSecret:
     #   accessToken:
     #   accessTokenSecret:
+
+notification:
+  email:
+    from:
+      adress: dewi_service@gmx.de
+      password: #TODO
+    to:
+      sender: \"DEWI\" <dewi_service@gmx.de>
+      receiver: dewi_service@gmx.de
+    options:
+      host: mail.gmx.net
+      port: 587
+      secure: false
+      tls:
+        rejectUnauthorized: false
+
+
+  mattermost:
