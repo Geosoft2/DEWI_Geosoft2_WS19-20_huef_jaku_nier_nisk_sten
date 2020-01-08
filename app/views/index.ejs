@@ -1,60 +1,117 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
   <head>
     <title><%= title %></title>
+
+    <meta name="author" content="Jan, Luc, Nick, Phil, Tom"/>
+    <meta charset="UTF-8">
+
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrapSelect/dist/css/bootstrap-select.min.css" media="screen">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
     <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
     <link rel="stylesheet" href="/fontAwesome/css/all.css" />
-    <link rel="stylesheet" href="/node-snackbar/dist/snackbar.css" />
 
   </head>
+
+
+
+
+  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
   <progress id="progressbar" value="22" max="100"></progress>
-  <br onload="initial(), testSocket()">
-    <a href="/">
-      <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-right: 15px; padding-left: 10px; margin-bottom: 1%; margin-top: 1%;">
-    </a>
-    <br><button onclick="requestEvent()">Data</button>
-    <!-- possible nice solution: https://stackoverflow.com/questions/50895806/bootstrap-4-multiselect-dropdown -->
-    <label>Event:
-			<select multiple id="selectEvent" name="event">
-				<option value="THUNDERSTORM">thunderstorm</option>
-				<option value="WIND">wind</option>
-				<option value="TORNADO">tornado</option>
-				<option value="RAIN">rain</option>
-				<option value="HAIL">hail</option>
-        <option value="SNOWFALL">snowfall</option>
-        <option value="SNOWDRIFT">snowdrift</option>
-        <option value="FOG">fog</option>
-        <option value="FROST">frost</option>
-        <option value="GLAZE">glaze</option>
-        <option value="THAW">thaw</option>
-        <option value="POWERLINEVIBRATION">powerlinevibration</option>
-        <option value="UV">uv</option>
-        <option value="HEAT">heat</option>
-        <option value="TEST">test</option>
-			</select>
-		</label>
-    <div class="row">
+  <div class="snackbar">
+  </div>
+  <div class="wrapper">
 
-      <div class="col-md-6" style="margin-top: 20px;">
-        <div id="mapWFS" style="height:560px;">
+    <% include partials/header.ejs %>
+
+    <main role="main" class="container-fluid" id="main">
+      <!-- TODO:  snackbar???-->
+      <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
+        <div class="row">
+          <div class="col-12" style="margin-top: 20px;">
+            <% for(var i=0; i < errormessage.length; i++) {%>
+              <div class="alert alert-danger">
+                <%= errormessage[i] %>
+              </div>
+            <% } %>
+          </div>
         </div>
-        <button type="button" id="newDefaultMapExtent" onclick="myFunction()" style="visibility:hidden">set actual map extent as new default map extent</button>
-      </div>
+      <% } %>
 
-      <div class="col-md-6">
-        <div id="tweets">
+
+      <div class="row">
+
+        <div id="mapSection" class="col-md-8 order-md-1">
+
+          <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+              <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
+            </div>
+            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+              <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
+            </div>
+            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+              <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
+                <option value="THUNDERSTORM">thunderstorm</option>
+                <option value="WIND">wind</option>
+                <option value="TORNADO">tornado</option>
+                <option value="RAIN">rain</option>
+                <option value="HAIL">hail</option>
+                <option value="SNOWFALL">snowfall</option>
+                <option value="SNOWDRIFT">snowdrift</option>
+                <option value="FOG">fog</option>
+                <option value="FROST">frost</option>
+                <option value="GLAZE">glaze</option>
+                <option value="THAW">thaw</option>
+                <option value="POWERLINEVIBRATION">powerlinevibration</option>
+                <option value="UV">uv</option>
+                <option value="HEAT">heat</option>
+                <option value="TEST">test</option>
+              </select>
+            </div>
+            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+              <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
+            </div>
+          </div>
         </div>
-      </div>
 
-    </div>
+        <div class="col-md-8 order-md-3" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
+          <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
+        </div>
+
+        <div id="twitterSection" class="col-md-4 order-md-2">
+          <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+            <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <textarea rows="1" style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' id="textFilter" onchange="eventsOrFilterChanged()"></textarea>
+            </div>
+            <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord" onclick="setDefaultSearchWord()" style="">set default search word</button>
+            </div>
+            <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
+              <button title="by pushing the button, the default search word is deleted" type="button" id="deleteDefaultSearchWord" onclick="deleteDefaultSearchWord()" style="">delete default search word</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 order-md-4" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
+          <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <% include partials/footer.ejs %>
+
   </body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
+<script src="/popper/umd/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
 <script src="/leafletPan/L.Control.Pan.js"></script>
@@ -64,7 +121,7 @@
 <script src="/react-dom/react-dom.development.js"></script>
 <script src="/material-ui/material-ui.development.js"></script>
 <script src="/turf/turf/turf.min.js"></script>
-<script src="/node-snackbar/dist/snackbar.js"></script>
+<script src="/bootstrapSelect/dist/js/bootstrap-select.min.js"></script>
 
 <script src="javascripts/wfsDWD.js"></script>
 <script src="javascripts/twitter.js"></script>

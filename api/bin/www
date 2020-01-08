@@ -11,21 +11,23 @@
 const api = require('../api');
 const http = require('http');
 const debug = require('debug')('app:server');
+const config = require('config-yml');
 const chalk = require('chalk');
 const {stream} = require('../routes/api/v1/social/twitter/stream/twitterStream');
-
+const {getToken} = require('../helpers/twitter/stream');
+const {updateExtremeWeather} = require('../helpers/weather/dwdWFS');
 const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
 
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort('3001');
+var port = normalizePort(config.api.port);
 api.set('port', port);
 
 /**
- * First connect to MongoDB and then start API-server, then request extreme Weather and finally start APP
+ * First connect to MongoDB and then start API-server, then request extreme Weather and starts Stream from Twitter
  */
- connectMongoDB(function(){
+ connectMongoDB(async function(){
    /**
     * Create HTTP API-server.
     */
@@ -34,14 +36,21 @@ api.set('port', port);
    /**
    * Socket.io
    */
-
   var io  = require("../helpers/socket-io").io;
+
+  await getToken();
+  console.log(chalk.blue("Twitter Token generated"));
 
    /**
     * Listen on provided port, on all network interfaces.
     */
-   server.listen(port, () =>  {console.log(chalk.green.inverse("API listening on port " + port + "!")); stream()
-        });
+   server.listen(port, () =>  {
+     console.log(chalk.green.inverse("API listening on port " + port + "!"));
+     // requests the WFS service from the DWD at periodic intervals
+     updateExtremeWeather();
+     // starts Twitter-Stream
+     stream();
+   });
    io.attach(server);
    server.on('error', onError);
    server.on('listening', onListening);

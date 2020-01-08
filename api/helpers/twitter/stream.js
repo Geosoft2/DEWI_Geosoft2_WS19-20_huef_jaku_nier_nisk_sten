@@ -9,10 +9,11 @@ const get = util.promisify(request.get);
 const post = util.promisify(request.post);
 
 const {getUserInformation, getPlaceInformation} = require("./additionalInformation");
+const {postTweet} = require('../mongo/tweets.js');
 
 const io = require("../socket-io").io;
 
-const twitterToken = require('../../private/token.js').token.twitter_config;
+const twitterToken = require('../../../api/private/token.js').token.twitter_config;
 
 var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
 
@@ -23,12 +24,21 @@ let bbox;
 let keyword;
 
 var token;
-//create twitter access Token
-oauth2.getOAuthAccessToken('', {
-    'grant_type': 'client_credentials'
-}, function (e, access_token) {
-    token = access_token;
-});
+const getToken= function(){
+    //create twitter access Token
+    return new Promise(
+        function (resolve, restrict) {
+            oauth2.getOAuthAccessToken('', {
+                'grant_type': 'client_credentials'
+            }, function (e, access_token) {
+                console.log(token);
+                token = access_token;
+                resolve(e);
+            });
+        }
+    )
+};
+
 
 const setRules = (rules) => {
     console.log(chalk.blue("Stream Rules are set to" + JSON.stringify(rules)));
@@ -41,6 +51,7 @@ const setRules = (rules) => {
  * @returns {Promise<*>}
  */
 const getAllRules = async function() {
+    console.log("Hello")
     const requestConfig = {
         url: rulesURL,
         auth: {
@@ -141,6 +152,7 @@ const streamConnect = function() {
 
     stream.on('data', async data => {
         try {
+            console.log(data);
             const tweetJSON = JSON.parse(data);
             if (tweetJSON.connection_issue){
                 stream.emit("timeout")
@@ -161,6 +173,7 @@ const streamConnect = function() {
                     "places": {
                         "coordinates": {"lat": null, "lng": null},
                     },
+                    geometry: {coordinates: []}
                 };
                 if(tweetJSON.includes.media) {
                     for (var media of tweetJSON.includes.media) {
@@ -175,22 +188,23 @@ const streamConnect = function() {
                 if (tweet.geo.coordinates) {
                     mongoDB.places.coordinates.lat = tweet.geo.coordinates.coordinates[1];
                     mongoDB.places.coordinates.lng = tweet.geo.coordinates.coordinates[0];
+                    mongoDB.geometry.coordinates = tweet.geo.coordinates.coordinates;
                 } else {
                     const place = getPlaceInformation(tweetJSON.includes.places[0]);
+                    mongoDB.geometry.coordinates = [place.coordinates.lng, place.coordinates.lat];
                     mongoDB.places = place;
                 }
+                postTweet(mongoDB);
                 console.log(mongoDB);
                 if(matchesTweetFilter(mongoDB, keyword, bbox)) {
-                    console.log(chalk.blue("Tweet matches filter"));
                     io.emit('tweet', mongoDB)
                 }
-                else{
-                    console.log(chalk.blue("Tweet don't matches filter"));
-                }
+
             }
         }
         catch (e)
         {
+            console.log(e);
             console.log(chalk.blue("Twitter Heartbeat received")); // Heartbeat received. Do nothing.
         }
 
@@ -205,17 +219,30 @@ const streamConnect = function() {
     return stream;
 };
 
-function matchesTweetFilter(tweet, keyword, bbox){
+function matchesTweetFilter(tweet, filter, bbox){
     console.log(chalk.blue("Proof Tweet against Keyword " + keyword + " and BBOX " + JSON.stringify(bbox)));
-    if(keyword){
-        if(!tweet.text.includes(keyword)){
+    if(bbox){
+        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
+            console.log(chalk.blue("Tweet don't matches BBOX"));
             return false;
         }
     }
-    if(bbox){
-        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
-            return false;
+    const words = [];
+    if(filter) {
+        while (filter.indexOf(" ") !== -1) {
+            const word = filter.substring(0, filter.indexOf(" "));
+            filter = filter.substring(filter.indexOf(" ") + 1, filter.length);
+            words.push(word);
         }
+        words.push(filter);
+        for (var word of words) {
+                if (tweet.text.includes(word)) {
+                    console.log(chalk.blue("Tweet matches keyword: " + word));
+                    return true;
+                }
+        }
+        console.log(chalk.blue("Tweet don't matches keyword"));
+        return false;
     }
     return true;
 }
@@ -245,6 +272,7 @@ function isTweetInMapextend(tweetCoordinates, bounds) {
 
 
 module.exports = {
+    getToken,
     getAllRules,
     deleteAllRules,
     setRules,

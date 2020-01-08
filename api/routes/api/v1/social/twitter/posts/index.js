@@ -10,7 +10,7 @@
 const express = require('express');
 const PostsRouter = express.Router();
 
-PostsRouter.post('/', require('./twitterPosts').postSandboxSearch);
+PostsRouter.post('/', require('./twitterPosts').postMongoSearch);
 
 
 module.exports = PostsRouter;

@@ -28,19 +28,24 @@ var blueIcon = new L.Icon({
 var markersInMap = [];
 
 var mapOptions = {
-    center: [51, 10],
-    zoom: 6,
     zoomControl: true,
     dragging: true,
     attributionControl: true
 };
 
 var map = new L.map('mapWFS', mapOptions);
-
-var osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
-}).addTo(map);
+});
+osmlayer.on('load', () => {maploaded(); loading=false});
+var loading=false;
+osmlayer.on('loading', () => {loading=true});
+
+function maploaded(){
+    document.getElementById("progressbar").value +=25;
+    isProgress();
+    snackbarWithText("map loaded")}
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
@@ -56,36 +61,66 @@ var baseLayers = {
 // add pan-control in the bottomleft of the map
 L.control.pan({position: 'bottomleft'}).addTo(map);
 
-
-/*
-settings button for setting the default map extent
+/**
+ * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
  */
-L.easyButton('<i class="fas fa-cog"></i>', function (btn, map) {
+function changeDefaultMapExtent() {
+    var bounds = map.getBounds();
+    var bbox = boundingbox(bounds);
+    var cookieValue = JSON.stringify(bbox);
+    setCookie("defaultBbox", cookieValue, 1000000);
+}
 
-    if (confirm("set actual map extent as new default map extent")) {
-        var cookieValue = JSON.stringify(bounds);
-        // cookie to store the map extent
-        setCookie("defaultBbox", cookieValue, 1000000);
+/**
+ * @desc function which sets the map back to the defaultMapExtent. If there is no default map extent set by the user,
+ * its the initial map extent.
+ */
+function backToDefaultMapExtent() {
+    getBoundingBboxFromCookie();
+
+    var isThereCookie = getBoundingBboxFromCookie();
+
+    if (isThereCookie == false) {
+        map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
     }
-}).addTo(map);
+}
+
+/**
+ * @desc function which creates a cookie if the button setDefaultEvents is pushed.
+ */
+function setDefaultEvents() {
+    var events = $('#selectEvent').val();
+    var cookieValue = JSON.stringify(events);
+    setCookie("defaultEvents", cookieValue, 1000000);
+}
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
+function removeAllTweets(){
+    var tweetsInMap = getState("tweets");
+    for(var i =0; i<tweetsInMap.length; i++){
+        map.removeLayer(markersInMap[i]);
+        markersInMap.splice(i, 1);
+        tweetsInMap.splice(i, 1);
+        i--;
+        console.log(markersInMap);
+    }
+    setTweets([])
+}
 function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getState("tweets");
 
-    for (var t = 0; t < markersInMap.length; t++) {
-        if (!isTweetInMapextend(markersInMap[t], bounds)) {
-            map.removeLayer(markersInMap[t]);
-            for (var i in tweetsInMap) {
-                if (tweetsInMap[i].tweetId === markersInMap[t].tweetId) {
-                    console.log(tweetsInMap);
-                    tweetsInMap.splice(i, 1);
+    for (var t = 0; t < tweetsInMap.length; t++) {
+        if (!isTweetInWfsLayer(tweetsInMap[t], wfsLayers.features, bounds)) {
+            for (var i in markersInMap) {
+                if (tweetsInMap[t].tweetId === markersInMap[i].tweetId) {
+                    map.removeLayer(markersInMap[i]);
+                    markersInMap.splice(i, 1);
                 }
             }
-            markersInMap.splice(t, 1);
+            tweetsInMap.splice(t, 1);
             t--;
         } else {
             // console.log(markersInMap[t]._leaflet_id);
@@ -102,9 +137,9 @@ function addTweets(wfsLayers, tweets, bounds) {
     var tweetsInWfsLayers = [];
 
     for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+        // if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             tweetsInWfsLayers.push(tweets[t]);
-        }
+        // }
     }
 
     var newTweets = [];
@@ -119,7 +154,8 @@ function addTweets(wfsLayers, tweets, bounds) {
     tweetsInMap = tweetsInMap.concat(newTweets);
     setTweets(tweetsInMap);
     for (var n in newTweets) {
-        var marker = L.marker([newTweets[n].places.coordinates.lat, newTweets[n].places.coordinates.lng]).addTo(map);
+        var marker = L.marker([newTweets[n].geometry.coordinates[1], newTweets[n].geometry.coordinates[0]]).addTo(map);
+
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
@@ -129,13 +165,30 @@ function addTweets(wfsLayers, tweets, bounds) {
             }
             else {
                 setMarkerColor(e.target._latlng);
-                setHighlighted(e.target._latlng);
+                setHighlighted(e.target._latlng, true);
             }
         });
         markersInMap.push(marker);
         //marker.setIcon()
     }
-    console.log(markersInMap);
+    setMarkerColor(getState("highlighted"))
+    if (loading){
+        document.getElementById("progressbar").value +=25;
+    }
+    else{
+        document.getElementById("progressbar").value =100;
+    }
+
+    isProgress();
+    snackbarWithText("tweet(s) added to the map");
+}
+
+async function isProgress(){
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    if (document.getElementById("progressbar").value===100){
+        await delay(2000);
+        document.getElementById("progressbar").style.visibility='hidden';
+    }
 }
 
 /**
@@ -187,7 +240,7 @@ function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
         type: 'Feature',
         geometry: {
             type: 'Point',
-            coordinates: [tweet.places.coordinates.lat, tweet.places.coordinates.lng]
+            coordinates: [tweet.geometry.coordinates[1], tweet.geometry.coordinates[0]]
         },
         properties: {}
     };
@@ -236,27 +289,12 @@ function boundingbox(bounds) {
 }
 
 
-function requestEvent() {
-    var bounds = map.getBounds();
-    var bbox = boundingbox(bounds);
-    var events = $('#selectEvent').val();
-    requestExtremeWeather(bbox, events);
-}
-
-
-function testSocket() {
-    socket.on('weatherchanges', function (data) {
-        console.log('Weather changed');
-        console.log(data.stats);
-        requestEvent();
-    });
-}
-
 /**
  * @desc queries the extreme weather events based on the current map-extent and add it to the map
  * @param {json} bbox coordinates of current map-extent
  */
 function requestExtremeWeather(bbox, events) {
+
 
     return new Promise(function (resolve, restrict) {
         $.ajax({
@@ -264,21 +302,10 @@ function requestExtremeWeather(bbox, events) {
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
             data: {
                 events: events,
-                bbox: bbox.bbox,
-                minutes: 0.2 // value must match interval time /bin/www
-            },
-            // contentType: "application/json",
-            xhrFields: {
-                onprogress: function (e) {
-                    if (e.lengthComputable) {
-                        console.log(e);
-                        console.log(e.loaded / e.total * 100 + '%');
-                        document.getElementById("progressbar").value =e.loaded / e.total * 100;
-                    }
-                }
+                bbox: bbox.bbox
             }
+            // contentType: "application/json",
         })
-
             .done(function (response) {
                 console.log('mongo', response.result);
                 // remove existing layer
@@ -288,6 +315,9 @@ function requestExtremeWeather(bbox, events) {
                 // add layer to layerGroup and map
                 extremeWeatherGroup.addLayer(warnlayer).addTo(map);
                 resolve(response.result);
+                document.getElementById("progressbar").value +=25;
+                isProgress();
+                snackbarWithText("weather data loaded");
             })
             .fail(function (err) {
                 console.log(err);

@@ -1,0 +1,50 @@
+api:
+  port: 3001
+
+db:
+  name: dewi
+  local:
+    host: localhost
+    port: 27017
+  docker:
+    image: mongo
+  options:
+    useNewUrlParser: true
+    useFindAndModify: false
+    useCreateIndex: true
+    useUnifiedTopology: true
+    autoReconnect: true
+
+weather:
+  dwd:
+    wfs:
+      url: https://maps.dwd.de/geoserver/dwd/ows
+      parameter:
+        version: 2.0.0
+        typeName: dwd:Warnungen_Gemeinden_vereinigt
+        filter:
+          # @see pp.17 https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
+          severity:
+            moderate: true # TODO
+            minor: true  # TODO
+            severe: false # TODO
+            extreme: false # TODO
+      # in seconds
+      refreshIntervall: 30
+
+    radar:
+      url: https://maps.dwd.de/geoserver/dwd/ows # TODO
+      # in seconds
+      refreshIntervall: 300
+
+
+social:
+  twitter:
+    # in seconds
+    storageDuration: 3600
+    # TODO
+    # token:
+    #   consumerKey:
+    #   consumerSecret:
+    #   accessToken:
+    #   accessTokenSecret:

@@ -3,6 +3,7 @@
 "use strict";
 
 const mongoose = require('mongoose');
+const config = require('config-yml');
 
 // All parameters "required" ?
 
@@ -31,11 +32,13 @@ const TweetSchema = mongoose.Schema({
     },
     text: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     createdAt: {
         type: Date,
-        required: true
+        required: true,
+        index: { expires: Number(config.social.twitter.storageDuration) }
     },
     geometry: {
         type: {
@@ -44,12 +47,11 @@ const TweetSchema = mongoose.Schema({
             default: 'Point'
         },
         coordinates: {
-            type: [[[Number]]]
+            type: [Number]
         }
     },
     placeName: {
-        type: String,
-        required: true
+        type: String
     },
     author: {
         type: mongoose.Mixed
@@ -70,7 +72,7 @@ const TweetSchema = mongoose.Schema({
     },
     media: {  //[MediaSchema]
         type: mongoose.Mixed
-    }
+    },
 });
 
 TweetSchema.index({text: 'text'});

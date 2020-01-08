@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+
+    <meta name="author" content="Jan, Luc, Nick, Phil, Tom"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+  </head>
+
+  <body>
+
+    <div class="wrapper">
+
+      <% include partials/header.ejs %>
+
+      <main role="main" class="container-fluid" id="main">
+
+        <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px"><!--20px(normal margin value) + 24.2px(height of the footer)-->
+
+          <div class="col-12">
+           <p>
+             <b>Authors:</b>
+             <br>&#9679; Jan S.
+             <br>&#9679; Luc N.
+             <br>&#9679; Nick J.
+             <br>&#9679; Phil H.
+             <br>&#9679; Tom N.
+           </p>
+
+           <p>
+             <b>Course:</b>
+             <br>Geosoftware II
+             <br>winter term 2019/ 2020
+           </p>
+
+           <p>
+             <b>University:</b>
+             <br>Westfälische Wilhelms-Universität Münster
+             <br><img id="wwu_logo" class="img-fluid" src="/images/wwu.svg" alt="WWU Logo" style="margin-top: 5px;">
+           </p>
+         </div>
+
+        </div>
+
+      </main>
+    </div>
+
+    <% include partials/footer.ejs %>
+
+    </body>
+</html>
+
+<script src="/jquery/jquery.min.js"></script>
+<script src="/popper/umd/popper.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
