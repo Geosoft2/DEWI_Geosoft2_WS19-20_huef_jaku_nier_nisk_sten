@@ -28,19 +28,24 @@ var blueIcon = new L.Icon({
 var markersInMap = [];
 
 var mapOptions = {
-    center: [51, 10],
-    zoom: 6,
     zoomControl: true,
     dragging: true,
     attributionControl: true
 };
 
 var map = new L.map('mapWFS', mapOptions);
-
-var osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data: &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
-}).addTo(map);
+});
+osmlayer.on('load', () => {maploaded(); loading=false});
+var loading=false;
+osmlayer.on('loading', () => {loading=true});
+
+function maploaded(){
+    document.getElementById("progressbar").value +=25;
+    isProgress();
+    snackbarWithText("map loaded")}
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
@@ -132,9 +137,9 @@ function addTweets(wfsLayers, tweets, bounds) {
     var tweetsInWfsLayers = [];
 
     for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+        // if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
             tweetsInWfsLayers.push(tweets[t]);
-        }
+        // }
     }
 
     var newTweets = [];
@@ -167,7 +172,23 @@ function addTweets(wfsLayers, tweets, bounds) {
         //marker.setIcon()
     }
     setMarkerColor(getState("highlighted"))
-    console.log(markersInMap);
+    if (loading){
+        document.getElementById("progressbar").value +=25;
+    }
+    else{
+        document.getElementById("progressbar").value =100;
+    }
+
+    isProgress();
+    snackbarWithText("tweet(s) added to the map");
+}
+
+async function isProgress(){
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    if (document.getElementById("progressbar").value===100){
+        await delay(2000);
+        document.getElementById("progressbar").style.visibility='hidden';
+    }
 }
 
 /**
@@ -274,14 +295,14 @@ function boundingbox(bounds) {
  */
 function requestExtremeWeather(bbox, events) {
 
+
     return new Promise(function (resolve, restrict) {
         $.ajax({
             type: "Get",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
             data: {
                 events: events,
-                bbox: bbox.bbox,
-                minutes: 0.2 // value must match interval time /bin/www
+                bbox: bbox.bbox
             }
             // contentType: "application/json",
         })
@@ -294,6 +315,9 @@ function requestExtremeWeather(bbox, events) {
                 // add layer to layerGroup and map
                 extremeWeatherGroup.addLayer(warnlayer).addTo(map);
                 resolve(response.result);
+                document.getElementById("progressbar").value +=25;
+                isProgress();
+                snackbarWithText("weather data loaded");
             })
             .fail(function (err) {
                 console.log(err);

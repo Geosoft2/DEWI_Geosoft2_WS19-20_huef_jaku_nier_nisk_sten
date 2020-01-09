@@ -5,8 +5,10 @@
 "use strict";
 let wfsLayer;
 
+
 async function initial (boundingbox, events, filter) {
 
+    document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
 
     // "activate" select option
@@ -150,6 +152,10 @@ map.on('moveend', function (e) {
  * @param {json} bounds coordinates of current map-extent
  */
 async function mapExtendChange(bounds) {
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("progressbar").value =25;
+    document.getElementById("progressbar").style.visibility='visible';
     // TODO: uncomment updateTwitterStream after setStreamfilter works
 
     var events = $('#selectEvent').val();
@@ -272,4 +278,25 @@ function updateURL(bbox, events, filter) {
   var querystring = $.param(parameters);
   // new URL
   window.history.pushState("object or string", "Title", "/?" + querystring);
+}
+
+
+function snackbarWithText(text) {
+    const date = Date.now()
+    $('.snackbar').prepend(
+        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(232,89,23);" ' +
+        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
+        '<div class="toast-header">'+
+        '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
+        '<strong class="mr-auto">'+text +'</strong>'+
+        '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
+        '<span aria-hidden="true">×</span>'+
+        '</button>'+
+        '</div>'+
+        // '<div class="toast-body">'+
+        //   'Some Toast Body'+
+        // '</div>'+
+        '</div>');
+    $('.toast.'+date).toast('show');
+
 }

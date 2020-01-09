@@ -2,6 +2,11 @@
 // jshint node: true
 "use strict";
 
+/**
+ * @desc creates a GeoJson from several single polygons.
+ * @param {json} features (several) single polygons
+ * @return {GeoJson}
+ */
 const makeGeoJSonFromFeatures = function(features){
   var featureArray = [];
   for(var i=0; i < features.length; i++){
@@ -13,6 +18,12 @@ const makeGeoJSonFromFeatures = function(features){
   };
 };
 
+
+/**
+ * @desc creates a polygon from a bbox as Json.
+ * @param {json} bbox
+ * @return {array} array with the coordinates from bbox
+ */
 const bboxToPolygon = function(bbox){
   return [
    [parseFloat(bbox.southWest.lng), parseFloat(bbox.southWest.lat)],

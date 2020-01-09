@@ -22,7 +22,9 @@ function twitterSandboxSearch(bounds, filter) {
                 "bbox": bounds.bbox,
                 "filter": words
             },
-            type: "post"
+            type: "post",
+
+
         })
             .done(function (response) {
                 console.log(response);
@@ -62,6 +64,15 @@ function updateTwitterStream(bbox, keyword) {
         // contentType: "application/json",
         dataType: 'json',
         data: {bbox :bbox, keyword: keyword}
+        ,
+        // xhrFields: {
+        //     onprogress: function (e) {
+        //         if (e.lengthComputable) {
+        //             console.log(e.loaded / e.total * 100 + '%');
+        //             document.getElementById("progressbar").value =e;
+        //         }
+        //     }
+        // }
     })
 }
 
