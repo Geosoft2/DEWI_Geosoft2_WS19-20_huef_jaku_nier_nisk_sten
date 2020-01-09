@@ -139,9 +139,8 @@ const sandboxSearch = function(filter, area) {
 };
 
 const mongoSearch = async function (filter, bbox) {
-    var tweets = await getTweetsFromMongo(filter, bbox);
-    console.log(tweets);
-    return tweets;
+    var result = await getTweetsFromMongo(filter, bbox);
+    return result;
 };
 
 
