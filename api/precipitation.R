@@ -1,22 +1,44 @@
 # https://bookdown.org/brry/rdwd/use-case-recent-hourly-radar-files.html
 
-# Download and install (once only):
-install.packages("rdwd")
-
-# Load the package into library (needed in every R session):
+# load packages
 library(rdwd)
+library(dwdradar)
+library(raster)
+library(leafletR)
 
 
+rw_base <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/rw"
 
-ry_base<- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/ry/"
-ry_urls <- indexFTP(base=rw_base, dir=tempdir(), folder="", quiet=TRUE)
+# set url
+rw_urls <- indexFTP(base=rw_base, dir=tempdir(), folder="", quiet=TRUE)
+rw_file <- dataDWD(rw_urls[length(rw_urls)], base=rw_base, joinbf=TRUE, dir=tempdir(), read=FALSE, quiet=TRUE, dbin=TRUE)
 
-# last uploaded file: ry_urls[length(ry_urls)]
-# Error in sapply(force, isFALSE) : object 'isFALSE' not found
-ry_file <- dataDWD(file=ry_urls[length(ry_urls)], base=ry_base, joinbf=TRUE, dir=tempdir(), read=FALSE, quiet=TRUE, dbin=TRUE)
 
-ry_orig <- dwdradar::readRadarFile(ry_file)
+# get data and reproject
+rw_orig <- dwdradar::readRadarFile(rw_file)
+rw_proj <- projectRasterDWD(raster::raster(rw_orig$dat), extent="radolan", quiet=TRUE)
 
-# plot result
-raster::plot(rw_proj) # NB: is rw file, but needs radolan extent instead of rw
-addBorders()
+# replace values <= 0 with NA, so they wont be calculated
+rw_proj[rw_proj == 0] <- NA
+rw_proj[rw_proj < 0] <- NA
+
+## classification
+# summed up statistics
+sum = summary(rw_proj)
+
+# unit: 1/10 mm/h, thus *10 for mm/h values (breaks have been devided by 10)
+reclass = c(0,0.25,1, 0.25,1,2, 1,5,3, 5,10000,4)
+
+# build matrix
+reclass_m = matrix(reclass,
+                   ncol = 3,
+                   byrow = TRUE)
+# reclass
+rw_proj_class = reclassify(rw_proj, reclass_m)
+
+# convert raster to Polygons with given classes
+pol = rasterToPolygons(rw_proj_class, n = 4, na.rm = TRUE, dissolve = TRUE)#
+
+# convert SpatialPolygonsDataFrame to GeoJSON
+geojson <- tempfile()
+toGeoJSON(pol, name=basename(geojson), dest=tempdir())
