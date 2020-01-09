@@ -172,6 +172,8 @@ class TwitterList extends React.Component {
             const cards = [];
             cards.unshift(e("br"));
 
+            
+
             this.state.tweets.map(function (item, i) {
                 const media = [];
                 for (var mediaItem of item.media) {
@@ -183,12 +185,19 @@ class TwitterList extends React.Component {
                         media.push(e("br"))
                     }
                 }
+                var place = e("span", null, "");
+
+           
+                if(item.place){
+                 place= e("span", null, " Place: "+ item.place.name)
+                }
+            
 
                 const avatar = e(Avatar, {src: item.author.profileImage, className:"avatar"});
                 const header= e(CardHeader, {avatar: avatar,
                         className: "header",
                         title: e("a", {href: item.author.url, target: "_blank"}, item.author.name, ),
-                        subheader: item.createdAt,
+                        subheader: e("span", null, "Created at: "+ item.createdAt , e("br") , e("span", null, "Accuracy: " + item.accuracy + " km", place)) ,
                         action: e(IconButton, {onClick: ()=> self.goToTweet(item.url)}, e("i", {className: "fab fa-twitter icon", "aria-hidden":"true"}))});
                 const content= e(CardContent, null,  item.text);
                 let highlighted=null;

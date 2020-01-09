@@ -43,17 +43,14 @@ const postTweet = async function (tweet) {
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
-            coordinates.push(tweet.places.coordinates.lng);
-            coordinates.push(tweet.places.coordinates.lat);
-            geometry['coordinates'] = coordinates;
-            console.log(" Geometry: " + JSON.stringify(geometry));
             var newTweet = new Tweet({
                 tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
                 createdAt: tweet.createdAt,
-                geometry: geometry,
-                placeName: tweet.places.placeName,
+                geometry: tweet.geometry,
+                accuracy: tweet.accuracy,
+                place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
                 // author und media noch splitten oder einfach als Mixed definieren??

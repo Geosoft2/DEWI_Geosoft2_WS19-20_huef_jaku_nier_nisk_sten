@@ -49,8 +49,11 @@ const TweetSchema = mongoose.Schema({
             type: [Number]
         }
     },
-    placeName: {
-        type: String
+    place: {
+        type: mongoose.Mixed
+    },
+    accuracy: {
+        type: Number
     },
     author: {
         type: mongoose.Mixed

@@ -170,10 +170,8 @@ const streamConnect = function() {
                     "createdAt": tweet.created_at,
                     "author": author,
                     "media": [],
-                    "places": {
-                        "coordinates": {"lat": null, "lng": null},
-                    },
-                    geometry: {coordinates: []}
+                    geometry: {coordinates: []},
+                    accuracy: 1
                 };
                 if(tweetJSON.includes.media) {
                     for (var media of tweetJSON.includes.media) {
@@ -186,19 +184,18 @@ const streamConnect = function() {
                     }
                 }
                 if (tweet.geo.coordinates) {
-                    mongoDB.places.coordinates.lat = tweet.geo.coordinates.coordinates[1];
-                    mongoDB.places.coordinates.lng = tweet.geo.coordinates.coordinates[0];
                     mongoDB.geometry.coordinates = tweet.geo.coordinates.coordinates;
                 } else {
                     const place = getPlaceInformation(tweetJSON.includes.places[0]);
                     mongoDB.geometry.coordinates = [place.coordinates.lng, place.coordinates.lat];
-                    mongoDB.places = place;
+                    mongoDB.place = place;
+                    mongoDB.accuracy = (place.accuracy/1000).toFixed(2)
                 }
                 postTweet(mongoDB);
                 console.log(mongoDB);
-                if(matchesTweetFilter(mongoDB, keyword, bbox)) {
+               // if(matchesTweetFilter(mongoDB, keyword, bbox)) {
                     io.emit('tweet', mongoDB)
-                }
+               // }
 
             }
         }
@@ -222,7 +219,7 @@ const streamConnect = function() {
 function matchesTweetFilter(tweet, filter, bbox){
     console.log(chalk.blue("Proof Tweet against Keyword " + keyword + " and BBOX " + JSON.stringify(bbox)));
     if(bbox){
-        if(!isTweetInMapextend(tweet.places.coordinates, bbox)){
+        if(!isTweetInMapextend(tweet.geometry.coordinates, bbox)){
             console.log(chalk.blue("Tweet don't matches BBOX"));
             return false;
         }
@@ -256,7 +253,7 @@ function isTweetInMapextend(tweetCoordinates, bounds) {
         type: 'Feature',
         geometry: {
             type: 'Point',
-            coordinates: [tweetCoordinates.lat, tweetCoordinates.lng]
+            coordinates: tweetCoordinates
         },
         properties: {}
     };
