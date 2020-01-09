@@ -45,11 +45,20 @@ const postMongoSearch = async function (req, res) {
     const  q = req.body.filter;
     const bbox= req.body.bbox;
 
-    const result = {tweets: []};
+    
 
-    result.tweets = await mongoSearch(q, bbox);
+    const result= await mongoSearch(q, bbox);
 
-    res.json(result);
+    if(result.error){
+        res.status(result.error.code).send({
+            message: result.error.message
+          });
+    }else{
+        const result2 = {tweets: result};
+        console.log("sending result")
+        res.status(200).json(result2);
+    }
+
 }
 
 

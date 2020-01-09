@@ -5,7 +5,7 @@
 const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
 // Tweet.index({text: 'text'});
-const {bboxToPolygon} = require('../geoJSON');
+const {bboxToPolygon, isBbox} = require('../geoJSON');
 
 /**
  * save tweet in database if it is not already stored
@@ -43,17 +43,14 @@ const postTweet = async function (tweet) {
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
-            coordinates.push(tweet.places.coordinates.lng);
-            coordinates.push(tweet.places.coordinates.lat);
-            geometry['coordinates'] = coordinates;
-            console.log(" Geometry: " + JSON.stringify(geometry));
             var newTweet = new Tweet({
                 tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
                 createdAt: tweet.createdAt,
-                geometry: geometry,
-                placeName: tweet.places.placeName,
+                geometry: tweet.geometry,
+                accuracy: tweet.accuracy,
+                place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
                 // author und media noch splitten oder einfach als Mixed definieren??
@@ -68,6 +65,19 @@ const postTweet = async function (tweet) {
         }
     }
 };
+
+const filterValid = (filter) => { 
+        if(!Array.isArray(filter)){
+            return{error: "filter mus be an array"}
+        }
+        else if(filter.every(function(i){ return typeof i === "string" }) == false){
+            return{error: "filter mus be an Array of Strings"}
+        }
+        else{
+            return true
+        }
+
+}
 
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
@@ -86,28 +96,58 @@ const getTweetsFromMongo = async function (filter, bbox) {
     //         words = filter[i] + " " + words;
     //     }
     // }
+
     var regExpWords;
-    if(filter[0] !== ""){
-      regExpWords = filter.map(function(e){ return new RegExp(e, "i"); });
+    if(filter && filter.length > 0){
+        const valid= filterValid(filter)
+        if(valid.error){
+            return{
+                error: {
+                    code: 400,
+                    message : valid.error
+                }
+            }
+        }
+        regExpWords = filter.map(function(e){ 
+        var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+        return new RegExp(regExpEscape, "i");
+        });
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
-    var polygonCoords = [bboxToPolygon(bbox)];
-    var polygon = {type: 'Polygon', coordinates: polygonCoords};
-    console.log(polygon);
+    if(bbox){
+        const valid=isBbox(bbox)
+        if(valid.error){
+            return{
+                error: {
+                    code: 400,
+                    message : valid.error
+                }
+            }
+        }
+            var polygonCoords = [bboxToPolygon(bbox)];
+            var polygon = {type: 'Polygon', coordinates: polygonCoords};
+    } 
     try {
         var query = {};
-        query.geometry = {$geoWithin: {$geometry: polygon}};
+        if(polygon){
+         query.geometry = {$geoWithin: {$geometry: polygon}};
+        }
         if (regExpWords) {
             // query.$text = {$search: words};
             query.text = {$in: regExpWords};
         }
         const result= await Tweet.find(query);
         console.log("filtered Tweets: ");
-        console.log(result);
+        console.log(result)
         return result;
     } catch (err) {
         console.log(err);
+        return {error: {
+            code: 500,
+            message: err,
+            }
+        }
     }
 };
 

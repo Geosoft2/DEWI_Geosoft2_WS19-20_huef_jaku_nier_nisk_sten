@@ -49,7 +49,7 @@ api.set('port', port);
      // requests the WFS service from the DWD at periodic intervals
      updateExtremeWeather();
      // starts Twitter-Stream
-     stream();
+     //stream();
    });
    io.attach(server);
    server.on('error', onError);
