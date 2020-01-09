@@ -28,11 +28,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
+app.use('/react', express.static(__dirname + '/node_modules/react/umd'));
+app.use('/react-dom', express.static(__dirname +'/node_modules/react-dom/umd'));
+app.use('/material-ui', express.static(__dirname + '/node_modules/@material-ui/core/umd'));
 app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io-client/dist'));
 app.use("/leaflet", express.static(__dirname + "/node_modules/leaflet/dist"));
 app.use("/leafletPan", express.static(__dirname + "/node_modules/leaflet.pancontrol/src"));
 app.use("/leafletEasyButton", express.static(__dirname + "/node_modules/leaflet-easybutton/src"));
 app.use("/fontAwesome", express.static(__dirname + "/node_modules/@fortawesome/fontawesome-free/"));
+app.use("/turf", express.static(__dirname + "/node_modules/@turf/"));
+app.use("/bootstrapSelect", express.static(__dirname + "/node_modules/bootstrap-select/"));
 
 // setup routes
 app.use('/', require('./routes'));

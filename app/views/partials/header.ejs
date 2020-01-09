@@ -1,0 +1,21 @@
+<header>
+  <div>
+    <!-- navigation bar -->
+    <ul class="nav nav-tabs">
+      <!-- logo -->
+      <a class="navbar-brand " href="/">
+        <img id="logo" class="img-fluid" src="/images/DEWI_Logo.svg" alt="DEWI Logo" style="padding-left: 15px; margin-bottom: 1%; margin-top: 1%;">
+      </a>
+      <!-- navigation links -->
+      <div style="display: flex; padding-left: 15px;">
+        <li class="nav-item" style="align-self: flex-end;">
+          <a class="nav-link home <% if (title == 'Home') {%>active<% } else { if(title != 'FAQ') {%>faq <% } %>inactive<% } %>" href="/">Home</a>
+        </li>
+        <li class="nav-item"  style="align-self: flex-end;">
+          <a class="nav-link faq <% if (title == 'FAQ') {%>active<% } else { %>inactive<% } %>" href="/faq">FAQ</a>
+        </li>
+      </div>
+    </ul>
+
+  </div>
+</header>

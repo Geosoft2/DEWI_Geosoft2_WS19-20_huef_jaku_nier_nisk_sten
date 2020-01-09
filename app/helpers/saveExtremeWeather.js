@@ -5,9 +5,11 @@
 const request = require('request');
 const chalk = require('chalk');
 
-const requestExtremeWeather = function(cb){
-  var url = process.env.API_Domain + '/api/v1/dwd/extremeWeather';
-  request.post(url/*, {form: req.body}*/) // BBOX is not necessary
+const saveExtremeWeather = function(cb){
+  const options = {
+    url: process.env.API_Domain + '/api/v1/weather/events/dwd',
+  };
+  request.post(options/*, {form: req.body}*/) // BBOX is not necessary
     .on('response', function(response) {
       // concatenate updates from datastream
       var body = '';
@@ -19,7 +21,11 @@ const requestExtremeWeather = function(cb){
         if(response.statusCode !== 200){
           return console.log(chalk.red(body));
         }
-        return saveExtremeWeather(JSON.parse(body), cb);
+        if(body.includes('�')){
+          console.log(chalk.red('�������������������������������'));
+        }
+        console.log(chalk.green(body));
+        if(cb) return cb();
       });
     })
     .on('error', function(err) {
@@ -29,33 +35,6 @@ const requestExtremeWeather = function(cb){
 
 
 
-const saveExtremeWeather = function(geoJSON, cb){
-  var url = process.env.API_Domain + '/api/v1/mongo/extremeWeather';
-  request.post(url, {form: geoJSON})
-    .on('response', function(response) {
-      // concatenate updates from datastream
-      var body = '';
-      response.on('data', function(chunk){
-          //console.log("chunk: " + chunk);
-          body += chunk;
-      });
-      response.on('end', function(){
-        if(response.statusCode !== 200){
-          console.log(chalk.red(body));
-        }
-        else{
-          console.log(chalk.green(body));
-        }
-      });
-    })
-    .on('error', function(err) {
-      console.log(chalk.red(err));
-  });
-  if(cb) return cb();
-};
-
-
 module.exports = {
-  requestExtremeWeather,
   saveExtremeWeather
 };
