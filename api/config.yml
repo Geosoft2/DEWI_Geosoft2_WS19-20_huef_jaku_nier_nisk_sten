@@ -53,7 +53,7 @@ notification:
   email:
     from:
       adress: dewi_service@gmx.de
-      password: #TODO
+      password: qwdewi123
     to:
       sender: \"DEWI\" <dewi_service@gmx.de>
       receiver: dewi_service@gmx.de
@@ -63,6 +63,10 @@ notification:
       secure: false
       tls:
         rejectUnauthorized: false
-
-
   mattermost:
+    url:
+      parameter:
+        yourMattermostSite: zivmattermost.uni-muenster.de
+        generatedHookKey: m9oghpjxztfybjatsrmw4u437e
+
+

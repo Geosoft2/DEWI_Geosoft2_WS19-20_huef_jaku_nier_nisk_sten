@@ -341,7 +341,7 @@ radarlayer = L.tileLayer.wms(rootUrl, {
     format: 'image/png',
     transparent: true,
     opacity: 0.8,
-    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a>'
+    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
 }).addTo(map);
 
 var overLayers = {

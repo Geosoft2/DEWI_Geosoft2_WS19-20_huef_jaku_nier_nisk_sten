@@ -11,7 +11,7 @@ const cors = require('cors');
 
 var api = express();
 
-
+api.use("/logo", express.static(__dirname + "/logo/"));
 api.use(express.json());
 api.use(express.urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000000 }));
 api.use(cookieParser());
