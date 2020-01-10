@@ -10,7 +10,7 @@ const chalk = require('chalk');
 const util = require('util');
 const setIntervalPromise = util.promisify(setInterval);
 const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather');
-
+const {getRadarData} = require('./precipitation');
 
 /**
  * @desc requests the WFS from the DWD and stores the result.
@@ -27,6 +27,9 @@ const requestExtremeWeather = function(){
     format_option: 'charset:UTF-8',
     srsName: 'EPSG:4326'
   };
+
+  getRadarData("rw");
+
   if(isSeverity()){
     var severity = readSeverity();
     defaultParameters.cql_filter = "SEVERITY in ("+severity+")";

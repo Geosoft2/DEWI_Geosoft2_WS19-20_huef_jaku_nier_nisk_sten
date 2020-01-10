@@ -1,12 +1,20 @@
 # https://bookdown.org/brry/rdwd/use-case-recent-hourly-radar-files.html
 
 # load packages
-library(rdwd)
-library(dwdradar)
-library(raster)
-library(leafletR)
+needs(dplyr)
+needs(rdwd)
+needs(dwdradar)
+needs(raster)
+needs(leafletR)
+needs(sp)
+needs(rgeos)
+needs(magrittr)
 
+attach(input[[1]])
 
+# stop("bis hier", call. = TRUE)
+
+dwd_url <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/"
 rw_base <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/rw"
 
 # set url
@@ -31,8 +39,8 @@ reclass = c(0,0.25,1, 0.25,1,2, 1,5,3, 5,10000,4)
 
 # build matrix
 reclass_m = matrix(reclass,
-                   ncol = 3,
-                   byrow = TRUE)
+ncol = 3,
+byrow = TRUE)
 # reclass
 rw_proj_class = reclassify(rw_proj, reclass_m)
 
@@ -41,4 +49,4 @@ pol = rasterToPolygons(rw_proj_class, n = 4, na.rm = TRUE, dissolve = TRUE)#
 
 # convert SpatialPolygonsDataFrame to GeoJSON
 geojson <- tempfile()
-toGeoJSON(pol, name=basename(geojson), dest=tempdir())
+result <- toGeoJSON(pol, name=basename(geojson), dest=tempdir())
