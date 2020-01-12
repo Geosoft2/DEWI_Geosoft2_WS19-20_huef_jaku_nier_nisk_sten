@@ -5,7 +5,12 @@ let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
-function twitterSandboxSearch(bounds, filter) {
+/**
+ * Search for tweets and show them in the List
+ * @param {JSON} bounds where the tweest must be in
+ * @param {array} filter array of keyword to filter the tweets after
+ */
+function twitterSearch(bounds, filter) {
 
     let words= [];
     while(filter.indexOf(" ") !== -1){
@@ -55,7 +60,7 @@ function startStream() {
 
 /**
  * updates the TwitterStream with a new boundingbox
- * @param bbox
+ * @param {JSON} bbox to 
  */
 function updateTwitterStream(bbox, keyword) {
     $.ajax({
@@ -87,29 +92,55 @@ class TwitterList extends React.Component {
 
     }
 
+    /**
+     * @desc Function wich starts when the page is loaded
+     */
     componentDidMount() {
         this.startSocket();
     }
 
+    /**
+     * @desc Shows tweets in the List
+     * @param {JSON} tweet to be displayerd
+     */
     setTweets = (tweets) => {
+        //sort Tweets
         tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)})
         this.setState({tweets: tweets})
     };
 
+    /**
+     * @desc Returns the current value of the variable
+     * @param {string} state name of the variable to return
+     * @return {*} value of the Parameter
+     */
     getState = (state) => {
         return this.state[state]
     };
 
+    /**
+     * @desc Opens a Link in a new Tab
+     * @param {String} Link to go to
+     */
     goToTweet = (url) =>{
         window.open(url);
     };
 
-    pushTweets= () => {
+    /**
+     * @desc Adds a tweet to the List
+     * @param {JSON} tweet to add
+     */
+    pushTweets= (tweet) => {
         const tweets2 = this.state.tweets;
         tweets2.push(tweet);
         this.setState({tweets: tweets2});
     };
 
+    /**
+     * @desc Highlites a Tweet and scroll eventually to it
+     * @param {JSON} coordinates of wich Tweet shoul be highlited
+     * @param {Boolean} scroll boolean if to the tweet should be scrolled
+     */
     setHighlighted= (coordinates, scroll) => {
         this.setState({highlighted: coordinates}, () =>{
             if(scroll){
@@ -119,6 +150,10 @@ class TwitterList extends React.Component {
         })
     };
 
+    /**
+     * @desc Event handler if a tweet was clicked
+     * @param {JSON} tweet that was clicked
+     */
     tweetClicked = (tweet) => {
         const coordinates = {lat: tweet.geometry.coordinates[1], lng: tweet.geometry.coordinates[0]};
         if(JSON.stringify(this.state.highlighted)=== JSON.stringify(coordinates)){
@@ -131,38 +166,15 @@ class TwitterList extends React.Component {
         }
     };
 
+    /**
+     * @desc Starts a socket listener
+     */
     startSocket= () => {
         const self=this;
         socket.on('timeout', function (timeout) {
             self.setState({timeout: timeout})
         });
     };
-
-    /**
-    testTwitter = () => {
-
-        const self = this;
-        socket.on('tweet', function (tweet) {
-            const tweets2 = self.state.tweets;
-            tweets2.push(tweet);
-            self.setState({tweets: tweets2});
-        });
-        socket.on('timeout', function (timeout) {
-            console.log(timeout);
-            self.setState({timeout: timeout})
-        });
-        /* $.ajax({
-             url: "/api/v1/twitter/stream", // URL der Abfrage,
-             data:{},
-             type: "get"
-         })
-             .done(function (response) {
-             })
-             .fail(function (err) {
-                 console.log(err)
-             });
-
-    } */
 
 
         render()
@@ -182,8 +194,6 @@ class TwitterList extends React.Component {
 
             const cards = [];
             cards.unshift(e("br"));
-
-            
 
             this.state.tweets.map(function (item, i) {
                 const media = [];

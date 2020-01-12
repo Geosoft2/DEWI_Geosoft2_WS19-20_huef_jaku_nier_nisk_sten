@@ -24,6 +24,9 @@ let bbox;
 let keyword;
 
 var token;
+/**
+ * Creates a twiitter token
+ */
 const getToken= function(){
     //create twitter access Token
     return new Promise(

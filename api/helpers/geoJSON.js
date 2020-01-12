@@ -34,6 +34,11 @@ const bboxToPolygon = function(bbox){
  ];
 };
 
+/**
+ * Proofs if the bbox is a valid bbox
+ * @param {*} bbox 
+ * @returns {boolean}
+ */
 const isBbox = function(bbox){
   if(!bbox.southWest){
     return {error : 'bbox needs a southWest attribute. bbox Schema:  "bbox" : {' +

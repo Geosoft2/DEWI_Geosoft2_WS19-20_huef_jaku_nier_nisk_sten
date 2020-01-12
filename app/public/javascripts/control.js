@@ -5,7 +5,12 @@
 "use strict";
 let wfsLayer;
 
-
+/**
+ * @desc Intial function which starts when the page is loaded
+ * @param {*} boundingbox to set the map extend to
+ * @param {*} events weather events to show in the map
+ * @param {*} filter initial filter to search the tweets after
+ */
 async function initial (boundingbox, events, filter) {
 
     document.getElementById("progressbar").value =25;
@@ -30,7 +35,7 @@ async function initial (boundingbox, events, filter) {
       // Start 2 "jobs" in parallel and wait for both of them to complete
       await Promise.all([
           (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
-          (async()=>twitterResponse = await twitterSandboxSearch(bbox, filter))() //TODO: get the tweets from mongodb and not direct from Twitter
+          (async()=>twitterResponse = await twitterSearch(bbox, filter))() //TODO: get the tweets from mongodb and not direct from Twitter
       ]);
   addTweets(wfsLayer, twitterResponse, bbox);
   }
@@ -41,7 +46,7 @@ async function initial (boundingbox, events, filter) {
  * but there is a cookie with an event this is used. If there is no event in the link and in the cookie all events are
  * activated.
  * a cookie
- * @param events
+ * @param {} events
  * @returns {string[]|any}
  */
 function getInitialEvents(events) {
@@ -63,10 +68,10 @@ function getInitialEvents(events) {
 
 
 /**
- * @desc function which is called in the intitial function. If there is an textfilter is the link it is used. If not
+ * @desc function which is called in the intitial function. If there is an textfilter in the link it is used. If not
  * but there is a cookie with an texfilter this is used. If there is no filter in the link and in the cookie the texfilter is empty
- * @param filter
- * @returns {string}
+ * @param {string} filter set in the link
+ * @returns {string} value of the filter
  */
  function getInitialFilter(filter) {
 
@@ -119,6 +124,9 @@ function getInitialEvents(events) {
    }
  }
 
+ /**
+  * @desc Proofs if a Cookie with a Bbox set. If yes sets the Map Extent to this Bbox
+  */
 function getBoundingBboxFromCookie() {
     var newDefaultBbox = getCookie("defaultBbox");
 
@@ -140,6 +148,9 @@ function getBoundingBboxFromCookie() {
     return (false);
 }
 
+/**
+ * @desc Event Handler if the map extend was changed by the user
+ */
 map.on('moveend', function (e) {
     // function which is triggered automatically when the map gets moved
     var bounds = map.getBounds();
@@ -148,7 +159,7 @@ map.on('moveend', function (e) {
 });
 
 /**
- * @desc new extreme weather data are loaded after each change of map-extent
+ * @desc new extreme weather data and tweets are loaded after each change of map-extent
  * @param {json} bounds coordinates of current map-extent
  */
 async function mapExtendChange(bounds) {
@@ -167,11 +178,14 @@ async function mapExtendChange(bounds) {
     let twitterResponse;
     await Promise.all([
         (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
+        (async()=>twitterResponse = await twitterSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
     ]);
     addTweets(wfsLayer, twitterResponse, bounds)
 }
 
+/**
+ * @desc new extreme weather data and tweets are loaded after each change of the events or filter
+ */
 async function eventsOrFilterChanged() {
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
@@ -190,8 +204,8 @@ async function eventsOrFilterChanged() {
 
 /**
  * @desc function for requesting a cookie which was stored before
- * @param cname name of the cookie
- * @returns {string}
+ * @param {Sting} cname name of the cookie
+ * @returns {string} value of cookie
  * @source https://www.w3schools.com/js/js_cookies.asp
  */
 function getCookie(cname) {
@@ -210,6 +224,9 @@ function getCookie(cname) {
     return "";
 }
 
+/**
+ * @desc Creates some Socket-Client Listener
+ */
  function startSocket() {
     socket.on('tweet', function (tweet) {
         var bounds = map.getBounds();
@@ -235,6 +252,10 @@ function getCookie(cname) {
     });
 }
 
+/**
+ * @desc Creates a valid bbox out of a string which contains a bbox, sets the map extend to this bbox
+ * @param {String} bbox 
+ */
 function getBoundingBoxFromUrl(bbox) {
   var splitBbox = bbox.split(',');
   // bounding box from URL
@@ -254,6 +275,12 @@ function getBoundingBoxFromUrl(bbox) {
   return bbox;
 }
 
+/**
+ *  @desc Updates the URL to the user-specified data
+ * @param {JSON} bbox chosen by the user
+ * @param {Array} events chosen by the user
+ * @param {Array} filter chosen by the user
+ */
 function updateURL(bbox, events, filter) {
 
   var parameters = {};
@@ -280,7 +307,10 @@ function updateURL(bbox, events, filter) {
   window.history.pushState("object or string", "Title", "/?" + querystring);
 }
 
-
+/**
+ * Shows a snackbar on the Top Right
+ * @param {String} text to show in the snackbar
+ */
 function snackbarWithText(text) {
     const date = Date.now()
     $('.snackbar').prepend(

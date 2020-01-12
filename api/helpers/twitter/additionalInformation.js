@@ -4,7 +4,7 @@ const turf= require('@turf/turf');
 
 /**
  * Returns information of an specified user
- * @param userId of the user
+ * @param userData deliverd by the TwitterAPI
  * @returns <user infromation>
  */
 const getUserInformation =  function(userData){
@@ -14,12 +14,15 @@ const getUserInformation =  function(userData){
 
 
 /**
- * Returns information about an specified place
- * @param placeId of the place
+ * Returns specific information about an place, calculatest the accuracy
+ * @param placeInformation deliverd by the TwitterAPI
+ * @returns <place information>
  *
  */
 const getPlaceInformation = function(placeInformation){
                     var line = turf.lineString([[placeInformation.geo.bbox[0], placeInformation.geo.bbox[1]], [placeInformation.geo.bbox[2], placeInformation.geo.bbox[3]]]);
+                    //accuracy:diagonal of the bbox divided by 2, 
+                    //location: center of the bbox
                     var accuracy = turf.length(line, {units: 'meters'})/2;
                     if(accuracy == 0){ accuracy +=1000}
                     const parsedResult = {

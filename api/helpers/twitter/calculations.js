@@ -77,10 +77,20 @@ function bboxes(bbox){
 
 }
 
+/**
+ * Calculates meter to miles
+ * @param  meter 
+ * @returns miles
+ */
 function meterToMile(meter){
     return meter*0.0006213712;
 }
 
+/**
+ * Calculates miles to meters
+ * @param mile 
+ * @returns meters
+ */
 function mileToMeter(mile) {
     return mile/0.0006213712;
 }

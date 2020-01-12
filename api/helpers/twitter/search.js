@@ -138,6 +138,11 @@ const sandboxSearch = function(filter, area) {
     });
 };
 
+/**
+ * Requestst a Mongo DB search
+ * @param {string} filter keyword to filter after
+ * @param {json} bbox where the tweet must be in
+ */
 const mongoSearch = async function (filter, bbox) {
     var result = await getTweetsFromMongo(filter, bbox);
     return result;
