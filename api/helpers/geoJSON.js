@@ -36,7 +36,7 @@ const bboxToPolygon = function(bbox){
 
 /**
  * Proofs if the bbox is a valid bbox
- * @param {*} bbox 
+ * @param {*} bbox
  * @returns {boolean}
  */
 const isBbox = function(bbox){
@@ -76,46 +76,40 @@ const isBbox = function(bbox){
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(!bbox.northEast){
-    return {error : 'bbox needs a northEast attribute. bbox Schema:  "bbox" : {' +
-      '"southWest": {"lat": <double>, "lng": <double>}, ' +
-      '"northEast": {"lat": <double>, "lng": <double>}' +
-      '},'}
-  }
-  if(typeof(bbox.northEast.lat) !== "number"){
+  if(typeof(Number(bbox.northEast.lat)) !== "number"){
     return {error : 'northEast.lat must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.northEast.lng) !== "number"){
+  if(typeof(Number(bbox.northEast.lng)) !== "number"){
     return {error : 'northEast.lng must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.southWest.lat) !== "number"){
+  if(typeof(Number(bbox.southWest.lat)) !== "number"){
     return {error : 'southWest.lat must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.southWest.lng) !== "number"){
+  if(typeof(Number(bbox.southWest.lng)) !== "number"){
     return {error : 'southWest.lng must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(bbox.southWest.lat< bbox.northEast.lat){
-    return {error: "southWest.lat must be higher tha nortEast.lat"}
+  if(Number(bbox.southWest.lat) > Number(bbox.northEast.lat)){
+    return {error: "southWest.lat must be lower than northEast.lat"}
   }
-  if(bbox.southWest.lng< bbox.northEast.lng){
-    return {error: "southWest.lng must be higher tha nortEast.lng"}
+  if(Number(bbox.southWest.lng) > Number(bbox.northEast.lng)){
+    return {error: "southWest.lng must be lower than northEast.lng"}
   }
-  if(bbox.southWest.lat > 90 || bbox.southWest.lat < -90 || bbox.northEast.lat > 90 || bbox.northEast.lat < -90){
+  if(Number(bbox.southWest.lat) > 90 || Number(bbox.southWest.lat) < -90 || Number(bbox.northEast.lat) > 90 || Number(bbox.northEast.lat) < -90){
     return {error: "Latitude mus be betweet -90 and 90"}
   }
-  if(bbox.southWest.lng > 180 || bbox.southWest.lng < -180 || bbox.northEast.lng > 180 || bbox.northEast.lng < -180){
+  if(Number(bbox.southWest.lng) > 180 || Number(bbox.southWest.lng) < -180 || Number(bbox.northEast.lng) > 180 || Number(bbox.northEast.lng) < -180){
     return {error: "Longitude mus be betweet -180 and 180"}
   }
   return true;

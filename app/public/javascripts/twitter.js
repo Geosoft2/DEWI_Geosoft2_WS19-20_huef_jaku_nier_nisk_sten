@@ -10,7 +10,7 @@ let setHighlighted=  () => {};
  * @param {JSON} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
-function twitterSearch(bounds, filter, extremeWeatherEvents) {
+function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
 
     // let words= [];
     // while(filter.indexOf(" ") !== -1){

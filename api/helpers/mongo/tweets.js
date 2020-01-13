@@ -100,20 +100,22 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
     // }
 
     var regExpWords;
-    if(filter && filter.length > 0){
-        const valid= filterValid(filter)
+    if(filter){
+        const valid= filterValid(filter);
         if(valid.error){
             return{
                 error: {
                     code: 400,
                     message : valid.error
                 }
-            }
+            };
         }
-        regExpWords = filter.map(function(e){
-        var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
-        return new RegExp(regExpEscape, "i");
-        });
+        if(filter.length > 0){
+          regExpWords = filter.map(function(e){
+            var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+            return new RegExp(regExpEscape, "i");
+          });
+        }
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
@@ -121,17 +123,15 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
     var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
     var multiPolygon = featureCollectionToMultiPolygon(extremeWeatherEvents);
     if(bbox){
-        const valid=isBbox(bbox)
+        const valid = isBbox(bbox);
         if(valid.error){
-            return{
+            return {
                 error: {
                     code: 400,
                     message : valid.error
                 }
-            }
+            };
         }
-            var polygonCoords = [bboxToPolygon(bbox)];
-            var polygon = {type: 'Polygon', coordinates: polygonCoords};
     }
     try {
       var match = [{
@@ -163,7 +163,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
           }
         });
       }
-      const result= await Tweet.aggregate(match).sort({createdAt: 'ascending'});
+      const result= await Tweet.aggregate(match);
       console.log("filtered Tweets: ");
       console.log(result);
       return result;
@@ -173,7 +173,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
             code: 500,
             message: err,
             }
-        }
+        };
     }
 };
 

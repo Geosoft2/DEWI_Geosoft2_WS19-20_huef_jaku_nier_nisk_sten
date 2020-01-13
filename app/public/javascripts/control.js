@@ -37,7 +37,7 @@ async function initial (boundingbox, events, filter) {
           (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
 
 
-          (async()=> twitterResponse = await twitterSandboxSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
 
   addTweets(twitterResponse);
   }
@@ -192,7 +192,7 @@ async function mapExtendChange(bounds) {
     let twitterResponse;
     // await Promise.all([
         /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
     // ]);
     addTweets(twitterResponse)
 }
@@ -211,7 +211,7 @@ async function eventsOrFilterChanged() {
     removeAllTweets();
     // await Promise.all([
         /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
     // ]);
     addTweets(twitterResponse);
 }
@@ -290,8 +290,8 @@ function getCookie(cname) {
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer, tweet.createdAt);
-        addTweets(twitterResponse)
+        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
+        addTweets(twitterResponse);
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('Weather changed.');
@@ -306,7 +306,7 @@ function getCookie(cname) {
         let twitterResponse;
         // await Promise.all([
             /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-            /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+            /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
         // ]);
         // removeTweets(wfsLayer, bounds);
         addTweets(twitterResponse);
