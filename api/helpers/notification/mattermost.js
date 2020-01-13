@@ -17,15 +17,32 @@ const mattermostNotification = function (weatherChanges) {
     // parameter of the URL
     var rootUrl = config.notification.mattermost.url.parameter.yourMattermostSite;
     var generatedHookKey = config.notification.mattermost.url.parameter.generatedHookKey;
+    var present; // tense and plural/ singular for notification
+    var past; // tense and plural/ singular for notification
+
+    // specification concerning plural/ singular
+    if (weatherChanges.deleted > 1 || weatherChanges.deleted === 0) {
+        past = " were ";
+    }
+    else {
+        past = " was ";
+    }
+
+    if (weatherChanges.new > 1 || weatherChanges.new === 0) {
+        present = " are ";
+    }
+    else {
+        present = " is ";
+    }
 
     // parameter of the payload (defines the notification)
-    var channel = "dewi_service";
+    var channel = "dewi_service"; // channel in the DEWI-Team: "dewi_service"
     var username  = "DEWI_service";
     var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg"
     var text    = 'Dear user, \n' +
         'the weather situation has changed. Here is a small summary concerning the changes: \n' +
-        'There were ' + weatherChanges.deleted + ' extreme weather events deleted, ' +
-        'and there are ' + weatherChanges.new + ' new extreme weather events. \n' +
+        'There' + past + weatherChanges.deleted + ' extreme weather events deleted, ' +
+        'and there' + present + weatherChanges.new + ' new extreme weather events. \n' +
         'If you like to have an overview about what has changed, simply visit our ' +
         '[(homepage)](http://localhost:3000)!\n' + //TODO docker
         'Best, your DEWI team!';

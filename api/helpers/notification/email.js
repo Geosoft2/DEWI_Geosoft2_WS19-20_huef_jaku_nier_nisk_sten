@@ -5,6 +5,8 @@
 const nodemailer = require('nodemailer');
 const config = require('config-yml');
 const path = require('path');
+const chalk = require('chalk');
+
 
 /**
  * @desc function which sends an email if there is a change concerning the extrem weather events. Therefore the function
@@ -13,6 +15,24 @@ const path = require('path');
  * @param weatherChanges
  */
 const emailNotification = function(weatherChanges){
+
+    var present; // tense and plural/ singular for notification
+    var past; // tense and plural/ singular for notification
+
+    // specification concerning plural/ singular
+    if (weatherChanges.deleted > 1 || weatherChanges.deleted === 0) {
+        past = " were ";
+    }
+    else {
+        past = " was ";
+    }
+
+    if (weatherChanges.new > 1 || weatherChanges.new === 0) {
+        present = " are ";
+    }
+    else {
+        present = " is ";
+    }
 
     // gmx-email account
     let transporter = nodemailer.createTransport({
@@ -28,6 +48,7 @@ const emailNotification = function(weatherChanges){
             rejectUnauthorized: config.notification.email.options.tls.rejectUnauthorized
         }
     });
+
     var mailOptions = {
         from: config.notification.email.to.sender, // sender address
         to: config.notification.email.to.receiver, // list of receivers
@@ -35,8 +56,8 @@ const emailNotification = function(weatherChanges){
         html: 'Dear user,<br>' +
             '<p>the weather situation has changed. Here is a small summary concerning the changes:' +
             '<ul>' +
-            '<li>There were <b>' + weatherChanges.deleted + '</b> extreme weather events deleted,</li>' +
-            '<li>and there are <b>' + weatherChanges.new + '</b> new extreme weather events.</li>' +
+            '<li>There' + past + '<b>' + weatherChanges.deleted + '</b>' + ' extreme weather events deleted,</li>' +
+            '<li>and there' + present + '<b>' + weatherChanges.new + '</b>' + ' new extreme weather events.</li>' +
             '</ul></p>' +
             '<p>If you like to have an overview about what has changed, simply visit our ' +
             '<a href="http://localhost:3000" target="_blank">Homepage</a>.</p>' + //TODO docker
@@ -52,9 +73,9 @@ const emailNotification = function(weatherChanges){
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            console.log(error);
+            console.log(chalk.red(error));
         } else {
-            console.log('Email sent: ' + info.response);
+            console.log(chalk.green('Email sent: ' + info.response));
         }
     });
 };

@@ -53,7 +53,7 @@ notification:
   email:
     from:
       adress: dewi_service@gmx.de
-      password: qwdewi123
+      password: # TODO
     to:
       sender: \"DEWI\" <dewi_service@gmx.de>
       receiver: dewi_service@gmx.de
@@ -68,5 +68,7 @@ notification:
       parameter:
         yourMattermostSite: zivmattermost.uni-muenster.de
         generatedHookKey: m9oghpjxztfybjatsrmw4u437e
+        # Hook for the DEWI-Team: m9oghpjxztfybjatsrmw4u437e
+        # Hook for the GeoSoft2-Team: qmpo3bj8u3ff7p8corfncqkbrr
 
 
