@@ -42,12 +42,14 @@ const postSandboxSearch = async function (req, res){
 };
 
 const postMongoSearch = async function (req, res) {
-    const  q = req.body.filter;
+    const filter = req.body.filter;
     const bbox= req.body.bbox;
+    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const createdAt = req.body.createdAt;
 
-    
 
-    const result= await mongoSearch(q, bbox);
+
+    const result = await mongoSearch(filter, bbox, extremeWeatherEvents, createdAt);
 
     if(result.error){
         res.status(result.error.code).send({

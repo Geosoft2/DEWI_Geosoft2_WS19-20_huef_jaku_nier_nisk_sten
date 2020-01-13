@@ -10,36 +10,35 @@ let setHighlighted=  () => {};
  * @param {JSON} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
-function twitterSearch(bounds, filter) {
+function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
-    let words= [];
-    while(filter.indexOf(" ") !== -1){
-        const word= filter.substring(0, filter.indexOf(" "));
-        filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
-        words.push(word);
-    }
-    words.push(filter);
+    // let words= [];
+    // while(filter.indexOf(" ") !== -1){
+    //     const word= filter.substring(0, filter.indexOf(" "));
+    //     filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
+    //     words.push(word);
+    // }
+    // words.push(filter);
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": words
+                "filter": filter,
+                "extremeWeatherEvents": extremeWeatherEvents,
+                "createdAt": createdAt
             },
-            type: "post",
-
-
+            type: "post"
         })
             .done(function (response) {
-                console.log(response);
                 resolve(response.tweets);
             })
             .fail(function (err) {
-                console.log(err)
-            })
-    })
-};
+                console.log(err);
+            });
+    });
+}
 
 /**
 
@@ -60,7 +59,7 @@ function startStream() {
 
 /**
  * updates the TwitterStream with a new boundingbox
- * @param {JSON} bbox to 
+ * @param {JSON} bbox to
  */
 function updateTwitterStream(bbox, keyword) {
     $.ajax({
@@ -69,15 +68,6 @@ function updateTwitterStream(bbox, keyword) {
         // contentType: "application/json",
         dataType: 'json',
         data: {bbox :bbox, keyword: keyword}
-        ,
-        // xhrFields: {
-        //     onprogress: function (e) {
-        //         if (e.lengthComputable) {
-        //             console.log(e.loaded / e.total * 100 + '%');
-        //             document.getElementById("progressbar").value =e;
-        //         }
-        //     }
-        // }
     })
 }
 
@@ -208,11 +198,11 @@ class TwitterList extends React.Component {
                 }
                 var place = e("span", null, "");
 
-           
+
                 if(item.place){
                  place= e("span", null, " Place: "+ item.place.name)
                 }
-            
+
 
                 const avatar = e(Avatar, {src: item.author.profileImage, className:"avatar"});
                 const header= e(CardHeader, {avatar: avatar,
@@ -247,8 +237,8 @@ class TwitterList extends React.Component {
  * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
  */
 function setDefaultSearchWord() {
-    var searchWord = $('#textFilter').val();
-    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var searchWord = getTweetFilters();
+    // $('#textFilter').attr("placeholder", "default search word: " + searchWord);
     var cookieValue = JSON.stringify(searchWord);
     setCookie("defaultSearchWord", cookieValue, 1000000);
 }
@@ -271,7 +261,7 @@ $(textFilter).keypress(function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode == '13') {
         console.log("keyevent");
-        eventsOrFilterChanged();
+        searchTweets();
     }
 })
 

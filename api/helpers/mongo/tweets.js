@@ -4,8 +4,9 @@
 
 const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
+const io = require("../socket-io").io;
 // Tweet.index({text: 'text'});
-const {bboxToPolygon, isBbox} = require('../geoJSON');
+const {bboxToPolygon, isBbox, featureCollectionToMultiPolygon} = require('../geoJSON');
 
 /**
  * save tweet in database if it is not already stored
@@ -58,6 +59,7 @@ const postTweet = async function (tweet) {
             try {
                 console.log(newTweet);
                 await newTweet.save();
+                io.emit('tweet', newTweet);
                 return "tweet stored in db.";
             } catch (e) {
                 return e;
@@ -66,7 +68,7 @@ const postTweet = async function (tweet) {
     }
 };
 
-const filterValid = (filter) => { 
+const filterValid = (filter) => {
         if(!Array.isArray(filter)){
             return{error: "filter mus be an array"}
         }
@@ -85,7 +87,7 @@ const filterValid = (filter) => {
  * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
  * @returns {Promise<void>}
  */
-const getTweetsFromMongo = async function (filter, bbox) {
+const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
 
@@ -108,13 +110,16 @@ const getTweetsFromMongo = async function (filter, bbox) {
                 }
             }
         }
-        regExpWords = filter.map(function(e){ 
+        regExpWords = filter.map(function(e){
         var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
         return new RegExp(regExpEscape, "i");
         });
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
+    var polygonCoords = [bboxToPolygon(bbox)];
+    var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+    var multiPolygon = featureCollectionToMultiPolygon(extremeWeatherEvents);
     if(bbox){
         const valid=isBbox(bbox)
         if(valid.error){
@@ -127,20 +132,41 @@ const getTweetsFromMongo = async function (filter, bbox) {
         }
             var polygonCoords = [bboxToPolygon(bbox)];
             var polygon = {type: 'Polygon', coordinates: polygonCoords};
-    } 
+    }
     try {
-        var query = {};
-        if(polygon){
-         query.geometry = {$geoWithin: {$geometry: polygon}};
+      var match = [{
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: bboxPolygon}
+          }
         }
-        if (regExpWords) {
-            // query.$text = {$search: words};
-            query.text = {$in: regExpWords};
+      }, {
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: multiPolygon}
+          }
         }
-        const result= await Tweet.find(query);
-        console.log("filtered Tweets: ");
-        console.log(result)
-        return result;
+      }];
+
+      if (createdAt) {
+        match.push({
+          $match: {
+            createdAt: {$eq: new Date(createdAt)}
+          }
+        });
+      }
+      if (regExpWords) {
+        match.push({
+          $match: {
+            // $text = {$search: words};
+            text: {$in: regExpWords}
+          }
+        });
+      }
+      const result= await Tweet.aggregate(match).sort({createdAt: 'ascending'});
+      console.log("filtered Tweets: ");
+      console.log(result);
+      return result;
     } catch (err) {
         console.log(err);
         return {error: {

@@ -31,13 +31,15 @@ async function initial (boundingbox, events, filter) {
 
 
   if (bbox) {
-      updateTwitterStream(bbox, filter);
+      // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
-      await Promise.all([
-          (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
-          (async()=>twitterResponse = await twitterSearch(bbox, filter))() //TODO: get the tweets from mongodb and not direct from Twitter
-      ]);
-  addTweets(wfsLayer, twitterResponse, bbox);
+
+          (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
+
+
+          (async()=> twitterResponse = await twitterSandboxSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+
+  addTweets(twitterResponse);
   }
 }
 
@@ -78,13 +80,25 @@ function getInitialEvents(events) {
    var newDefaultFilter = getCookie("defaultSearchWord");
 
    if(filter) {
-     $('#textFilter').val(filter);
+     console.log(filter);
+     filter = JSON.parse(filter);
+     // $('#textFilter').val(filter);
+     for(var elem in filter){
+       var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
+       if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+        createFilterBadge(filter[elem]);
+       }
+     }
      return filter;
    }
    else if (newDefaultFilter!="") {
      newDefaultFilter = JSON.parse(newDefaultFilter);
-     $('#textFilter').val(newDefaultFilter);
-     $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
+     for(var elem in newDefaultFilter){
+       createFilterBadge(newDefaultFilter[elem]);
+     }
+     // $('#textFilter').val(newDefaultFilter);
+     // $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
      return newDefaultFilter;
    }
    else  {
@@ -170,17 +184,17 @@ async function mapExtendChange(bounds) {
     // TODO: uncomment updateTwitterStream after setStreamfilter works
 
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     const tweets= getState('tweets');
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
     let twitterResponse;
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse)
 }
 
 /**
@@ -190,16 +204,59 @@ async function eventsOrFilterChanged() {
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse);
+}
+
+function getTweetFilters(){
+  var filters = [];
+  $('.tweetFilter').each(function(index, filter){
+    filters.push(filter.innerText);
+  });
+  return filters;
+}
+
+function searchTweets(){
+  var input = $('#textFilter');
+  if(input.val() !== ""){
+    var filter = input.val();
+    input.val("");
+    var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+    console.log(document.getElementById('textFilter'+encodeURIComponent('#wetter')));
+    if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+      document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+      createFilterBadge(filter);
+      eventsOrFilterChanged();
+    }
+  }
+}
+
+function createFilterBadge(filter){
+  var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+  $('#textFilters').append(
+    '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
+      filter+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+        '<span class="fas fa-times fa-xs">'+
+        '</span>'+
+      '</button>'+
+    '</span>'
+  );
+}
+
+function removeElementById(id){
+  var elem = document.getElementById(id);
+  elem.parentNode.removeChild(elem);
+  // $('#'+id.toString()).remove();
+  eventsOrFilterChanged();
 }
 
 /**
@@ -228,33 +285,37 @@ function getCookie(cname) {
  * @desc Creates some Socket-Client Listener
  */
  function startSocket() {
-    socket.on('tweet', function (tweet) {
+    socket.on('tweet', async function (tweet) {
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
-        addTweets(wfsLayer, [tweet], bounds)
+        var filter = getTweetFilters();
+        var twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer, tweet.createdAt);
+        addTweets(twitterResponse)
     });
     socket.on('weatherchanges', async function (data) {
+        browserNotification('Weather changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log('Weather changed');
         console.log(data.stats);
         var events = $('#selectEvent').val();
-        var filter = $('#textFilter').val();
-        removeTweets(wfsLayer, bounds);
+        var filter = getTweetFilters();
+        removeAllTweets();
+        // removeTweets(wfsLayer, bounds);
         let twitterResponse;
-        await Promise.all([
-            (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-            (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-        ]);
-        removeTweets(wfsLayer, bounds);
-        addTweets(wfsLayer, twitterResponse, bounds);
+        // await Promise.all([
+            /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+            /*(async()=>*/twitterResponse = await twitterSandboxSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+        // ]);
+        // removeTweets(wfsLayer, bounds);
+        addTweets(twitterResponse);
     });
 }
 
 /**
  * @desc Creates a valid bbox out of a string which contains a bbox, sets the map extend to this bbox
- * @param {String} bbox 
+ * @param {String} bbox
  */
 function getBoundingBoxFromUrl(bbox) {
   var splitBbox = bbox.split(',');
@@ -298,8 +359,8 @@ function updateURL(bbox, events, filter) {
   if(events[0]){
     parameters.events = JSON.stringify(events);
   }
-  if(filter){
-    parameters.textfilter = filter;
+  if(filter[0]){
+    parameters.textfilter = JSON.stringify(filter);
   }
   // create querystring
   var querystring = $.param(parameters);

@@ -120,7 +120,7 @@ function removeAllTweets(){
 
 /**
  * @desc Removes all Tweets which are not in wfsLayers or in the current Map extend and updates the list
- * @param {JSON} wfsLayers to proof if they contains the tweet 
+ * @param {JSON} wfsLayers to proof if they contains the tweet
  * @param {JSON} bounds to proof if they contains the tweet
  */
 function removeTweets(wfsLayers, bounds){
@@ -149,21 +149,20 @@ function removeTweets(wfsLayers, bounds){
  * @param {Array} tweets tweets deliverd by the API
  * @param {JSON} bounds bounds of the current map extend
  */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
-
-    //prrof if tweet is in the WFSLayer
-    for (var t in tweets) {
-        if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-            tweetsInWfsLayers.push(tweets[t]);
-         }
-    }
+function addTweets(tweets) {
+    // var tweetsInWfsLayers = [];
+    //
+    // for (var t in tweets) {
+    //     if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+    //         tweetsInWfsLayers.push(tweets[t]);
+    //     }
+    // }
 
     var newTweets = [];
-    for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
+    for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
         // should only add a marker if not already one with the same id exists
-        if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
-            newTweets.push(tweetsInWfsLayers[t])
+        if (!isMarkerAlreadyThere(tweets[t])) {
+            newTweets.push(tweets[t])
         }
     }
 
@@ -345,7 +344,7 @@ function requestExtremeWeather(bbox, events) {
                 console.log(err);
                 console.log(err.message);
             });
-    })
+    });
 }
 
 
@@ -414,7 +413,7 @@ function setCookie(cname, cvalue, exdays) {
 
 /**
  * @desc Changes the colors of the marker, if they should be highlitet
- * @param {JSON} coordinates of the tweets that shoul be highlited 
+ * @param {JSON} coordinates of the tweets that shoul be highlited
  */
 function setMarkerColor(coordinates) {
     for (var marker of markersInMap){
