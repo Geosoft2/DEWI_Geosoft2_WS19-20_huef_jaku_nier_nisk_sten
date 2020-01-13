@@ -24,7 +24,7 @@ a {
   color: #00B7FF;
 }
 
-a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
+.faq-link, .faq-link:hover, a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
   color: black;
 }
 
@@ -97,6 +97,14 @@ a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited{
 /* ensure that the event selectpicker is always visible in the foreground */
 .dropdown.bootstrap-select.show-tick {
   z-index: 1001;
+}
+
+
+.list-group-item.list-group-item-action.active {
+  background-color: lightgrey;
+  border-color: lightgrey;
+  color: black;
+  font-weight: bold;
 }
 
 progress[value] {
