@@ -117,36 +117,47 @@ const isBbox = function(bbox){
 
 
 /**
- * @desc creates a MultiPolygon from a FeatureCollection
- * @see https://docs.mongodb.com/manual/reference/geojson/#multipolygon
+ * @desc creates a GeomtryCollection of MultiPolygons from a FeatureCollection of MultiPolygons
+ * @see https://docs.mongodb.com/manual/reference/geojson/#geometrycollection
  * @param {geoJson} featureCollection
- * @return {geoJson} MultiPolygon
+ * @return {geoJson} geometryCollection
  */
-const featureCollectionToMultiPolygon = function(featureCollection){
-  var multiPolygon = {
-    type: "MultiPolygon"
+const featureCollectionToGeometryCollection = function(featureCollection){
+  var geometryCollection = {
+    type: "GeometryCollection",
+    geometries: []
   };
-  var coordinates = [];
   for(var feature in featureCollection.features){
-    var coordinatesFloat = coordinatesStringToFloat(featureCollection.features[feature].geometry.coordinates);
-    coordinates.push([coordinatesFloat]);
+    var coordinatesFloat = multiCoordinatesStringToFloat(featureCollection.features[feature].geometry.coordinates);
+    geometryCollection.geometries.push({
+      type: "MultiPolygon",
+      coordinates: [coordinatesFloat]
+    });
   }
-  multiPolygon.coordinates = coordinates;
-  return multiPolygon;
+  return geometryCollection;
 };
 
 
-const coordinatesStringToFloat = function(coordinates){
-  var coordinatesFloat = [];
-  for(var i = 0; i < coordinates[0][0].length; i++){
-    coordinatesFloat.push([parseFloat(coordinates[0][0][i][0]), parseFloat(coordinates[0][0][i][1])]);
+/**
+ * @desc converts string coordinates into float coordinates of a multidimensional array
+ * @param {array} coordinates mutidimensional array of "string"-coordinates
+ * @return {array} mutidimensional array of "float"-coordinates
+ */
+const multiCoordinatesStringToFloat = function(coordinates){
+  var coordinatesMulti = [];
+  for(var i = 0; i < coordinates[0].length; i++){
+    var coordinatesFloat = [];
+    for(var j = 0; j < coordinates[0][i].length; j++){
+        coordinatesFloat.push([parseFloat(coordinates[0][i][j][0]), parseFloat(coordinates[0][i][j][1])]);
+    }
+    coordinatesMulti.push(coordinatesFloat);
   }
-  return coordinatesFloat;
+  return coordinatesMulti;
 };
 
 module.exports = {
   makeGeoJSonFromFeatures,
   bboxToPolygon,
   isBbox,
-  featureCollectionToMultiPolygon
+  featureCollectionToGeometryCollection
 };

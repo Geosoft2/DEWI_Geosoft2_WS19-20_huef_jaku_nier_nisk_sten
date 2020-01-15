@@ -6,7 +6,7 @@ const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
 const io = require("../socket-io").io;
 // Tweet.index({text: 'text'});
-const {bboxToPolygon, isBbox, featureCollectionToMultiPolygon} = require('../geoJSON');
+const {bboxToPolygon, isBbox, featureCollectionToGeometryCollection} = require('../geoJSON');
 
 /**
  * save tweet in database if it is not already stored
@@ -121,7 +121,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
     var polygonCoords = [bboxToPolygon(bbox)];
     var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
-    var multiPolygon = featureCollectionToMultiPolygon(extremeWeatherEvents);
+    var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
     if(bbox){
         const valid = isBbox(bbox);
         if(valid.error){
@@ -143,7 +143,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
       }, {
         $match: {
           geometry: {
-            $geoWithin: {$geometry: multiPolygon}
+            $geoWithin: {$geometry: geometryCollection}
           }
         }
       }];
