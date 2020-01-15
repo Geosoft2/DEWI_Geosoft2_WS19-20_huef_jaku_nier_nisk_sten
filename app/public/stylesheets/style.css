@@ -1,10 +1,7 @@
 html,body {
   height: 100%;
 }
-.snackbar{
-    position: absolute;
-    z-index:5000;
-}
+
 .wrapper {
   position:relative;
   width: 100%;
@@ -172,4 +169,16 @@ progress[value]::-moz-progress-bar {
 
     border-radius: 2px;
     background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+
+.snackbar{
+    position: absolute;
+    z-index:5000;
+}
+
+.toast {
+  margin-bottom: 0 !important;
+  margin-top: 0.75rem ;
+  border-radius: 0.25rem !important;
 }

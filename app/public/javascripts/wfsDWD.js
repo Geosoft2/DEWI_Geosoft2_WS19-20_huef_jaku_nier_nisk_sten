@@ -64,7 +64,7 @@ var baseLayers = {
 };
 
 // add pan-control in the bottomleft of the map
-L.control.pan({position: 'bottomleft'}).addTo(map);
+L.control.pan({position: 'bottomright'}).addTo(map);
 
 /**
  * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.

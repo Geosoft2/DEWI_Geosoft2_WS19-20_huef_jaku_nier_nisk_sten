@@ -17,9 +17,9 @@
   </head>
 
   <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
+
   <progress id="progressbar" value="22" max="100"></progress>
-  <div class="snackbar">
-  </div>
+
   <div class="wrapper">
 
     <% include partials/header.ejs %>
@@ -120,6 +120,11 @@
         </div>
 
       </div>
+
+      <!-- Snackbar -->
+      <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
+      </div>
+
     </main>
   </div>
 

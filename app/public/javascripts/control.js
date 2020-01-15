@@ -86,7 +86,7 @@ function getInitialEvents(events) {
      for(var elem in filter){
        var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
        if(!document.getElementById('textFilter'+filterUrlEncoded) ||
-          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter[elem].toLowerCase()){
         createFilterBadge(filter[elem]);
        }
      }
@@ -230,7 +230,6 @@ function searchTweets(){
     var filter = input.val();
     input.val("");
     var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
-    console.log(document.getElementById('textFilter'+encodeURIComponent('#wetter')));
     if(!document.getElementById('textFilter'+filterUrlEncoded) ||
       document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
       createFilterBadge(filter);
