@@ -17,9 +17,9 @@
   </head>
 
   <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
+
   <progress id="progressbar" value="22" max="100"></progress>
-  <div class="snackbar">
-  </div>
+
   <div class="wrapper">
 
     <% include partials/header.ejs %>
@@ -41,36 +41,37 @@
 
       <div class="row">
 
-        <div id="mapSection" class="col-md-8 order-md-1">
-
-          <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-              <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
-            </div>
-            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-              <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
-            </div>
-            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-              <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
-                <option value="THUNDERSTORM">thunderstorm</option>
-                <option value="WIND">wind</option>
-                <option value="TORNADO">tornado</option>
-                <option value="RAIN">rain</option>
-                <option value="HAIL">hail</option>
-                <option value="SNOWFALL">snowfall</option>
-                <option value="SNOWDRIFT">snowdrift</option>
-                <option value="FOG">fog</option>
-                <option value="FROST">frost</option>
-                <option value="GLAZE">glaze</option>
-                <option value="THAW">thaw</option>
-                <option value="POWERLINEVIBRATION">powerlinevibration</option>
-                <option value="UV">uv</option>
-                <option value="HEAT">heat</option>
-                <option value="TEST">test</option>
-              </select>
-            </div>
-            <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-              <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
+        <div id="mapSection" class="col-md-8 order-md-1" style="margin-top: 20px;">
+          <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
+            <div class="row" style="margin-left: 0; margin-right: 0">
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
+              </div>
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
+              </div>
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
+                  <option value="THUNDERSTORM">thunderstorm</option>
+                  <option value="WIND">wind</option>
+                  <option value="TORNADO">tornado</option>
+                  <option value="RAIN">rain</option>
+                  <option value="HAIL">hail</option>
+                  <option value="SNOWFALL">snowfall</option>
+                  <option value="SNOWDRIFT">snowdrift</option>
+                  <option value="FOG">fog</option>
+                  <option value="FROST">frost</option>
+                  <option value="GLAZE">glaze</option>
+                  <option value="THAW">thaw</option>
+                  <option value="POWERLINEVIBRATION">powerlinevibration</option>
+                  <option value="UV">uv</option>
+                  <option value="HEAT">heat</option>
+                  <option value="TEST">test</option>
+                </select>
+              </div>
+              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
+              </div>
             </div>
           </div>
         </div>
@@ -79,8 +80,9 @@
           <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
         </div>
 
-          <div id="twitterSection" class="col-md-4 order-md-2">
-            <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+        <div id="twitterSection" class="col-md-4 order-md-2" style="margin-top: 20px;">
+          <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
+            <div class="row" style="margin-right: 0px; margin-left: 0px;">
               <div class="col-md-4">
                 <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
                   <input id="textFilter" class="form-control" type="text" name="" value="" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)'/>
@@ -110,6 +112,7 @@
               </div>
             </div>
           </div>
+        </div>
 
         <div class="col-md-4 order-md-4" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
           <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
@@ -117,6 +120,11 @@
         </div>
 
       </div>
+
+      <!-- Snackbar -->
+      <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
+      </div>
+
     </main>
   </div>
 
