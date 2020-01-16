@@ -368,26 +368,3 @@ function updateURL(bbox, events, filter) {
   window.history.pushState("object or string", "Title", "/?" + querystring);
 }
 
-/**
- * Shows a snackbar on the Top Right
- * @param {String} text to show in the snackbar
- */
-function snackbarWithText(text) {
-    const date = Date.now()
-    $('.snackbar').prepend(
-        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(232,89,23);" ' +
-        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
-        '<div class="toast-header">'+
-        '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
-        '<strong class="mr-auto">'+text +'</strong>'+
-        '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
-        '<span aria-hidden="true">×</span>'+
-        '</button>'+
-        '</div>'+
-        // '<div class="toast-body">'+
-        //   'Some Toast Body'+
-        // '</div>'+
-        '</div>');
-    $('.toast.'+date).toast('show');
-
-}
