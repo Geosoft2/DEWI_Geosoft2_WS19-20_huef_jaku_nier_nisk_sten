@@ -138,10 +138,14 @@ const sandboxSearch = function(filter, area) {
     });
 };
 
-const mongoSearch = async function (filter, bbox) {
-    var tweets = await getTweetsFromMongo(filter, bbox);
-    console.log(tweets);
-    return tweets;
+/**
+ * Requestst a Mongo DB search
+ * @param {string} filter keyword to filter after
+ * @param {json} bbox where the tweet must be in
+ */
+const mongoSearch = async function (filter, bbox, extremeWeatherEvents, createdAt) {
+    var result = await getTweetsFromMongo(filter, bbox, extremeWeatherEvents, createdAt);
+    return result;
 };
 
 

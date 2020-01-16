@@ -4,8 +4,9 @@
 
 const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
+const io = require("../socket-io").io;
 // Tweet.index({text: 'text'});
-const {bboxToPolygon} = require('../geoJSON');
+const {bboxToPolygon, isBbox, featureCollectionToGeometryCollection} = require('../geoJSON');
 
 /**
  * save tweet in database if it is not already stored
@@ -43,17 +44,14 @@ const postTweet = async function (tweet) {
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
-            coordinates.push(tweet.places.coordinates.lng);
-            coordinates.push(tweet.places.coordinates.lat);
-            geometry['coordinates'] = coordinates;
-            console.log(" Geometry: " + JSON.stringify(geometry));
             var newTweet = new Tweet({
                 tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
                 createdAt: tweet.createdAt,
-                geometry: geometry,
-                placeName: tweet.places.placeName,
+                geometry: tweet.geometry,
+                accuracy: tweet.accuracy,
+                place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
                 // author und media noch splitten oder einfach als Mixed definieren??
@@ -61,6 +59,7 @@ const postTweet = async function (tweet) {
             try {
                 console.log(newTweet);
                 await newTweet.save();
+                io.emit('tweet', newTweet);
                 return "tweet stored in db.";
             } catch (e) {
                 return e;
@@ -69,13 +68,26 @@ const postTweet = async function (tweet) {
     }
 };
 
+const filterValid = (filter) => {
+        if(!Array.isArray(filter)){
+            return{error: "filter mus be an array"}
+        }
+        else if(filter.every(function(i){ return typeof i === "string" }) == false){
+            return{error: "filter mus be an Array of Strings"}
+        }
+        else{
+            return true
+        }
+
+}
+
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
  * @param filter: array with filter words
  * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
  * @returns {Promise<void>}
  */
-const getTweetsFromMongo = async function (filter, bbox) {
+const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
 
@@ -86,28 +98,82 @@ const getTweetsFromMongo = async function (filter, bbox) {
     //         words = filter[i] + " " + words;
     //     }
     // }
+
     var regExpWords;
-    if(filter[0] !== ""){
-      regExpWords = filter.map(function(e){ return new RegExp(e, "i"); });
+    if(filter){
+        const valid= filterValid(filter);
+        if(valid.error){
+            return{
+                error: {
+                    code: 400,
+                    message : valid.error
+                }
+            };
+        }
+        if(filter.length > 0){
+          regExpWords = filter.map(function(e){
+            var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+            return new RegExp(regExpEscape, "i");
+          });
+        }
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
     var polygonCoords = [bboxToPolygon(bbox)];
-    var polygon = {type: 'Polygon', coordinates: polygonCoords};
-    console.log(polygon);
-    try {
-        var query = {};
-        query.geometry = {$geoWithin: {$geometry: polygon}};
-        if (regExpWords) {
-            // query.$text = {$search: words};
-            query.text = {$in: regExpWords};
+    var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+    var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+    if(bbox){
+        const valid = isBbox(bbox);
+        if(valid.error){
+            return {
+                error: {
+                    code: 400,
+                    message : valid.error
+                }
+            };
         }
-        const result= await Tweet.find(query);
-        console.log("filtered Tweets: ");
-        console.log(result);
-        return result;
+    }
+    try {
+      var match = [{
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: bboxPolygon}
+          }
+        }
+      }, {
+        $match: {
+          geometry: {
+            $geoWithin: {$geometry: geometryCollection}
+          }
+        }
+      }];
+
+      if (createdAt) {
+        match.push({
+          $match: {
+            createdAt: {$eq: new Date(createdAt)}
+          }
+        });
+      }
+      if (regExpWords) {
+        match.push({
+          $match: {
+            // $text = {$search: words};
+            text: {$in: regExpWords}
+          }
+        });
+      }
+      const result= await Tweet.aggregate(match);
+      console.log("filtered Tweets: ");
+      console.log(result);
+      return result;
     } catch (err) {
         console.log(err);
+        return {error: {
+            code: 500,
+            message: err,
+            }
+        };
     }
 };
 

@@ -5,8 +5,15 @@
 "use strict";
 let wfsLayer;
 
+/**
+ * @desc Intial function which starts when the page is loaded
+ * @param {*} boundingbox to set the map extend to
+ * @param {*} events weather events to show in the map
+ * @param {*} filter initial filter to search the tweets after
+ */
 async function initial (boundingbox, events, filter) {
 
+    document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
 
     // "activate" select option
@@ -24,13 +31,15 @@ async function initial (boundingbox, events, filter) {
 
 
   if (bbox) {
-      updateTwitterStream(bbox, filter);
+      // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
-      await Promise.all([
-          (async()=>wfsLayer = await requestExtremeWeather(bbox, events))(),
-          (async()=>twitterResponse = await twitterSandboxSearch(bbox, filter))() //TODO: get the tweets from mongodb and not direct from Twitter
-      ]);
-  addTweets(wfsLayer, twitterResponse, bbox);
+
+          (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
+
+
+          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+
+  addTweets(twitterResponse);
   }
 }
 
@@ -39,7 +48,7 @@ async function initial (boundingbox, events, filter) {
  * but there is a cookie with an event this is used. If there is no event in the link and in the cookie all events are
  * activated.
  * a cookie
- * @param events
+ * @param {} events
  * @returns {string[]|any}
  */
 function getInitialEvents(events) {
@@ -61,23 +70,35 @@ function getInitialEvents(events) {
 
 
 /**
- * @desc function which is called in the intitial function. If there is an textfilter is the link it is used. If not
+ * @desc function which is called in the intitial function. If there is an textfilter in the link it is used. If not
  * but there is a cookie with an texfilter this is used. If there is no filter in the link and in the cookie the texfilter is empty
- * @param filter
- * @returns {string}
+ * @param {string} filter set in the link
+ * @returns {string} value of the filter
  */
  function getInitialFilter(filter) {
 
    var newDefaultFilter = getCookie("defaultSearchWord");
 
    if(filter) {
-     $('#textFilter').val(filter);
+     console.log(filter);
+     filter = JSON.parse(filter);
+     // $('#textFilter').val(filter);
+     for(var elem in filter){
+       var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
+       if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+        createFilterBadge(filter[elem]);
+       }
+     }
      return filter;
    }
    else if (newDefaultFilter!="") {
      newDefaultFilter = JSON.parse(newDefaultFilter);
-     $('#textFilter').val(newDefaultFilter);
-     $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
+     for(var elem in newDefaultFilter){
+       createFilterBadge(newDefaultFilter[elem]);
+     }
+     // $('#textFilter').val(newDefaultFilter);
+     // $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
      return newDefaultFilter;
    }
    else  {
@@ -117,6 +138,9 @@ function getInitialEvents(events) {
    }
  }
 
+ /**
+  * @desc Proofs if a Cookie with a Bbox set. If yes sets the Map Extent to this Bbox
+  */
 function getBoundingBboxFromCookie() {
     var newDefaultBbox = getCookie("defaultBbox");
 
@@ -138,6 +162,9 @@ function getBoundingBboxFromCookie() {
     return (false);
 }
 
+/**
+ * @desc Event Handler if the map extend was changed by the user
+ */
 map.on('moveend', function (e) {
     // function which is triggered automatically when the map gets moved
     var bounds = map.getBounds();
@@ -146,46 +173,96 @@ map.on('moveend', function (e) {
 });
 
 /**
- * @desc new extreme weather data are loaded after each change of map-extent
+ * @desc new extreme weather data and tweets are loaded after each change of map-extent
  * @param {json} bounds coordinates of current map-extent
  */
 async function mapExtendChange(bounds) {
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("progressbar").value =25;
+    document.getElementById("progressbar").style.visibility='visible';
     // TODO: uncomment updateTwitterStream after setStreamfilter works
 
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     const tweets= getState('tweets');
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
     let twitterResponse;
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse)
 }
 
+/**
+ * @desc new extreme weather data and tweets are loaded after each change of the events or filter
+ */
 async function eventsOrFilterChanged() {
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
     var events = $('#selectEvent').val();
-    var filter = $('#textFilter').val();
-    updateTwitterStream(bounds, filter);
+    var filter = getTweetFilters();
+    // updateTwitterStream(bounds, filter);
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
-    await Promise.all([
-        (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-        (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-    ]);
-    addTweets(wfsLayer, twitterResponse, bounds)
+    // await Promise.all([
+        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+    // ]);
+    addTweets(twitterResponse);
+}
+
+function getTweetFilters(){
+  var filters = [];
+  $('.tweetFilter').each(function(index, filter){
+    filters.push(filter.innerText);
+  });
+  return filters;
+}
+
+function searchTweets(){
+  var input = $('#textFilter');
+  if(input.val() !== ""){
+    var filter = input.val();
+    input.val("");
+    var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+    console.log(document.getElementById('textFilter'+encodeURIComponent('#wetter')));
+    if(!document.getElementById('textFilter'+filterUrlEncoded) ||
+      document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
+      createFilterBadge(filter);
+      eventsOrFilterChanged();
+    }
+  }
+}
+
+function createFilterBadge(filter){
+  var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+  $('#textFilters').append(
+    '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
+      filter+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+        '<span class="fas fa-times fa-xs">'+
+        '</span>'+
+      '</button>'+
+    '</span>'
+  );
+}
+
+function removeElementById(id){
+  var elem = document.getElementById(id);
+  elem.parentNode.removeChild(elem);
+  // $('#'+id.toString()).remove();
+  eventsOrFilterChanged();
 }
 
 /**
  * @desc function for requesting a cookie which was stored before
- * @param cname name of the cookie
- * @returns {string}
+ * @param {Sting} cname name of the cookie
+ * @returns {string} value of cookie
  * @source https://www.w3schools.com/js/js_cookies.asp
  */
 function getCookie(cname) {
@@ -204,12 +281,17 @@ function getCookie(cname) {
     return "";
 }
 
+/**
+ * @desc Creates some Socket-Client Listener
+ */
  function startSocket() {
-    socket.on('tweet', function (tweet) {
+    socket.on('tweet', async function (tweet) {
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
-        addTweets(wfsLayer, [tweet], bounds)
+        var filter = getTweetFilters();
+        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
+        addTweets(twitterResponse);
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('DEWI', 'Extreme weather events changed.');
@@ -218,18 +300,23 @@ function getCookie(cname) {
         console.log('Weather changed');
         console.log(data.stats);
         var events = $('#selectEvent').val();
-        var filter = $('#textFilter').val();
-        removeTweets(wfsLayer, bounds);
+        var filter = getTweetFilters();
+        removeAllTweets();
+        // removeTweets(wfsLayer, bounds);
         let twitterResponse;
-        await Promise.all([
-            (async()=>wfsLayer = await requestExtremeWeather(bounds, events))(),
-            (async()=>twitterResponse = await twitterSandboxSearch(bounds, filter))(),//TODO: get the tweets from mongodb and not direct from Twitter
-        ]);
-        removeTweets(wfsLayer, bounds);
-        addTweets(wfsLayer, twitterResponse, bounds);
+        // await Promise.all([
+            /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
+            /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
+        // ]);
+        // removeTweets(wfsLayer, bounds);
+        addTweets(twitterResponse);
     });
 }
 
+/**
+ * @desc Creates a valid bbox out of a string which contains a bbox, sets the map extend to this bbox
+ * @param {String} bbox
+ */
 function getBoundingBoxFromUrl(bbox) {
   var splitBbox = bbox.split(',');
   // bounding box from URL
@@ -249,6 +336,12 @@ function getBoundingBoxFromUrl(bbox) {
   return bbox;
 }
 
+/**
+ *  @desc Updates the URL to the user-specified data
+ * @param {JSON} bbox chosen by the user
+ * @param {Array} events chosen by the user
+ * @param {Array} filter chosen by the user
+ */
 function updateURL(bbox, events, filter) {
 
   var parameters = {};
@@ -266,11 +359,35 @@ function updateURL(bbox, events, filter) {
   if(events[0]){
     parameters.events = JSON.stringify(events);
   }
-  if(filter){
-    parameters.textfilter = filter;
+  if(filter[0]){
+    parameters.textfilter = JSON.stringify(filter);
   }
   // create querystring
   var querystring = $.param(parameters);
   // new URL
   window.history.pushState("object or string", "Title", "/?" + querystring);
+}
+
+/**
+ * Shows a snackbar on the Top Right
+ * @param {String} text to show in the snackbar
+ */
+function snackbarWithText(text) {
+    const date = Date.now()
+    $('.snackbar').prepend(
+        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(232,89,23);" ' +
+        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
+        '<div class="toast-header">'+
+        '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
+        '<strong class="mr-auto">'+text +'</strong>'+
+        '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
+        '<span aria-hidden="true">×</span>'+
+        '</button>'+
+        '</div>'+
+        // '<div class="toast-body">'+
+        //   'Some Toast Body'+
+        // '</div>'+
+        '</div>');
+    $('.toast.'+date).toast('show');
+
 }
