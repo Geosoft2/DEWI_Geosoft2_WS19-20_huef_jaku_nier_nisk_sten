@@ -119,10 +119,27 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
     }
 
     // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
-    var polygonCoords = [bboxToPolygon(bbox)];
-    var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
-    var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
-    if(bbox){
+    try {
+      var match = [];
+      var result = [];
+      if (createdAt) {
+        // TODO: Validation!!
+        match.push({
+          $match: {
+            createdAt: {$eq: new Date(createdAt)}
+          }
+        });
+      }
+      if (regExpWords) {
+        // TODO: Validation!!
+        match.push({
+          $match: {
+            // $text = {$search: words};
+            text: {$in: regExpWords}
+          }
+        });
+      }
+      if(bbox){
         const valid = isBbox(bbox);
         if(valid.error){
             return {
@@ -132,38 +149,37 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
                 }
             };
         }
-    }
-    try {
-      var match = [{
-        $match: {
-          geometry: {
-            $geoWithin: {$geometry: bboxPolygon}
+        var polygonCoords = [bboxToPolygon(bbox)];
+        var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+        match.push({
+          $match: {
+            geometry: {
+              $geoWithin: {$geometry: bboxPolygon}
+            }
           }
-        }
-      }, {
-        $match: {
-          geometry: {
-            $geoWithin: {$geometry: geometryCollection}
-          }
-        }
-      }];
+        });
+      }
+      if(extremeWeatherEvents){
+        // TODO: Validation!!
+        var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+        if(geometryCollection.geometries.length > 0){
+          match.push({
+            $match: {
+              geometry: {
+                $geoWithin: {$geometry: geometryCollection}
+              }
+            }
+          });
+          // Aggregation with extremeWeatherEvents-filter,
+          // requirement: at least one feature
+          result = await Tweet.aggregate(match);
+        } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+      }
+      else {
+        // Aggregation without extremeWeatherEvents-filter
+        result = await Tweet.aggregate(match);
+      }
 
-      if (createdAt) {
-        match.push({
-          $match: {
-            createdAt: {$eq: new Date(createdAt)}
-          }
-        });
-      }
-      if (regExpWords) {
-        match.push({
-          $match: {
-            // $text = {$search: words};
-            text: {$in: regExpWords}
-          }
-        });
-      }
-      const result= await Tweet.aggregate(match);
       console.log("filtered Tweets: ");
       console.log(result);
       return result;
