@@ -143,8 +143,8 @@ const sandboxSearch = function(filter, area) {
  * @param {string} filter keyword to filter after
  * @param {json} bbox where the tweet must be in
  */
-const mongoSearch = async function (filter, bbox, extremeWeatherEvents, createdAt) {
-    var result = await getTweetsFromMongo(filter, bbox, extremeWeatherEvents, createdAt);
+const mongoSearch = async function (filter, bbox, extremeWeatherEvents, createdAt, id) {
+    var result = await getTweetsFromMongo(filter, bbox, extremeWeatherEvents, createdAt, id);
     return result;
 };
 

@@ -1,5 +1,4 @@
 
-const e = React.createElement;
 let setTweets= ()=>{};
 let getState= ()=>{};
 let pushTweets= () =>{};
@@ -13,9 +12,11 @@ let setHighlighted=  () => {};
 function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
 
     return new Promise(function (resolve, restrict) {
+        const TID = "T" +idGenerator()
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
+            headers: { 'X-Request-Id': TID },
             data: {
                 "bbox": bounds.bbox,
                 "filter": filter,

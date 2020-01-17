@@ -87,7 +87,7 @@ const filterValid = (filter) => {
  * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
  * @returns {Promise<void>}
  */
-const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt) {
+const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt, id) {
     // write words in the filter in a String to search for them
     // assumes the filter words format is an array
 
@@ -163,6 +163,7 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
           }
         });
       }
+      io.emit("status", id + ": Searching for Tweets in extreme weather areas")
       const result= await Tweet.aggregate(match);
       console.log("filtered Tweets: ");
       console.log(result);

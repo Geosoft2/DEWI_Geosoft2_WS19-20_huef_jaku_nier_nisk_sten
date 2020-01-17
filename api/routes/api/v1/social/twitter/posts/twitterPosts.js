@@ -2,6 +2,7 @@
 // jshint node: true
 "use strict";
 
+const io = require("../../../../../../helpers/socket-io").io;
 const {
     sandboxSearch,
     mongoSearch
@@ -42,6 +43,7 @@ const postSandboxSearch = async function (req, res){
 };
 
 const postMongoSearch = async function (req, res) {
+    io.emit("status", req.id + ": Recived")
     const filter = req.body.filter;
     const bbox= req.body.bbox;
     const extremeWeatherEvents = req.body.extremeWeatherEvents;
@@ -49,8 +51,8 @@ const postMongoSearch = async function (req, res) {
 
 
 
-    const result = await mongoSearch(filter, bbox, extremeWeatherEvents, createdAt);
-
+    const result = await mongoSearch(filter, bbox, extremeWeatherEvents, createdAt, req.id);
+    io.emit("status", req.id+ ": Sending result")
     if(result.error){
         res.status(result.error.code).send({
             message: result.error.message

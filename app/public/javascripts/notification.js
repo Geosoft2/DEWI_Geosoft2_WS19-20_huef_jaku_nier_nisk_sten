@@ -31,6 +31,9 @@ function snackbarWithText(text) {
       '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
       '<span aria-hidden="true">×</span>'+
       '</button>'+
+      '<button type="button"  onclick="showStatus()" aria-label="Info">'+
+      '<span aria-hidden="true">More Info</span>'+
+      '</button>'+
       '</div>'+
       // '<div class="toast-body">'+
       //   'Some Toast Body'+

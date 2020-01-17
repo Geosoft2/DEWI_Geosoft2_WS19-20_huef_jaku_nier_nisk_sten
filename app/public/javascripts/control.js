@@ -33,11 +33,10 @@ async function initial (boundingbox, events, filter) {
   if (bbox) {
       // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
-
-          (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
-
-
-          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+      console.log(bbox)
+          map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
+          wfsLayer = await requestExtremeWeather(bbox, events);
+          twitterResponse = await twitterSearch(bbox, filter, wfsLayer);
 
   addTweets(twitterResponse);
   }
@@ -292,6 +291,10 @@ function getCookie(cname) {
         var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
         addTweets(twitterResponse);
     });
+
+    socket.on('status', (text) =>{
+      console.log(text)
+    })
     socket.on('weatherchanges', async function (data) {
         browserNotification('DEWI', 'Extreme weather events changed.');
         var bounds = map.getBounds();
@@ -365,5 +368,14 @@ function updateURL(bbox, events, filter) {
   var querystring = $.param(parameters);
   // new URL
   window.history.pushState("object or string", "Title", "/?" + querystring);
+}
+
+function idGenerator(){
+  let id=""
+  for( var i = 0; i < 5; ++i ) {
+    var number = Math.floor(Math.random() * 10); ;
+    id += number;	 
+   }
+   return id;
 }
 

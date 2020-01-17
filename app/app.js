@@ -26,6 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // make packages available for client using statics
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use('/jquery-ui', express.static(__dirname + '/node_modules/jquery-ui-dist/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist'));
 app.use('/react', express.static(__dirname + '/node_modules/react/umd'));

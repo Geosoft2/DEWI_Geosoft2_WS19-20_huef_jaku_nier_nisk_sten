@@ -64,8 +64,8 @@ const saveExtremeWeatherInMongo = async function(features){
       io.emit('weatherchanges', {
         stats: stats
       });
-      emailNotification(stats);
-      mattermostNotification(stats);
+      //emailNotification(stats);
+      //mattermostNotification(stats);
     }
     console.log(chalk.green(JSON.stringify({
       message: 'Everything is updated or stored.',
@@ -85,7 +85,8 @@ const saveExtremeWeatherInMongo = async function(features){
  * @param {array} events events to query the MongoDB.
  * @param {object} res response, to send back the desired HTTP response
  */
-const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, res){
+const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, res, id){
+  io.emit("status", id +": Searching for extreme weather ares in bbox")
   try {
     var query = {};
     query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [bboxPoylgon]}}};
@@ -99,11 +100,13 @@ const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, res){
     }
     const result = await ExtremeWeather.find(query, {_id: 0}); //without _id (ObjectID)
     var geoJSON = makeGeoJSonFromFeatures(result);
+    io.emit("status", id+": Sending result")
     res.status(200).send({
       result: geoJSON
     });
   }
   catch(err){
+    io.emit("status", id+": Sending result")
     res.status(400).send({
       message: 'Error while getting extreme weather events.'
     });
