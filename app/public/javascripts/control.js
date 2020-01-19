@@ -290,8 +290,10 @@ function getCookie(cname) {
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
-        addTweets(twitterResponse);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
+        if(!jQuery.isEmptyObject(twitterResponse)){
+          addTweets([twitterResponse]);
+        }
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('Weather changed.');

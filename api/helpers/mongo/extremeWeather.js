@@ -7,7 +7,9 @@ const moment = require('moment');
 const config = require('config-yml');
 const chalk = require('chalk');
 const io = require("../socket-io").io;
-const {makeGeoJSonFromFeatures} = require('../geoJSON');
+const {makeGeoJSonFromFeatures, bboxToPolygon} = require('../geoJSON');
+const {bboxValid} = require('../validation/bbox');
+const {stringArrayValid} = require('../validation/array');
 
 
 /**
@@ -78,32 +80,57 @@ const saveExtremeWeatherInMongo = async function(features){
 /**
  * @desc stores the features in MongoDB if they are not yet existing. Also ensures
  * that only the current features are saved, i.e.: obsolete features are deleted.
- * @param {array} bboxPolygon coordinates of a polygon which indicates the BBOX to query all features which intersects the BBOX.
+ * @param {json} bbox coordinates of a BBOX to query all features which intersects the BBOX.
  * @param {array} events events to query the MongoDB.
  * @param {object} res response, to send back the desired HTTP response
  */
-const getExtremeWeatherFromMongo = async function(bboxPoylgon, events, res){
+const getExtremeWeatherFromMongo = async function(bbox, events, res){
   try {
     var query = {};
-    query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [bboxPoylgon]}}};
     // ensures that only current data is output
     query.updatedAt = {$gt: moment().subtract(config.weather.dwd.wfs.refreshIntervall, 'seconds')};
+    // optional search-parameter bbox
+    if(bbox){
+      const valid = bboxValid(bbox);
+      if(valid.error){
+          return {
+              error: {
+                  code: 400,
+                  message : valid.error
+              }
+          };
+      }
+      var bboxPolygon = bboxToPolygon(bbox);
+      console.log(bboxToPolygon);
+      query.geometry = {$geoIntersects: {$geometry: {type: "Polygon", coordinates: [bboxPolygon]}}};
+    }
     // optional search-parameter events
     if(events){
+      console.log(events);
+      const valid= stringArrayValid(events, 'events');
+      console.log(valid);
+      if(valid.error){
+          return{
+              error: {
+                  code: 400,
+                  message : valid.error
+              }
+          };
+      }
       // create a regular Expression to cover all possible combinations in 'EC_Group' (e.g.: FOG; FROST)
       var regExEvents = events.map(function(e){ return new RegExp(e, "i"); });
       query['properties.EC_GROUP'] = {$in: regExEvents};
     }
     const result = await ExtremeWeather.find(query, {_id: 0}); //without _id (ObjectID)
-    var geoJSON = makeGeoJSonFromFeatures(result);
-    res.status(200).send({
-      result: geoJSON
-    });
+    return makeGeoJSonFromFeatures(result);
   }
   catch(err){
-    res.status(400).send({
-      message: 'Error while getting extreme weather events.'
-    });
+    console.log(err);
+    return {error: {
+        code: 500,
+        message: err,
+        }
+    };
   }
 };
 

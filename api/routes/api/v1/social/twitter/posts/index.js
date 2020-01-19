@@ -12,5 +12,7 @@ const PostsRouter = express.Router();
 
 PostsRouter.post('/', require('./twitterPosts').postMongoSearch);
 
+PostsRouter.post('/:tweetId', require('./twitterPosts').postMongoSearchById);
+
 
 module.exports = PostsRouter;
