@@ -284,6 +284,8 @@ function getCookie(cname) {
  */
  function startSocket() {
     socket.on('tweet', async function (tweet) {
+      const date= new Date(Date.now())
+      setStatus("lastTweet", date.toUTCString())
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
@@ -293,9 +295,12 @@ function getCookie(cname) {
     });
 
     socket.on('status', (text) =>{
+      setStatus("lastUpdates", text)
       console.log(text)
     })
     socket.on('weatherchanges', async function (data) {
+      const date= new Date(Date.now())
+        setStatus("lastWeather", date.toUTCString())
         browserNotification('DEWI', 'Extreme weather events changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);

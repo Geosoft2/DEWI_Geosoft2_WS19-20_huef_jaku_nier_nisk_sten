@@ -14,6 +14,8 @@ function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
     return new Promise(function (resolve, restrict) {
         const TID = "T" +idGenerator()
         console.log(bounds);
+        const date = new Date(Date.now());
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             headers: { 'X-Request-Id': TID },
@@ -26,9 +28,11 @@ function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
             type: "post"
         })
             .done(function (response) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
                 resolve(response.tweets);
             })
             .fail(function (err) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
                 console.log(err);
             });
     });

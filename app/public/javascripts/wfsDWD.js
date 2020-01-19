@@ -325,7 +325,9 @@ function requestExtremeWeather(bbox, events) {
 
 
     return new Promise(function (resolve, restrict) {
-        const WID = "W" +idGenerator()
+        const WID = "W" +idGenerator();
+        const date = new Date(Date.now());
+        addRequest({id: WID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
             type: "Get",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
@@ -337,6 +339,7 @@ function requestExtremeWeather(bbox, events) {
             // contentType: "application/json",
         })
             .done(function (response) {
+                addRequest({id: WID, send: date.toUTCString(), status: "Success"})
                 console.log('mongo', response.result);
                 // remove existing layer
                 removeExistingLayer(warnlayer);
@@ -357,6 +360,7 @@ function requestExtremeWeather(bbox, events) {
                 }
             })
             .fail(function (err) {
+                addRequest({id: WID, send: date.toUTCString(), status: "Failed"})
                 console.log(err);
                 console.log(err.message);
             });
