@@ -312,23 +312,24 @@ function requestExtremeWeather(bbox, events) {
 
     return new Promise(function (resolve, restrict) {
         $.ajax({
-            type: "Get",
+            type: "post",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
-            data: {
+            headers: {
+              "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+                bbox: bbox.bbox,
                 events: events,
-                bbox: bbox.bbox
-            }
-            // contentType: "application/json",
+            })
         })
             .done(function (response) {
-                console.log('mongo', response.result);
                 // remove existing layer
                 removeExistingLayer(warnlayer);
                 // create new layer
-                warnlayer = createLayer(response.result);
+                warnlayer = createLayer(response.weatherEvents);
                 // add layer to layerGroup and map
                 extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-                resolve(response.result);
+                resolve(response.weatherEvents);
                 document.getElementById("progressbar").value +=25;
                 isProgress();
                 snackbarWithText("weather data loaded");

@@ -289,12 +289,13 @@ function getCookie(cname) {
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
-        console.log(twitterResponse);
-        if (twitterResponse ||twitterResponse!==[]){
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
+        if(!jQuery.isEmptyObject(twitterResponse)){
+          addTweets([twitterResponse]);
             var audio = new Audio('media/audio/twitter-notification-sound.mp3');
-            audio.play();}
-        addTweets(twitterResponse);
+            audio.play();
+        }
+
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('Weather changed.');
