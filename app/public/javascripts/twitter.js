@@ -32,6 +32,8 @@ function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
             type: "post"
         })
             .done(function (response) {
+                console.log("tweets");
+                console.log(response);
                 resolve(response.tweets);
             })
             .fail(function (err) {

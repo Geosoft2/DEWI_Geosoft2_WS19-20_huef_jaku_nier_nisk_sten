@@ -37,8 +37,7 @@ async function initial (boundingbox, events, filter) {
           (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
 
 
-          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
-
+          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))();
   addTweets(twitterResponse);
   }
 }
@@ -291,6 +290,10 @@ function getCookie(cname) {
         console.log(tweet);
         var filter = getTweetFilters();
         var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
+        console.log(twitterResponse);
+        if (twitterResponse ||twitterResponse!==[]){
+            var audio = new Audio('media/audio/twitter-notification-sound.mp3');
+            audio.play();}
         addTweets(twitterResponse);
     });
     socket.on('weatherchanges', async function (data) {

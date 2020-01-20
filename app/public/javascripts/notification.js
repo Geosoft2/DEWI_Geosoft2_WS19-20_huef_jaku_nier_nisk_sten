@@ -7,7 +7,7 @@
 function browserNotification(content){
   Push.create("DEWI", {
     body: content,
-    icon: '/images/DEWI_Logo.svg',
+    icon: '/media/images/DEWI_Logo.svg',
     timeout: 8000,
     onClick: function () {
         window.focus();

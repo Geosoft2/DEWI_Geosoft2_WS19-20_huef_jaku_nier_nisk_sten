@@ -10,6 +10,7 @@ const chalk = require('chalk');
 const util = require('util');
 const setIntervalPromise = util.promisify(setInterval);
 const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather');
+const{weatherdata}=require('../../demodata/weather.js');
 
 
 /**
@@ -17,7 +18,9 @@ const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather'
  */
 const requestExtremeWeather = function(){
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
-  var rootUrl = config.weather.dwd.wfs.url;
+  var demo=false;
+  if (demo===false)
+  {var rootUrl = config.weather.dwd.wfs.url;
   var defaultParameters = {
     service: 'WFS',
     version: config.weather.dwd.wfs.parameter.version,
@@ -54,7 +57,10 @@ const requestExtremeWeather = function(){
   })
   .on('error', function(err) {
     console.log(chalk.red('Error: DWD WFS is not working.'));
-  });
+  });}
+  else{
+    saveExtremeWeatherInMongo(weatherdata)
+  }
 };
 
 
