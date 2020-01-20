@@ -1,5 +1,5 @@
-{
-  "tweets": [
+// property "createdAt" deleted, to ensure that the tweets will store like the "normal" ones.
+const twitterdata = [
     {
       "_id": "5e1f196bae7143251891f0bf",
       "geometry": {
@@ -12,7 +12,6 @@
       "tweetId": 1217444729861951500,
       "url": "https://twitter.com/i/status/1217444729861951489",
       "text": "Spät, aber doch! #MunichGirl #TourGuide #MünchnerKindl sarahm.richter #selfietime @ Soundofmunich Guidedcitytours https://t.co/hoZnj3YYqL",
-      "createdAt": "2020-01-15T13:53:37.000Z",
       "accuracy": 1,
       "author": {
         "id": "163361731",
@@ -21,7 +20,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/838385269166518272/PJfx8q1w_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f197aae7143251891f0c6",
@@ -35,7 +34,6 @@
       "tweetId": 1217444794038923300,
       "url": "https://twitter.com/i/status/1217444794038923265",
       "text": "@WillianRBS_ @5x0Flamengol @jairbolsonaro Meu sonho? Eu não voto PT. Aliás num voto em nada. \nTo d SACO CHEIO dessa visão maniqueísta de bosta dos dois lados, isso sim. Falar mal de um nao quer dizer pagar pau pro outro\nEnquanto ce ta ai achando isso para de enxergar um monte de problema q ta rolando. Por mim fodase",
-      "createdAt": "2020-01-15T13:53:52.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -52,7 +50,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215417385512890368/16VadHnv_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1980ae7143251891f0c7",
@@ -66,7 +64,6 @@
       "tweetId": 1217444817229271000,
       "url": "https://twitter.com/i/status/1217444817229271040",
       "text": "https://t.co/soJP8lLuyu",
-      "createdAt": "2020-01-15T13:53:58.000Z",
       "accuracy": 5.55,
       "place": {
         "name": "Olching, Deutschland",
@@ -83,7 +80,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1212487953940959232/2GSbTrdH_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1980ae7143251891f0c8",
@@ -97,7 +94,6 @@
       "tweetId": 1217444819506733000,
       "url": "https://twitter.com/i/status/1217444819506733061",
       "text": "Love you sweet treasure #Lover #BestRemix #iHeartAwards https://t.co/Wx9viN7rKo",
-      "createdAt": "2020-01-15T13:53:58.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -125,7 +121,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1982ae7143251891f0ca",
@@ -139,7 +135,6 @@
       "tweetId": 1217444824779051000,
       "url": "https://twitter.com/i/status/1217444824779051008",
       "text": "@Timon_Gremmels Diese ganze Hysterie um den angeblichen antrophogenen Klimawandel, beleidigt die Intelligenz, vieler -noch klar u. rational denkender- Menschen. Wie im dunklen Mittelalter, wird mit Lügen u. apokalyptischen Szenarien, manipuliert, quasi inquisitorisch❗️Ich bin’s so was von Leid🤮",
-      "createdAt": "2020-01-15T13:53:59.000Z",
       "accuracy": 6.76,
       "place": {
         "name": "Wachtendonk, Deutschland",
@@ -156,7 +151,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/990687289180385281/C-6DiYCD_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f198eae7143251891f0cc",
@@ -170,7 +165,6 @@
       "tweetId": 1217444877874667500,
       "url": "https://twitter.com/i/status/1217444877874667521",
       "text": "@Sss_lbtk ما شاء الله\nربي يحفظه لكم..\nكيشبه لك 😊",
-      "createdAt": "2020-01-15T13:54:12.000Z",
       "accuracy": 14.48,
       "place": {
         "name": "Duisburg, Germany",
@@ -187,7 +181,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/957590533270106112/iof_iTrO_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f198fae7143251891f0cd",
@@ -201,7 +195,6 @@
       "tweetId": 1217444882970808300,
       "url": "https://twitter.com/i/status/1217444882970808320",
       "text": "@ClaudiaPulchra @conspirdisco Ohja, in geval van twijfel: ik ben man... 😉",
-      "createdAt": "2020-01-15T13:54:13.000Z",
       "accuracy": 12.07,
       "place": {
         "name": "Bohmte, Deutschland",
@@ -218,7 +211,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/984487551418486784/OOkXeDYh_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f199eae7143251891f0d0",
@@ -232,7 +225,6 @@
       "tweetId": 1217444945839231000,
       "url": "https://twitter.com/i/status/1217444945839230976",
       "text": "@PrinceJvstin @didic @kellyoyo I haven't seen that. The only dislike for The Witcher I've seen in genre circles was from genre-adjacent critics.",
-      "createdAt": "2020-01-15T13:54:28.000Z",
       "accuracy": 20.86,
       "place": {
         "name": "Bremen, Germany",
@@ -249,7 +241,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/429048980912087040/Y0BNfItP_normal.jpeg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19a3ae7143251891f0d1",
@@ -263,7 +255,6 @@
       "tweetId": 1217444964621308000,
       "url": "https://twitter.com/i/status/1217444964621307904",
       "text": "@FrappMocha Tyson 19-21 years old",
-      "createdAt": "2020-01-15T13:54:33.000Z",
       "accuracy": 10.96,
       "place": {
         "name": "Ihlow, Deutschland",
@@ -280,7 +271,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215223589315796994/hF5m0qWe_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19a4ae7143251891f0d2",
@@ -294,7 +285,6 @@
       "tweetId": 1217444971311181800,
       "url": "https://twitter.com/i/status/1217444971311181824",
       "text": "Schweiz, wir kommen! 💜💜💜 https://t.co/6ohTsrmaqY",
-      "createdAt": "2020-01-15T13:54:34.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -311,7 +301,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1099718356805005313/LqMXtfBr_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19a6ae7143251891f0d3",
@@ -325,7 +315,6 @@
       "tweetId": 1217444976088506400,
       "url": "https://twitter.com/i/status/1217444976088506368",
       "text": "@alextv @mediamarkt_de Nach der Zeit ist ein Anpfiff öffentlich bei twitter angemessen.",
-      "createdAt": "2020-01-15T13:54:35.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -342,7 +331,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1110278308648939520/Ufwxm3WY_normal.png"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19aaae7143251891f0d5",
@@ -356,7 +345,6 @@
       "tweetId": 1217444992681238500,
       "url": "https://twitter.com/i/status/1217444992681238529",
       "text": "@y2kenb @DeeBeeFree What's wrong with it. Apart from the naps?",
-      "createdAt": "2020-01-15T13:54:39.000Z",
       "accuracy": 7.16,
       "place": {
         "name": "Oberding, Deutschland",
@@ -373,7 +361,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1135880152783687680/Mw6Gks1b_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19abae7143251891f0d7",
@@ -387,7 +375,6 @@
       "tweetId": 1217444998851022800,
       "url": "https://twitter.com/i/status/1217444998851022849",
       "text": "@KarambaDiaby Lassen Sie sich nicht runterkriegen Wir sind noch immer mehr in der Multi-ethnische Interreligiöse demokratische Gesellschaft",
-      "createdAt": "2020-01-15T13:54:41.000Z",
       "accuracy": 7.43,
       "place": {
         "name": "Stadthagen, Deutschland",
@@ -404,7 +391,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/926568242671443968/-2heq9v6_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19b6ae7143251891f0da",
@@ -418,7 +405,6 @@
       "tweetId": 1217445043834970000,
       "url": "https://twitter.com/i/status/1217445043834970118",
       "text": "Richtiger Schritt! Korrekturen des Referentenentwurfs aus Sicht der täglichen Praxis sind dringend nötig! https://t.co/7FZZKbV2yc",
-      "createdAt": "2020-01-15T13:54:52.000Z",
       "accuracy": 9.55,
       "place": {
         "name": "Greifswald, Germany",
@@ -435,7 +421,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1022565407587229699/0UWHMUvX_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19b8ae7143251891f0db",
@@ -449,7 +435,6 @@
       "tweetId": 1217445054664585200,
       "url": "https://twitter.com/i/status/1217445054664585216",
       "text": "@parrillasbllxck Yasssss https://t.co/BgzWs2aStf",
-      "createdAt": "2020-01-15T13:54:54.000Z",
       "accuracy": 8.48,
       "place": {
         "name": "Bremerhaven, Germany",
@@ -472,7 +457,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19baae7143251891f0dc",
@@ -486,7 +471,6 @@
       "tweetId": 1217445063669833700,
       "url": "https://twitter.com/i/status/1217445063669833728",
       "text": "@WillianRBS_ @5x0Flamengol @jairbolsonaro Não foi so pro espectador q vc usou o vocativo \"vocês\" insinuando o que nao sabe, ne? Ta brabo demais. Vai passar um cafezinho quente",
-      "createdAt": "2020-01-15T13:54:56.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -503,7 +487,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215417385512890368/16VadHnv_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19bbae7143251891f0dd",
@@ -517,7 +501,6 @@
       "tweetId": 1217445065666244600,
       "url": "https://twitter.com/i/status/1217445065666244608",
       "text": "@Rhoxylol https://t.co/9KFR2NiiOl",
-      "createdAt": "2020-01-15T13:54:57.000Z",
       "accuracy": 13.48,
       "place": {
         "name": "Wuppertal, Germany",
@@ -539,7 +522,7 @@
           "type": "animated_gif"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19bbae7143251891f0de",
@@ -553,7 +536,6 @@
       "tweetId": 1217445067264315400,
       "url": "https://twitter.com/i/status/1217445067264315393",
       "text": "@y2kenb @DeeBeeFree Bet I regret this",
-      "createdAt": "2020-01-15T13:54:57.000Z",
       "accuracy": 7.16,
       "place": {
         "name": "Oberding, Deutschland",
@@ -570,7 +552,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1135880152783687680/Mw6Gks1b_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19bdae7143251891f0df",
@@ -584,7 +566,6 @@
       "tweetId": 1217445073643888600,
       "url": "https://twitter.com/i/status/1217445073643888640",
       "text": "É arte, que abre o espaço pra diálogo e questionamento, por isso os Bozinhos esperneiam tanto contra a indicação ao Oscar, não vai ganhar mas só de ter@participado e@com@um tema tão atual. é demais ❤️😎 https://t.co/7ybq2x6A8n",
-      "createdAt": "2020-01-15T13:54:59.000Z",
       "accuracy": 5.61,
       "place": {
         "name": "Rosenheim, Germany",
@@ -601,7 +582,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1198299466396246017/7FG1K7tb_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19c3ae7143251891f0e2",
@@ -615,7 +596,6 @@
       "tweetId": 1217445100655128600,
       "url": "https://twitter.com/i/status/1217445100655128582",
       "text": "@momoritz01 @TobiasDirking Eine E-Mail mit einer PDF würde es auch tun",
-      "createdAt": "2020-01-15T13:55:05.000Z",
       "accuracy": 11.06,
       "place": {
         "name": "Rosendahl, Deutschland",
@@ -632,7 +612,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1113043348028354560/NQ9VgnYr_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19cdae7143251891f0e5",
@@ -646,7 +626,6 @@
       "tweetId": 1217445139221831700,
       "url": "https://twitter.com/i/status/1217445139221831681",
       "text": "Die suchen so dringend Plakatierer, dass sie nicht einmal einen gefunden haben, der die Bewerbungsadresse aufklebt... https://t.co/1o1VRooo9N",
-      "createdAt": "2020-01-15T13:55:14.000Z",
       "accuracy": 1,
       "place": {
         "name": "Grünspitz",
@@ -669,7 +648,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19cfae7143251891f0e7",
@@ -683,7 +662,6 @@
       "tweetId": 1217445148734427100,
       "url": "https://twitter.com/i/status/1217445148734427136",
       "text": "Eu só queria um abraço do meu chubby",
-      "createdAt": "2020-01-15T13:55:17.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -700,7 +678,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1110169699818655744/K6jP2hPk_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19d5ae7143251891f0e9",
@@ -714,7 +692,6 @@
       "tweetId": 1217445176584654800,
       "url": "https://twitter.com/i/status/1217445176584654848",
       "text": "I'm at Horn in Hamburg https://t.co/ncYRHYR6SO",
-      "createdAt": "2020-01-15T13:55:23.000Z",
       "accuracy": 1,
       "author": {
         "id": "1388848664",
@@ -723,7 +700,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/634080272657608704/3GytKQTy_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19daae7143251891f0ea",
@@ -737,7 +714,6 @@
       "tweetId": 1217445194150359000,
       "url": "https://twitter.com/i/status/1217445194150359040",
       "text": "@MontanaBlack Hätte ich dir vorher sagen können, die denken sich halt, guck mal der, 31, streamer, seit 6 Jahren,  nachher hat er kein Bock mehr. RIP Monte",
-      "createdAt": "2020-01-15T13:55:27.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -754,7 +730,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1182978722112135168/RcW89Foa_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19daae7143251891f0eb",
@@ -768,7 +744,6 @@
       "tweetId": 1217445195274510300,
       "url": "https://twitter.com/i/status/1217445195274510337",
       "text": "Hier riecht es nach Kaffee... Hallo.. Ich sagte Kaffeee\nMal schauen, wie das Krankenhausgebräu hier schmeckt.\n#CoffeeLover #krankenhaus #ChronicPain https://t.co/zUkU1YtUIW",
-      "createdAt": "2020-01-15T13:55:28.000Z",
       "accuracy": 8.77,
       "place": {
         "name": "Lüdenscheid, Deutschland",
@@ -790,7 +765,7 @@
           "type": "animated_gif"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19dbae7143251891f0ec",
@@ -804,7 +779,6 @@
       "tweetId": 1217445201662312400,
       "url": "https://twitter.com/i/status/1217445201662312450",
       "text": "Und wieder ist ein Jahr vorbei! #washabich #geburtstag #torte #kerzenausblasen @ Was hab' ich? https://t.co/pY7KebeTC6",
-      "createdAt": "2020-01-15T13:55:29.000Z",
       "accuracy": 1,
       "author": {
         "id": "54688073",
@@ -813,7 +787,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/760914618692866049/-ZuJ0Gl2_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19dcae7143251891f0ed",
@@ -827,7 +801,6 @@
       "tweetId": 1217445204044779500,
       "url": "https://twitter.com/i/status/1217445204044779521",
       "text": "Tomorrow yey https://t.co/LzjEXYfSAK",
-      "createdAt": "2020-01-15T13:55:30.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -844,7 +817,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1106872434152652802/X3DSouNV_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19ecae7143251891f0f3",
@@ -858,7 +831,6 @@
       "tweetId": 1217445272294494200,
       "url": "https://twitter.com/i/status/1217445272294494208",
       "text": "Was geht denn da ab? Kurz nach der Ansprache des russischen Präsidenten #Putin tritt die gesamte Regierung zurück! #Russland https://t.co/MTSeECIDmA",
-      "createdAt": "2020-01-15T13:55:46.000Z",
       "accuracy": 16.97,
       "place": {
         "name": "Munich, Germany",
@@ -875,7 +847,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1216873899872395264/NsEab_bT_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19f9ae7143251891f0f7",
@@ -889,7 +861,6 @@
       "tweetId": 1217445326610686000,
       "url": "https://twitter.com/i/status/1217445326610685954",
       "text": "https://t.co/15WyiAC3KJ",
-      "createdAt": "2020-01-15T13:55:59.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -912,7 +883,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19fdae7143251891f0f8",
@@ -926,7 +897,6 @@
       "tweetId": 1217445344130273300,
       "url": "https://twitter.com/i/status/1217445344130273281",
       "text": "War wohl ein Fakehttps://www.bild.de/politik/ausland/politik-ausland/von-wegen-versehen-mullahs-schossen-zwei-raketen-auf-die-ukraine-boeing-67333558.bild.html",
-      "createdAt": "2020-01-15T13:56:03.000Z",
       "accuracy": 7.62,
       "place": {
         "name": "Bünde, Deutschland",
@@ -943,7 +913,7 @@
         "profileImage": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f19ffae7143251891f0f9",
@@ -957,7 +927,6 @@
       "tweetId": 1217445349591265300,
       "url": "https://twitter.com/i/status/1217445349591265281",
       "text": "@EHSANFAKEEH هناك من سماها \"بالسمت الحسن\"..",
-      "createdAt": "2020-01-15T13:56:05.000Z",
       "accuracy": 14.48,
       "place": {
         "name": "Duisburg, Germany",
@@ -974,7 +943,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/957590533270106112/iof_iTrO_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a02ae7143251891f0fa",
@@ -988,7 +957,6 @@
       "tweetId": 1217445365168902100,
       "url": "https://twitter.com/i/status/1217445365168902147",
       "text": "REALTALK @AvrilLavigne WE IN THIS https://t.co/fqOnB2br3h",
-      "createdAt": "2020-01-15T13:56:08.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -1005,7 +973,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1163757852059754496/X0jPUKcu_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a03ae7143251891f0fb",
@@ -1019,7 +987,6 @@
       "tweetId": 1217445368440422400,
       "url": "https://twitter.com/i/status/1217445368440422401",
       "text": "@Pan_Diabel @bruxa031 👍🏻Dobra robota Diable 👏",
-      "createdAt": "2020-01-15T13:56:09.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1036,7 +1003,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1186237645145423872/-Y5JP2W6_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a05ae7143251891f0fd",
@@ -1050,7 +1017,6 @@
       "tweetId": 1217445375398891500,
       "url": "https://twitter.com/i/status/1217445375398891520",
       "text": "Wenn man den 15kg Käseblock inkl Schneidemaschine holt ist es doch quasi Scheibenkäse, oder? #einkaufenfürdenkindergarten",
-      "createdAt": "2020-01-15T13:56:11.000Z",
       "accuracy": 9.84,
       "place": {
         "name": "Solingen, Deutschland",
@@ -1067,7 +1033,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/886186563172016129/msWqNVON_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a06ae7143251891f0fe",
@@ -1081,7 +1047,6 @@
       "tweetId": 1217445379224080400,
       "url": "https://twitter.com/i/status/1217445379224080389",
       "text": "Bauern starten am Freitag mit einem großen Konvoi - Polizei rechnet mit Verkehrsbeinträchtigungen zwischen Schwerin und Wismar mehr bei uns auf Facebook 👉\nhttps://t.co/XVqSuOLlfE",
-      "createdAt": "2020-01-15T13:56:12.000Z",
       "accuracy": 10.5,
       "place": {
         "name": "Schwerin, Germany",
@@ -1098,7 +1063,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1024215216853315584/woAvW8Fc_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a0fae7143251891f100",
@@ -1112,7 +1077,6 @@
       "tweetId": 1217445417358635000,
       "url": "https://twitter.com/i/status/1217445417358635010",
       "text": "https://t.co/cFg0xICNaP",
-      "createdAt": "2020-01-15T13:56:21.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1135,7 +1099,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a10ae7143251891f102",
@@ -1149,7 +1113,6 @@
       "tweetId": 1217445423603945500,
       "url": "https://twitter.com/i/status/1217445423603945473",
       "text": "What is happening...?! https://t.co/hf4nLRszNi",
-      "createdAt": "2020-01-15T13:56:22.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1166,7 +1129,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/994082283236753409/p-jpqABJ_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a17ae7143251891f105",
@@ -1180,7 +1143,6 @@
       "tweetId": 1217445452141990000,
       "url": "https://twitter.com/i/status/1217445452141989889",
       "text": "“Markets can stay irrational for longer than you can stay solvent” - #Keynes https://t.co/ZVTP9sLUgY",
-      "createdAt": "2020-01-15T13:56:29.000Z",
       "accuracy": 8.62,
       "place": {
         "name": "Königswinter, Deutschland",
@@ -1203,7 +1165,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a1cae7143251891f109",
@@ -1217,7 +1179,6 @@
       "tweetId": 1217445472765448200,
       "url": "https://twitter.com/i/status/1217445472765448194",
       "text": "@handannersoyy hayır demem djdkdmns",
-      "createdAt": "2020-01-15T13:56:34.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1234,7 +1195,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1212745074498519041/Nc4ogZJg_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a1eae7143251891f10b",
@@ -1248,7 +1209,6 @@
       "tweetId": 1217445482290712600,
       "url": "https://twitter.com/i/status/1217445482290712576",
       "text": "@momoritz01 @TobiasDirking Das finde ich bei Prepaid mega unnötig 😏",
-      "createdAt": "2020-01-15T13:56:36.000Z",
       "accuracy": 11.06,
       "place": {
         "name": "Rosendahl, Deutschland",
@@ -1265,7 +1225,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1113043348028354560/NQ9VgnYr_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a23ae7143251891f10d",
@@ -1279,7 +1239,6 @@
       "tweetId": 1217445503169966000,
       "url": "https://twitter.com/i/status/1217445503169966080",
       "text": "Vorschläge für Museumsbesuch in #Frankfurt übernächstes Wochenende.\nHab 2-3 Stunden, bin zu Fuß mobil und hab Kreditkarte.",
-      "createdAt": "2020-01-15T13:56:41.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -1296,7 +1255,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1000150902769180673/Fv8Gg6jL_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a2aae7143251891f10e",
@@ -1310,7 +1269,6 @@
       "tweetId": 1217445529543684000,
       "url": "https://twitter.com/i/status/1217445529543684096",
       "text": "#visbekmacht Frühjahrsputz für den Darm - Uhlhorns Marktapotheke♻️😃👍\n\nAm Donnerstag, den 20. Februar erfahrt ihr in der Markt-Apotheke, wie ihr mit Schwung in den Frühling startet. Darmreinigung, Entsäuerung und… https://t.co/o54Q619WsC",
-      "createdAt": "2020-01-15T13:56:47.000Z",
       "accuracy": 1,
       "author": {
         "id": "818790038913871872",
@@ -1319,7 +1277,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/844137154708193286/kpudNNaZ_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a2bae7143251891f110",
@@ -1333,7 +1291,6 @@
       "tweetId": 1217445534564278300,
       "url": "https://twitter.com/i/status/1217445534564278272",
       "text": "@ClaudiaPulchra @conspirdisco Lijkt me fantastisch! Waar kan ik meer info krijgen? Ik moet ook nog even toestemming aan mijn vrouw vragen🤪",
-      "createdAt": "2020-01-15T13:56:49.000Z",
       "accuracy": 12.07,
       "place": {
         "name": "Bohmte, Deutschland",
@@ -1350,7 +1307,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/984487551418486784/OOkXeDYh_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a2fae7143251891f112",
@@ -1364,7 +1321,6 @@
       "tweetId": 1217445553803595800,
       "url": "https://twitter.com/i/status/1217445553803595776",
       "text": "bisschen kurzfristig, aber hat jemand morgen Bock mit mir in der City herumzulaufen, dass ich mal wieder bisschen fotografieren kann? So ab 10/11Uhr?",
-      "createdAt": "2020-01-15T13:56:53.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -1381,7 +1337,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1214966940927758337/2TAVlCCR_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a36ae7143251891f114",
@@ -1395,7 +1351,6 @@
       "tweetId": 1217445568030683100,
       "url": "https://twitter.com/i/status/1217445568030683143",
       "text": "^^\nhttps://t.co/jEO3I3WjyK",
-      "createdAt": "2020-01-15T13:56:57.000Z",
       "accuracy": 5.55,
       "place": {
         "name": "Olching, Deutschland",
@@ -1412,7 +1367,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1212487953940959232/2GSbTrdH_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a3bae7143251891f115",
@@ -1426,7 +1381,6 @@
       "tweetId": 1217445598292476000,
       "url": "https://twitter.com/i/status/1217445598292475904",
       "text": "Ağaçları kesip estetik için heykel yapmanın neresi güzel  ?Hasan Bey! https://t.co/vDBpmvWhkE",
-      "createdAt": "2020-01-15T13:57:04.000Z",
       "accuracy": 16.97,
       "place": {
         "name": "Munich, Germany",
@@ -1443,7 +1397,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1182034295969472513/eiND_1zS_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a44ae7143251891f117",
@@ -1457,7 +1411,6 @@
       "tweetId": 1217445640504053800,
       "url": "https://twitter.com/i/status/1217445640504053760",
       "text": "What a pleasure! Thank you, @vickywagner. Rock’n’Roll, @BGA_Initiative 🚀 https://t.co/9zGBPZ8g2y",
-      "createdAt": "2020-01-15T13:57:14.000Z",
       "accuracy": 7.16,
       "place": {
         "name": "Oberding, Deutschland",
@@ -1474,7 +1427,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1159894958045876228/t_ruY0tB_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a47ae7143251891f118",
@@ -1488,7 +1441,6 @@
       "tweetId": 1217445652927590400,
       "url": "https://twitter.com/i/status/1217445652927590400",
       "text": "@milajcg88 @bernaljosea Muchas Gracias por tu amabilidad y tomarte el tiempo de escribir! También logré hacerlo! Un abrazo y éxitos con el resto del trámite !!",
-      "createdAt": "2020-01-15T13:57:17.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1505,7 +1457,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1792170937/image_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a4dae7143251891f11a",
@@ -1519,7 +1471,6 @@
       "tweetId": 1217445676289794000,
       "url": "https://twitter.com/i/status/1217445676289794048",
       "text": "Dienstreise #onenightinLuebeck #Betriebsrat (@ B&amp;B Hotel Lübeck - @bbhotels in Lübeck, Schleswig-Holstein) https://t.co/Y57At5Xm5G",
-      "createdAt": "2020-01-15T13:57:22.000Z",
       "accuracy": 1,
       "author": {
         "id": "62555096",
@@ -1528,7 +1479,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1194027417180016647/tSh-_fbc_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a4eae7143251891f11b",
@@ -1542,7 +1493,6 @@
       "tweetId": 1217445682728009700,
       "url": "https://twitter.com/i/status/1217445682728009730",
       "text": "@BobDigi69 @JokerFleck2 I think Ezra in batcave batcar etc also reshoot😛",
-      "createdAt": "2020-01-15T13:57:24.000Z",
       "accuracy": 10.96,
       "place": {
         "name": "Ihlow, Deutschland",
@@ -1559,7 +1509,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215223589315796994/hF5m0qWe_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a5cae7143251891f11d",
@@ -1573,7 +1523,6 @@
       "tweetId": 1217445739871318000,
       "url": "https://twitter.com/i/status/1217445739871318017",
       "text": "#glueon #wirsinddrin #insidepolitics #actnow #ExtinctionRebellion #FridaysForFurture #angeklebt im Düsseldorfer #Landtag Nordrhein Westfalen https://t.co/knrPbI41Ca",
-      "createdAt": "2020-01-15T13:57:38.000Z",
       "accuracy": 15.41,
       "place": {
         "name": "Düsseldorf, Germany",
@@ -1611,7 +1560,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a5dae7143251891f11e",
@@ -1625,7 +1574,6 @@
       "tweetId": 1217445747014193200,
       "url": "https://twitter.com/i/status/1217445747014193153",
       "text": "@EmreSevim_ Almanya’da en az 4 çocuk diyorlar canım, araştır salak solcu",
-      "createdAt": "2020-01-15T13:57:39.000Z",
       "accuracy": 14.48,
       "place": {
         "name": "Duisburg, Germany",
@@ -1642,7 +1590,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1131594432162275329/dYn57H1b_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a6fae7143251891f122",
@@ -1656,7 +1604,6 @@
       "tweetId": 1217445822142525400,
       "url": "https://twitter.com/i/status/1217445822142525440",
       "text": "@Sunny_Sera Humorvoll",
-      "createdAt": "2020-01-15T13:57:57.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -1673,7 +1620,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215887579356237829/5aVnNkmN_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a71ae7143251891f123",
@@ -1687,7 +1634,6 @@
       "tweetId": 1217445826869579800,
       "url": "https://twitter.com/i/status/1217445826869579777",
       "text": "💎💯👑 THIS IS A MANS WORLD 👑💯💎\n•\n#videogames #games #gamer #toptags #gaming #instagaming #instagamer #playinggames #online #photooftheday #onlinegaming #videogameaddict #instagame #instagood #gamestagram #gamerguy… https://t.co/nKwfwztZCo",
-      "createdAt": "2020-01-15T13:57:58.000Z",
       "accuracy": 1,
       "author": {
         "id": "2945917517",
@@ -1696,7 +1642,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1047633864796065795/OPcMhyjW_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a7bae7143251891f126",
@@ -1710,7 +1656,6 @@
       "tweetId": 1217445871580741600,
       "url": "https://twitter.com/i/status/1217445871580741634",
       "text": "@1004lights I wouldn't be mad having this cool guy playable",
-      "createdAt": "2020-01-15T13:58:09.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -1727,7 +1672,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1106872434152652802/X3DSouNV_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a83ae7143251891f128",
@@ -1741,7 +1686,6 @@
       "tweetId": 1217445904774500400,
       "url": "https://twitter.com/i/status/1217445904774500352",
       "text": "Kuckuck @SvenTeuber!",
-      "createdAt": "2020-01-15T13:58:17.000Z",
       "accuracy": 13.21,
       "place": {
         "name": "Wiesbaden, Germany",
@@ -1758,7 +1702,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/983364505072742400/76VTEp7s_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a87ae7143251891f129",
@@ -1772,7 +1716,6 @@
       "tweetId": 1217445921157533700,
       "url": "https://twitter.com/i/status/1217445921157533697",
       "text": "Ne Hakkı varsa artık? https://t.co/omdTtqTK4J",
-      "createdAt": "2020-01-15T13:58:21.000Z",
       "accuracy": 16.97,
       "place": {
         "name": "Munich, Germany",
@@ -1789,7 +1732,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1182034295969472513/eiND_1zS_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1a8aae7143251891f12c",
@@ -1803,7 +1746,6 @@
       "tweetId": 1217445933476122600,
       "url": "https://twitter.com/i/status/1217445933476122628",
       "text": "Gente, se Huck quiser ser levado a sério um pouquinho, que apague o rastro dessa pessoa sórdida em sua vida, esse sobrenome italiano pra mim lembra devastação e rapinagem. https://t.co/rUJo0CUZWx",
-      "createdAt": "2020-01-15T13:58:24.000Z",
       "accuracy": 5.61,
       "place": {
         "name": "Rosenheim, Germany",
@@ -1820,7 +1762,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1198299466396246017/7FG1K7tb_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1aa6ae7143251891f131",
@@ -1834,7 +1776,6 @@
       "tweetId": 1217446050899861500,
       "url": "https://twitter.com/i/status/1217446050899861511",
       "text": "@davedodgers I like it ❤️🖖",
-      "createdAt": "2020-01-15T13:58:52.000Z",
       "accuracy": 10.96,
       "place": {
         "name": "Ihlow, Deutschland",
@@ -1851,7 +1792,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215223589315796994/hF5m0qWe_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1aaaae7143251891f132",
@@ -1865,7 +1806,6 @@
       "tweetId": 1217446068327198700,
       "url": "https://twitter.com/i/status/1217446068327198721",
       "text": "@MoskaSangarN Delicious !",
-      "createdAt": "2020-01-15T13:58:56.000Z",
       "accuracy": 9.72,
       "place": {
         "name": "Kassel, Germany",
@@ -1882,7 +1822,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1016007586049601536/c3q-Tok3_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1aacae7143251891f133",
@@ -1896,7 +1836,6 @@
       "tweetId": 1217446075579162600,
       "url": "https://twitter.com/i/status/1217446075579162626",
       "text": "@WillianRBS_ @5x0Flamengol @jairbolsonaro No mais espero que leiam mesmo. Espero que todo mundo que lambe bola de político se foda... ainda mais de político estrangeiro... eca",
-      "createdAt": "2020-01-15T13:58:58.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -1913,7 +1852,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1215417385512890368/16VadHnv_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ab4ae7143251891f138",
@@ -1927,7 +1866,6 @@
       "tweetId": 1217446110068990000,
       "url": "https://twitter.com/i/status/1217446110068989952",
       "text": "@SariZeybek1923 @tcbuyuksehir Tabi tabi, ağır ağır basit basit🤣🤣🤣🤣",
-      "createdAt": "2020-01-15T13:59:06.000Z",
       "accuracy": 14.48,
       "place": {
         "name": "Duisburg, Germany",
@@ -1944,7 +1882,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1131594432162275329/dYn57H1b_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ab8ae7143251891f139",
@@ -1958,7 +1896,6 @@
       "tweetId": 1217446128800739300,
       "url": "https://twitter.com/i/status/1217446128800739328",
       "text": "Wie cool ist das denn? https://t.co/INJj02AmJA",
-      "createdAt": "2020-01-15T13:59:10.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -1975,7 +1912,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1081106299121819648/6GL544DO_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ac0ae7143251891f13a",
@@ -1989,7 +1926,6 @@
       "tweetId": 1217446161117859800,
       "url": "https://twitter.com/i/status/1217446161117859840",
       "text": "@ekundayoabiona @honeypotio @kingisaac95 @Taiwosam @Chidi3b3r3 Chai https://t.co/6NpJUb8Tkv",
-      "createdAt": "2020-01-15T13:59:18.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -2011,7 +1947,7 @@
           "type": "animated_gif"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ac4ae7143251891f13b",
@@ -2025,7 +1961,6 @@
       "tweetId": 1217446177110663200,
       "url": "https://twitter.com/i/status/1217446177110663168",
       "text": "اذكر اخر مره جيت افك طقاق انطقيت اكثر واحد ف بطلت https://t.co/zf7hP9AQT8",
-      "createdAt": "2020-01-15T13:59:22.000Z",
       "accuracy": 16.97,
       "place": {
         "name": "Munich, Germany",
@@ -2042,7 +1977,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1216464581557616640/OGd-ahNZ_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1acdae7143251891f13e",
@@ -2056,7 +1991,6 @@
       "tweetId": 1217446213580214300,
       "url": "https://twitter.com/i/status/1217446213580214272",
       "text": "Der #BGH hat im Mordfall #Lübcke den Haftbefehl gegen den Beschuldigten Elmar J. aufgehoben. Die schriftlichen Gründe sind noch nicht veröffentlicht. @ZDFheute",
-      "createdAt": "2020-01-15T13:59:31.000Z",
       "accuracy": 15.41,
       "place": {
         "name": "Düsseldorf, Germany",
@@ -2073,7 +2007,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/944687838481788929/2lC4Xmik_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ad3ae7143251891f13f",
@@ -2087,7 +2021,6 @@
       "tweetId": 1217446241421930500,
       "url": "https://twitter.com/i/status/1217446241421930496",
       "text": "@lyn_dzhunji Leave us alone 😂",
-      "createdAt": "2020-01-15T13:59:37.000Z",
       "accuracy": 15.5,
       "place": {
         "name": "Dortmund, Germany",
@@ -2104,7 +2037,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1212088739708702725/W5RB2Nf8_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ad7ae7143251891f140",
@@ -2118,7 +2051,6 @@
       "tweetId": 1217446256131309600,
       "url": "https://twitter.com/i/status/1217446256131309569",
       "text": "@NextactE @Competence_Site @carolinpeters92 @MelanieGoeres @DanivonD Auf LinkedIn?",
-      "createdAt": "2020-01-15T13:59:41.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -2135,7 +2067,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/760801802963001344/B02fSsDE_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1adeae7143251891f143",
@@ -2149,7 +2081,6 @@
       "tweetId": 1217446286913343500,
       "url": "https://twitter.com/i/status/1217446286913343489",
       "text": "@Feminadocta @KatjaBZaich Wat!!!! 🙄😵🤣🤣",
-      "createdAt": "2020-01-15T13:59:48.000Z",
       "accuracy": 7.43,
       "place": {
         "name": "Stadthagen, Deutschland",
@@ -2166,7 +2097,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/926568242671443968/-2heq9v6_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ae1ae7143251891f144",
@@ -2180,7 +2111,6 @@
       "tweetId": 1217446300054118400,
       "url": "https://twitter.com/i/status/1217446300054118412",
       "text": "@KilicCk @tcbuyuksehir Basit saksı 🤣🤣🤣🤣",
-      "createdAt": "2020-01-15T13:59:51.000Z",
       "accuracy": 14.48,
       "place": {
         "name": "Duisburg, Germany",
@@ -2197,7 +2127,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1131594432162275329/dYn57H1b_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1ae7ae7143251891f146",
@@ -2211,7 +2141,6 @@
       "tweetId": 1217446323559051300,
       "url": "https://twitter.com/i/status/1217446323559051264",
       "text": "Das ist meins. Immer Dienstags bis Freitags Kaffee und Kuchen umsonst für #Ü60 https://t.co/gX99HYnYyu",
-      "createdAt": "2020-01-15T13:59:57.000Z",
       "accuracy": 1,
       "place": {
         "name": "Deutsches Fußballmuseum",
@@ -2234,7 +2163,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f1aecae7143251891f148",
@@ -2248,7 +2177,6 @@
       "tweetId": 1217446345415495700,
       "url": "https://twitter.com/i/status/1217446345415495680",
       "text": "@Alatarielle @Natascha_Strobl Es ist natürlich schön, wenn er gelernt hat. \n2016 sah das mit dem Frauenanteil noch ganz anders aus, und Steinems Kommentar zu der Zeit war „the boys are with Bernie“. 20 Jahre nach „honorary woman“. \n\nUnd diese „boys“ waren selbst als Mann 2016 schwer zu ertragen.",
-      "createdAt": "2020-01-15T14:00:02.000Z",
       "accuracy": 10.98,
       "place": {
         "name": "Landshut, Bayern",
@@ -2265,7 +2193,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1176945168152485890/kdmlRAY-_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20e7e4c76a0cc4d61448",
@@ -2279,7 +2207,6 @@
       "tweetId": 1217452748570009600,
       "url": "https://twitter.com/i/status/1217452748570009600",
       "text": "I love how strong willed they are and I can’t wait to see them grow. 💓 https://t.co/7ez69xENGI",
-      "createdAt": "2020-01-15T14:25:29.000Z",
       "accuracy": 11.78,
       "place": {
         "name": "Kiel, Germany",
@@ -2296,7 +2223,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1209845857312497665/Zw9Ispba_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20eae4c76a0cc4d6144b",
@@ -2310,7 +2237,6 @@
       "tweetId": 1217452778106376200,
       "url": "https://twitter.com/i/status/1217452778106376192",
       "text": "@mgraysz @NekaneHarta Una tarada Directora general ... así vamos",
-      "createdAt": "2020-01-15T14:25:36.000Z",
       "accuracy": 10.3,
       "place": {
         "name": "Bonn, Germany",
@@ -2327,7 +2253,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/758428907439788033/z8GepCkk_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20ebe4c76a0cc4d6144c",
@@ -2341,7 +2267,6 @@
       "tweetId": 1217452779385630700,
       "url": "https://twitter.com/i/status/1217452779385630721",
       "text": "@JorgeBustos1 @JRBauza Lo que me gustaría saber es de la validez del cargo si se salta el texto del juramento. 🤔",
-      "createdAt": "2020-01-15T14:25:36.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -2358,7 +2283,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1196896502058278918/bMORiZAy_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20eee4c76a0cc4d6144f",
@@ -2372,7 +2297,6 @@
       "tweetId": 1217452797483982800,
       "url": "https://twitter.com/i/status/1217452797483982848",
       "text": "Один раз посмотрела на YouTube украинские телешоу: вот тебе реклама водки и руслото",
-      "createdAt": "2020-01-15T14:25:40.000Z",
       "accuracy": 10.62,
       "place": {
         "name": "Siegen, Germany",
@@ -2389,7 +2313,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1193284020404129793/4NmRsDRo_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20f0e4c76a0cc4d61450",
@@ -2403,7 +2327,6 @@
       "tweetId": 1217452804756983800,
       "url": "https://twitter.com/i/status/1217452804756983815",
       "text": "@NitroCorgi Glasfaser FTTH also, hast du eine eigene öffentliche IP Adresse? Nicht das du nur eine private vom Anbieter bekommst.",
-      "createdAt": "2020-01-15T14:25:42.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -2420,7 +2343,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1129252593723740162/IpT7RPXB_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20f4e4c76a0cc4d61451",
@@ -2434,7 +2357,6 @@
       "tweetId": 1217452821886439400,
       "url": "https://twitter.com/i/status/1217452821886439424",
       "text": "@jensschauder Do you have a picture jumping? 🤔",
-      "createdAt": "2020-01-15T14:25:46.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -2451,7 +2373,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1155510614837645312/qwMK0hJE_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20f6e4c76a0cc4d61453",
@@ -2465,7 +2387,6 @@
       "tweetId": 1217452830652428300,
       "url": "https://twitter.com/i/status/1217452830652428289",
       "text": "I wish I had a friend like me.",
-      "createdAt": "2020-01-15T14:25:48.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -2482,7 +2403,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1149673604868481024/uM_1DhDS_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20fbe4c76a0cc4d61455",
@@ -2496,7 +2417,6 @@
       "tweetId": 1217452851041132500,
       "url": "https://twitter.com/i/status/1217452851041132544",
       "text": "Come on Perez make this happen . https://t.co/FiwQocyUMn",
-      "createdAt": "2020-01-15T14:25:53.000Z",
       "accuracy": 6.8,
       "place": {
         "name": "Bad Honnef, Deutschland",
@@ -2513,7 +2433,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1214807762833739777/t7qB5Rk__normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f20fce4c76a0cc4d61456",
@@ -2527,7 +2447,6 @@
       "tweetId": 1217452855847723000,
       "url": "https://twitter.com/i/status/1217452855847723009",
       "text": "@christianbangel @brudergrimm, Badische Zeitung.",
-      "createdAt": "2020-01-15T14:25:54.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -2544,7 +2463,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/2613393760/28fk6bo8h35mhna37y0i_normal.jpeg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2100e4c76a0cc4d61458",
@@ -2558,7 +2477,6 @@
       "tweetId": 1217452869273768000,
       "url": "https://twitter.com/i/status/1217452869273767937",
       "text": "@Freavonwegen Ja das kenne ich so. Aber nie auf der Straße damit gesehen.",
-      "createdAt": "2020-01-15T14:25:57.000Z",
       "accuracy": 6.35,
       "place": {
         "name": "Gladbeck, Deutschland",
@@ -2575,7 +2493,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1214622046690394113/wwxfvMiy_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2115e4c76a0cc4d6145a",
@@ -2589,7 +2507,6 @@
       "tweetId": 1217452959845572600,
       "url": "https://twitter.com/i/status/1217452959845572608",
       "text": "@ximij @shalimar964 @PiliTF @Elina21458891 @Elis100385 @beate_dizon @alnicastro13 @SchulzMel @VericaMarkovi7 @anna_vinciv @Coralie62320 @GrimmSashaRoiz @Kay96194052 @cattibrie_lamia Thanks Emma. 😘😘🤗",
-      "createdAt": "2020-01-15T14:26:19.000Z",
       "accuracy": 14.76,
       "place": {
         "name": "Bielefeld, Germany",
@@ -2606,7 +2523,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1000393635899301888/kqzzzOE3_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2116e4c76a0cc4d6145c",
@@ -2620,7 +2537,6 @@
       "tweetId": 1217452963997810700,
       "url": "https://twitter.com/i/status/1217452963997810688",
       "text": "Sizde fırtına kopsa, bundan sonra bende yaprak kıpırdamaz. 🍃",
-      "createdAt": "2020-01-15T14:26:20.000Z",
       "accuracy": 8.62,
       "place": {
         "name": "Königswinter, Deutschland",
@@ -2637,7 +2553,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1216763139343179777/jKVCMaDi_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2119e4c76a0cc4d6145d",
@@ -2651,7 +2567,6 @@
       "tweetId": 1217452976228335600,
       "url": "https://twitter.com/i/status/1217452976228335622",
       "text": "You’ve got a friend in me.",
-      "createdAt": "2020-01-15T14:26:23.000Z",
       "accuracy": 13.81,
       "place": {
         "name": "Aachen, Germany",
@@ -2668,7 +2583,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1149673604868481024/uM_1DhDS_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2121e4c76a0cc4d61461",
@@ -2682,7 +2597,6 @@
       "tweetId": 1217453010474950700,
       "url": "https://twitter.com/i/status/1217453010474950656",
       "text": "@AlexanderMws 「私はアレクサンダーです。」\nWatashiwa Arekusandaa desu. 👌",
-      "createdAt": "2020-01-15T14:26:31.000Z",
       "accuracy": 14.45,
       "place": {
         "name": "Hamm, Deutschland",
@@ -2699,7 +2613,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/832957636379344896/U2YJogP2_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f212ae4c76a0cc4d61464",
@@ -2713,7 +2627,6 @@
       "tweetId": 1217453048274018300,
       "url": "https://twitter.com/i/status/1217453048274018305",
       "text": "@zfabrogmailcom @EdmarBonoro @FilhoRq @LorenaSC19 Idem👍🏻",
-      "createdAt": "2020-01-15T14:26:40.000Z",
       "accuracy": 6.85,
       "place": {
         "name": "Zolling, Deutschland",
@@ -2730,7 +2643,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1187405800471437312/jij5IebD_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f212be4c76a0cc4d61465",
@@ -2744,7 +2657,6 @@
       "tweetId": 1217453050274701300,
       "url": "https://twitter.com/i/status/1217453050274701313",
       "text": "Hatte letztens nicht irgendwer was in Berlin für ihre/seine Firma gesucht? https://t.co/MfNATlB8bb",
-      "createdAt": "2020-01-15T14:26:41.000Z",
       "accuracy": 13.51,
       "place": {
         "name": "Hanover, Germany",
@@ -2761,7 +2673,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1135916829157675011/l9QVbtN-_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2134e4c76a0cc4d61467",
@@ -2775,7 +2687,6 @@
       "tweetId": 1217453089579552800,
       "url": "https://twitter.com/i/status/1217453089579552780",
       "text": "@muntverzamelaar Wij werken hard aan, goh waar heb ik dat meer gehoord? Ik merk er niks van.",
-      "createdAt": "2020-01-15T14:26:50.000Z",
       "accuracy": 7.91,
       "place": {
         "name": "Gronau (Westfalen), Deutschland",
@@ -2792,7 +2703,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/805808010606022657/6JE4Rlwd_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f213ae4c76a0cc4d61468",
@@ -2806,7 +2717,6 @@
       "tweetId": 1217453114921492500,
       "url": "https://twitter.com/i/status/1217453114921492480",
       "text": "Hmm 🤔 ich habe doch gar nichts bestellt... vielen lieben Dank an den oder die Unbekannte welche/r mir aus meiner Amazon Wunschliste das Maßband zukommen lassen hat 😊👍 leider lag kein Zettel dabei 😢 vielleicht magst… https://t.co/T43vYPBcRg",
-      "createdAt": "2020-01-15T14:26:56.000Z",
       "accuracy": 1,
       "author": {
         "id": "997405974",
@@ -2815,7 +2725,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1143971366603038721/DwKjx4n2_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f213de4c76a0cc4d6146a",
@@ -2829,7 +2739,6 @@
       "tweetId": 1217453127764521000,
       "url": "https://twitter.com/i/status/1217453127764520960",
       "text": "So krass, was die sich in der Werbung heute alles trauen.... #nurdie #werbung https://t.co/uX2jXPKqfs",
-      "createdAt": "2020-01-15T14:26:59.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -2852,7 +2761,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2143e4c76a0cc4d6146f",
@@ -2866,7 +2775,6 @@
       "tweetId": 1217453147687477200,
       "url": "https://twitter.com/i/status/1217453147687477253",
       "text": "@nerdyOme Well, for the most part I seem pretty sane and together on the outside... on the inside though... https://t.co/PboC4i1tXq",
-      "createdAt": "2020-01-15T14:27:04.000Z",
       "accuracy": 19.67,
       "place": {
         "name": "Cologne, Germany",
@@ -2888,7 +2796,7 @@
           "type": "animated_gif"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f214ae4c76a0cc4d61470",
@@ -2902,7 +2810,6 @@
       "tweetId": 1217453180788838400,
       "url": "https://twitter.com/i/status/1217453180788838401",
       "text": "Das war das Highlight meines Ausflugs nach Essen heute mittag - zu Besuch in der... ja, wo bin ich wohl? https://t.co/J4LA9xy1E2",
-      "createdAt": "2020-01-15T14:27:12.000Z",
       "accuracy": 1,
       "place": {
         "name": "Lufthansa Senator Lounge",
@@ -2925,7 +2832,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f214ee4c76a0cc4d61472",
@@ -2939,7 +2846,6 @@
       "tweetId": 1217453199281610800,
       "url": "https://twitter.com/i/status/1217453199281610752",
       "text": "@aquasabine А мне Берлин почему-то совсем не нравится",
-      "createdAt": "2020-01-15T14:27:16.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -2956,7 +2862,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1214298770051141635/SGZFtpOZ_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2157e4c76a0cc4d61474",
@@ -2970,7 +2876,6 @@
       "tweetId": 1217453237009309700,
       "url": "https://twitter.com/i/status/1217453237009309697",
       "text": "@GuE6qSy6nw6bldU https://t.co/I1MnqbeDjd",
-      "createdAt": "2020-01-15T14:27:25.000Z",
       "accuracy": 16.97,
       "place": {
         "name": "Munich, Germany",
@@ -2993,7 +2898,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2161e4c76a0cc4d61476",
@@ -3007,7 +2912,6 @@
       "tweetId": 1217453276872036400,
       "url": "https://twitter.com/i/status/1217453276872036354",
       "text": "@christianbangel Wirsching, Augsburger Allgemeine",
-      "createdAt": "2020-01-15T14:27:35.000Z",
       "accuracy": 70.27,
       "place": {
         "name": "Hamburg, Germany",
@@ -3024,7 +2928,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/2613393760/28fk6bo8h35mhna37y0i_normal.jpeg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2161e4c76a0cc4d61477",
@@ -3038,7 +2942,6 @@
       "tweetId": 1217453277903757300,
       "url": "https://twitter.com/i/status/1217453277903757312",
       "text": "@tswiftcat1989 @AnneMarie yeah as she said earlier but for fans like us isn’t possible 😥😥",
-      "createdAt": "2020-01-15T14:27:35.000Z",
       "accuracy": 14.42,
       "place": {
         "name": "Rostock, Germany",
@@ -3055,7 +2958,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1185327847986073600/EFsBoO5h_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2164e4c76a0cc4d61478",
@@ -3069,7 +2972,6 @@
       "tweetId": 1217453290817978400,
       "url": "https://twitter.com/i/status/1217453290817978369",
       "text": "Uğruna savaşacağım hiçbir sevgiyi istemiyorum. benim dümdüz, telaşsız, kendiliğinden gelip kafa yormayan güzelliklere ihtiyacım var.",
-      "createdAt": "2020-01-15T14:27:38.000Z",
       "accuracy": 8.62,
       "place": {
         "name": "Königswinter, Deutschland",
@@ -3086,7 +2988,7 @@
         "profileImage": "https://pbs.twimg.com/profile_images/1216763139343179777/jKVCMaDi_normal.jpg"
       },
       "media": [],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f2167e4c76a0cc4d61479",
@@ -3100,7 +3002,6 @@
       "tweetId": 1217453301148606500,
       "url": "https://twitter.com/i/status/1217453301148606464",
       "text": "Das Kind ist noch lange nicht in den Brunnen gefallen.... https://t.co/X11uroLdRg",
-      "createdAt": "2020-01-15T14:27:40.000Z",
       "accuracy": 8.8,
       "place": {
         "name": "Burkardroth, Deutschland",
@@ -3123,7 +3024,7 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     },
     {
       "_id": "5e1f216ce4c76a0cc4d6147b",
@@ -3137,7 +3038,6 @@
       "tweetId": 1217453323722350600,
       "url": "https://twitter.com/i/status/1217453323722350592",
       "text": "Waterloo 2015 - Bicentenary of the Battle 🇧🇪 🇬🇧\n#waterloo #reenactment #livinghistory #belgien #belgium #belgique #napoleonbonaparte #bicentenary #zweihundertjahrfeier #schlachtbeiwaterloo #battleofwaterloo #bicentenaryofthebattle #britisharmy #waterloomemorial #memorialwaterloo https://t.co/SLvXCdLmGQ",
-      "createdAt": "2020-01-15T14:27:46.000Z",
       "accuracy": 6.98,
       "place": {
         "name": "Bad Bevensen, Deutschland",
@@ -3160,7 +3060,10 @@
           "type": "photo"
         }
       ],
-      "__v": 0
+      "demo": true
     }
-  ]
-}
+  ];
+
+module.exports = {
+  twitterdata
+};

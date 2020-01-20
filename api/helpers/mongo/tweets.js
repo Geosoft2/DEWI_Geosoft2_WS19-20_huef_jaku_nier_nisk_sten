@@ -49,19 +49,25 @@ const postTweet = async function (tweet) {
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
-            var newTweet = new Tweet({
+            var tweetObject = {
                 _id: mongoose.Types.ObjectId(),
                 tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
-                createdAt: tweet.createdAt,
                 geometry: tweet.geometry,
                 accuracy: tweet.accuracy,
                 place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
                 // author und media noch splitten oder einfach als Mixed definieren??
-            });
+            };
+            if(tweet.createdAt){ // default: Date.now()
+              tweetObject.createdAt = tweet.createdAt;
+            }
+            if(tweet.demo){ // default: false
+              tweetObject.demo = tweet.demo;
+            }
+            var newTweet = new Tweet(tweetObject);
             try {
                 console.log(newTweet);
                 var savedTweet = await newTweet.save();
@@ -325,12 +331,19 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id
  * remove all Tweets from database except the example data, created by DEWI
  * @returns {Promise<void>}
  */
-const deleteTweets = async function() {
-    await Tweet.remove({author: { name : {$ne: "DEWI"} } });
+const deleteDemoTweets = async function() {
+  try{
+    await Tweet.deleteMany({demo: true});
+    console.log('all demo-tweets deleted');
+  }
+  catch(err){
+    console.log(err);
+  }
 };
 
 module.exports = {
     postTweet,
     getTweetsFromMongo,
-    getTweetFromMongo
+    getTweetFromMongo,
+    deleteDemoTweets
 };

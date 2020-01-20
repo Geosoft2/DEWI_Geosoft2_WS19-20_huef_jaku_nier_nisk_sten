@@ -6,7 +6,7 @@
 let socket = io('http://' + location.hostname + ':3001');
 
 var greenIcon = new L.Icon({
-    iconUrl: 'media/images/marker-icon-green.png',
+    iconUrl: '/media/images/marker-icon-green.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -15,7 +15,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: 'media/images/marker-icon-blue.png',
+    iconUrl: '/media/images/marker-icon-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -367,7 +367,7 @@ function createLayer(data) {
             };
         },
         onEachFeature: function (feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p>');
+            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p><p>' + feature.properties.IDENTIFIER + '</p>');
         }
     });
 }

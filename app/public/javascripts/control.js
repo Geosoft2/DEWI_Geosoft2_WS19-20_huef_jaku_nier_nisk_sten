@@ -369,7 +369,7 @@ function updateURL(bbox, events, filter) {
   // create querystring
   var querystring = $.param(parameters);
   // new URL
-  window.history.pushState("object or string", "Title", "/?" + querystring);
+  window.history.pushState("object or string", "Title", window.location.pathname+"?" + querystring);
 }
 
 /**
