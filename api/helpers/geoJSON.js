@@ -34,6 +34,11 @@ const bboxToPolygon = function(bbox){
  ];
 };
 
+/**
+ * Proofs if the bbox is a valid bbox
+ * @param {*} bbox
+ * @returns {boolean}
+ */
 const isBbox = function(bbox){
   if(!bbox.southWest){
     return {error : 'bbox needs a southWest attribute. bbox Schema:  "bbox" : {' +
@@ -71,53 +76,88 @@ const isBbox = function(bbox){
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(!bbox.northEast){
-    return {error : 'bbox needs a northEast attribute. bbox Schema:  "bbox" : {' +
-      '"southWest": {"lat": <double>, "lng": <double>}, ' +
-      '"northEast": {"lat": <double>, "lng": <double>}' +
-      '},'}
-  }
-  if(typeof(bbox.northEast.lat) !== "number"){
+  if(typeof(Number(bbox.northEast.lat)) !== "number"){
     return {error : 'northEast.lat must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.northEast.lng) !== "number"){
+  if(typeof(Number(bbox.northEast.lng)) !== "number"){
     return {error : 'northEast.lng must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.southWest.lat) !== "number"){
+  if(typeof(Number(bbox.southWest.lat)) !== "number"){
     return {error : 'southWest.lat must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(typeof(bbox.southWest.lng) !== "number"){
+  if(typeof(Number(bbox.southWest.lng)) !== "number"){
     return {error : 'southWest.lng must be a number. bbox Schema:  "bbox" : {' +
       '"southWest": {"lat": <double>, "lng": <double>}, ' +
       '"northEast": {"lat": <double>, "lng": <double>}' +
       '},'}
   }
-  if(bbox.southWest.lat< bbox.northEast.lat){
-    return {error: "southWest.lat must be higher tha nortEast.lat"}
+  if(Number(bbox.southWest.lat) > Number(bbox.northEast.lat)){
+    return {error: "southWest.lat must be lower than northEast.lat"}
   }
-  if(bbox.southWest.lng< bbox.northEast.lng){
-    return {error: "southWest.lng must be higher tha nortEast.lng"}
+  if(Number(bbox.southWest.lng) > Number(bbox.northEast.lng)){
+    return {error: "southWest.lng must be lower than northEast.lng"}
   }
-  if(bbox.southWest.lat > 90 || bbox.southWest.lat < -90 || bbox.northEast.lat > 90 || bbox.northEast.lat < -90){
+  if(Number(bbox.southWest.lat) > 90 || Number(bbox.southWest.lat) < -90 || Number(bbox.northEast.lat) > 90 || Number(bbox.northEast.lat) < -90){
     return {error: "Latitude mus be betweet -90 and 90"}
   }
-  if(bbox.southWest.lng > 180 || bbox.southWest.lng < -180 || bbox.northEast.lng > 180 || bbox.northEast.lng < -180){
+  if(Number(bbox.southWest.lng) > 180 || Number(bbox.southWest.lng) < -180 || Number(bbox.northEast.lng) > 180 || Number(bbox.northEast.lng) < -180){
     return {error: "Longitude mus be betweet -180 and 180"}
   }
   return true;
 }
 
+
+/**
+ * @desc creates a GeomtryCollection of MultiPolygons from a FeatureCollection of MultiPolygons
+ * @see https://docs.mongodb.com/manual/reference/geojson/#geometrycollection
+ * @param {geoJson} featureCollection
+ * @return {geoJson} geometryCollection
+ */
+const featureCollectionToGeometryCollection = function(featureCollection){
+  var geometryCollection = {
+    type: "GeometryCollection",
+    geometries: []
+  };
+  for(var feature in featureCollection.features){
+    var coordinatesFloat = multiCoordinatesStringToFloat(featureCollection.features[feature].geometry.coordinates);
+    geometryCollection.geometries.push({
+      type: "MultiPolygon",
+      coordinates: [coordinatesFloat]
+    });
+  }
+  return geometryCollection;
+};
+
+
+/**
+ * @desc converts string coordinates into float coordinates of a multidimensional array
+ * @param {array} coordinates mutidimensional array of "string"-coordinates
+ * @return {array} mutidimensional array of "float"-coordinates
+ */
+const multiCoordinatesStringToFloat = function(coordinates){
+  var coordinatesMulti = [];
+  for(var i = 0; i < coordinates[0].length; i++){
+    var coordinatesFloat = [];
+    for(var j = 0; j < coordinates[0][i].length; j++){
+        coordinatesFloat.push([parseFloat(coordinates[0][i][j][0]), parseFloat(coordinates[0][i][j][1])]);
+    }
+    coordinatesMulti.push(coordinatesFloat);
+  }
+  return coordinatesMulti;
+};
+
 module.exports = {
   makeGeoJSonFromFeatures,
   bboxToPolygon,
-  isBbox
+  isBbox,
+  featureCollectionToGeometryCollection
 };

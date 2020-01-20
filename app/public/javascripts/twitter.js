@@ -5,36 +5,33 @@ let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
 
-function twitterSandboxSearch(bounds, filter) {
+/**
+ * Search for tweets and show them in the List
+ * @param {JSON} bounds where the tweest must be in
+ * @param {array} filter array of keyword to filter the tweets after
+ */
+function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
 
-    let words= [];
-    while(filter.indexOf(" ") !== -1){
-        const word= filter.substring(0, filter.indexOf(" "));
-        filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
-        words.push(word);
-    }
-    words.push(filter);
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             data: {
                 "bbox": bounds.bbox,
-                "filter": words
+                "filter": filter,
+                "extremeWeatherEvents": extremeWeatherEvents,
+                "createdAt": createdAt
             },
-            type: "post",
-
-
+            type: "post"
         })
             .done(function (response) {
-                console.log(response);
                 resolve(response.tweets);
             })
             .fail(function (err) {
-                console.log(err)
-            })
-    })
-};
+                console.log(err);
+            });
+    });
+}
 
 /**
 
@@ -55,7 +52,7 @@ function startStream() {
 
 /**
  * updates the TwitterStream with a new boundingbox
- * @param bbox
+ * @param {JSON} bbox to
  */
 function updateTwitterStream(bbox, keyword) {
     $.ajax({
@@ -64,15 +61,6 @@ function updateTwitterStream(bbox, keyword) {
         // contentType: "application/json",
         dataType: 'json',
         data: {bbox :bbox, keyword: keyword}
-        ,
-        // xhrFields: {
-        //     onprogress: function (e) {
-        //         if (e.lengthComputable) {
-        //             console.log(e.loaded / e.total * 100 + '%');
-        //             document.getElementById("progressbar").value =e;
-        //         }
-        //     }
-        // }
     })
 }
 
@@ -87,29 +75,55 @@ class TwitterList extends React.Component {
 
     }
 
+    /**
+     * @desc Function wich starts when the page is loaded
+     */
     componentDidMount() {
         this.startSocket();
     }
 
+    /**
+     * @desc Shows tweets in the List
+     * @param {JSON} tweet to be displayerd
+     */
     setTweets = (tweets) => {
+        //sort Tweets
         tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)})
         this.setState({tweets: tweets})
     };
 
+    /**
+     * @desc Returns the current value of the variable
+     * @param {string} state name of the variable to return
+     * @return {*} value of the Parameter
+     */
     getState = (state) => {
         return this.state[state]
     };
 
+    /**
+     * @desc Opens a Link in a new Tab
+     * @param {String} Link to go to
+     */
     goToTweet = (url) =>{
         window.open(url);
     };
 
-    pushTweets= () => {
+    /**
+     * @desc Adds a tweet to the List
+     * @param {JSON} tweet to add
+     */
+    pushTweets= (tweet) => {
         const tweets2 = this.state.tweets;
         tweets2.push(tweet);
         this.setState({tweets: tweets2});
     };
 
+    /**
+     * @desc Highlites a Tweet and scroll eventually to it
+     * @param {JSON} coordinates of wich Tweet shoul be highlited
+     * @param {Boolean} scroll boolean if to the tweet should be scrolled
+     */
     setHighlighted= (coordinates, scroll) => {
         this.setState({highlighted: coordinates}, () =>{
             if(scroll){
@@ -119,6 +133,10 @@ class TwitterList extends React.Component {
         })
     };
 
+    /**
+     * @desc Event handler if a tweet was clicked
+     * @param {JSON} tweet that was clicked
+     */
     tweetClicked = (tweet) => {
         const coordinates = {lat: tweet.geometry.coordinates[1], lng: tweet.geometry.coordinates[0]};
         if(JSON.stringify(this.state.highlighted)=== JSON.stringify(coordinates)){
@@ -131,38 +149,15 @@ class TwitterList extends React.Component {
         }
     };
 
+    /**
+     * @desc Starts a socket listener
+     */
     startSocket= () => {
         const self=this;
         socket.on('timeout', function (timeout) {
             self.setState({timeout: timeout})
         });
     };
-
-    /**
-    testTwitter = () => {
-
-        const self = this;
-        socket.on('tweet', function (tweet) {
-            const tweets2 = self.state.tweets;
-            tweets2.push(tweet);
-            self.setState({tweets: tweets2});
-        });
-        socket.on('timeout', function (timeout) {
-            console.log(timeout);
-            self.setState({timeout: timeout})
-        });
-        /* $.ajax({
-             url: "/api/v1/twitter/stream", // URL der Abfrage,
-             data:{},
-             type: "get"
-         })
-             .done(function (response) {
-             })
-             .fail(function (err) {
-                 console.log(err)
-             });
-
-    } */
 
 
         render()
@@ -183,8 +178,6 @@ class TwitterList extends React.Component {
             const cards = [];
             cards.unshift(e("br"));
 
-            
-
             this.state.tweets.map(function (item, i) {
                 const media = [];
                 for (var mediaItem of item.media) {
@@ -198,11 +191,11 @@ class TwitterList extends React.Component {
                 }
                 var place = e("span", null, "");
 
-           
+
                 if(item.place){
                  place= e("span", null, " Place: "+ item.place.name)
                 }
-            
+
 
                 const avatar = e(Avatar, {src: item.author.profileImage, className:"avatar"});
                 const header= e(CardHeader, {avatar: avatar,
@@ -237,8 +230,8 @@ class TwitterList extends React.Component {
  * @desc function which creates a cookie if the button setDefaultSearchWord is pushed.
  */
 function setDefaultSearchWord() {
-    var searchWord = $('#textFilter').val();
-    $('#textFilter').attr("placeholder", "default search word: " + searchWord);
+    var searchWord = getTweetFilters();
+    // $('#textFilter').attr("placeholder", "default search word: " + searchWord);
     var cookieValue = JSON.stringify(searchWord);
     setCookie("defaultSearchWord", cookieValue, 1000000);
 }
@@ -261,7 +254,7 @@ $(textFilter).keypress(function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode == '13') {
         console.log("keyevent");
-        eventsOrFilterChanged();
+        searchTweets();
     }
 })
 

@@ -24,6 +24,9 @@ let bbox;
 let keyword;
 
 var token;
+/**
+ * Creates a twiitter token
+ */
 const getToken= function(){
     //create twitter access Token
     return new Promise(
@@ -192,10 +195,10 @@ const streamConnect = function() {
                     mongoDB.accuracy = (place.accuracy/1000).toFixed(2)
                 }
                 postTweet(mongoDB);
-                console.log(mongoDB);
-               // if(matchesTweetFilter(mongoDB, keyword, bbox)) {
-                    io.emit('tweet', mongoDB)
-               // }
+                // console.log(mongoDB);
+                // if(matchesTweetFilter(mongoDB, keyword, bbox)) {
+                //     io.emit('tweet', mongoDB)
+                // }
 
             }
         }
