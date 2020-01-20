@@ -174,55 +174,69 @@ class TwitterList extends React.Component {
                 Icon,
             } = window['MaterialUI'];
 
-
             const cards = [];
             cards.unshift(e("br"));
 
-            this.state.tweets.map(function (item, i) {
-                const media = [];
-                for (var mediaItem of item.media) {
-                    if (mediaItem.type === "photo") {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"))
-                    } else {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"))
-                    }
-                }
-                var place = e("span", null, "");
-
-
-                if(item.place){
-                 place= e("span", null, " Place: "+ item.place.name)
-                }
-
-
-                const avatar = e(Avatar, {src: item.author.profileImage, className:"avatar"});
-                const header= e(CardHeader, {avatar: avatar,
-                        className: "header",
-                        title: e("a", {href: item.author.url, target: "_blank"}, item.author.name, ),
-                        subheader: e("span", null, "Created at: "+ item.createdAt , e("br") , e("span", null, "Accuracy: " + item.accuracy + " km", place)) ,
-                        action: e(IconButton, {onClick: ()=> self.goToTweet(item.url)}, e("i", {className: "fab fa-twitter icon", "aria-hidden":"true"}))});
-                const content= e(CardContent, null,  item.text);
-                let highlighted=null;
-                const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
-                if(JSON.stringify(coordinates)=== JSON.stringify(self.state.highlighted)){
-                    highlighted="highlighted";
-                }
-                else{
-                    highlighted="cards"
-                }
-                const card = e(Card, {id: "Card" + item.tweetId, className: highlighted}, header, media, content);
-                cards.unshift(e("div", null, e(ButtonBase, {className: "cards", onClick: () => self.tweetClicked(item)}, card,)));
-                cards.unshift(e("br"));
-            });
+            var errText = [];
 
             if (this.state.timeout) {
-                cards.unshift(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."))
+                errText.push(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."));
+            }
+
+            if (this.state.tweets.length != 0) {
+                this.state.tweets.map(function (item, i) {
+                    const media = [];
+                    for (var mediaItem of item.media) {
+                        if (mediaItem.type === "photo") {
+                            media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
+                            media.push(e("br"))
+                        } else {
+                            media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
+                            media.push(e("br"))
+                        }
+                    }
+                    var place = e("span", null, "");
+
+
+                    if (item.place) {
+                        place = e("span", null, " Place: " + item.place.name)
+                    }
+
+
+                    const avatar = e(Avatar, {src: item.author.profileImage, className: "avatar"});
+                    const header = e(CardHeader, {
+                        avatar: avatar,
+                        className: "header",
+                        title: e("a", {href: item.author.url, target: "_blank"}, item.author.name,),
+                        subheader: e("span", null, "Created at: " + item.createdAt, e("br"), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
+                        action: e(IconButton, {onClick: () => self.goToTweet(item.url)}, e("i", {
+                            className: "fab fa-twitter icon",
+                            "aria-hidden": "true"
+                        }))
+                    });
+                    const content = e(CardContent, null, item.text);
+                    let highlighted = null;
+                    const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
+                    if (JSON.stringify(coordinates) === JSON.stringify(self.state.highlighted)) {
+                        highlighted = "highlighted";
+                    } else {
+                        highlighted = "cards"
+                    }
+                    const card = e(Card, {id: "Card" + item.tweetId, className: highlighted}, header, media, content);
+                    cards.unshift(e("div", null, e(ButtonBase, {
+                        className: "cards",
+                        onClick: () => self.tweetClicked(item)
+                    }, card,)));
+                    cards.unshift(e("br"));
+                });
+            }
+            else {
+                errText.push(e("p", null, "No tweets in extreme weather areas available!"));
             }
 
             const list=  e(Paper, {id: "list"}, cards);
-            return list
+            const div = e("div", null, errText, list);
+            return div
         }
 }
 

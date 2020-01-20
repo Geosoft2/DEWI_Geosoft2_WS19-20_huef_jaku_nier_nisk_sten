@@ -159,6 +159,8 @@ const streamConnect = function() {
             const tweetJSON = JSON.parse(data);
             if (tweetJSON.connection_issue){
                 stream.emit("timeout")
+                io.emit('timeout', true);
+
             }
             if (tweetJSON.data) {
                 io.emit('timeout', false);
