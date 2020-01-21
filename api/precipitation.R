@@ -5,17 +5,20 @@ needs(dplyr)
 needs(rdwd)
 needs(dwdradar)
 needs(raster)
-needs(leafletR)
+# needs(leafletR)
 needs(sp)
 needs(rgeos)
 needs(magrittr)
+# needs(geojsonR)
 
 attach(input[[1]])
 
 # stop("bis hier", call. = TRUE)
 
 dwd_url <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/"
-rw_base <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/rw"
+#rw_base <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/rw"
+
+rw_base <- "ftp://ftp-cdc.dwd.de/weather/radar/radolan/sf"
 
 # set url
 rw_urls <- indexFTP(base=rw_base, dir=tempdir(), folder="", quiet=TRUE)
@@ -34,19 +37,15 @@ rw_proj[rw_proj < 0] <- NA
 # summed up statistics
 sum = summary(rw_proj)
 
-# unit: 1/10 mm/h, thus *10 for mm/h values (breaks have been devided by 10)
-reclass = c(0,0.25,1, 0.25,1,2, 1,5,3, 5,10000,4)
+tmp <- tempdir()
 
-# build matrix
-reclass_m = matrix(reclass,
-ncol = 3,
-byrow = TRUE)
-# reclass
-rw_proj_class = reclassify(rw_proj, reclass_m)
+radartif <- writeRaster(rw_proj, filename=file.path(tmp, "rain.tif"))
 
-# convert raster to Polygons with given classes
-pol = rasterToPolygons(rw_proj_class, n = 4, na.rm = TRUE, dissolve = TRUE)#
+meta <- vector("list", 2)
 
-# convert SpatialPolygonsDataFrame to GeoJSON
-geojson <- tempfile()
-result <- toGeoJSON(pol, name=basename(geojson), dest=tempdir())
+extent <- c(radartif@extent@xmin, radartif@extent@xmax, radartif@extent@ymin, radartif@extent@ymax)
+
+meta[[1]] <- radartif@file@name
+meta[[2]] <- extent
+
+result <- meta

@@ -357,6 +357,27 @@ function createLayer(data) {
     });
 }
 
+
+function requestPrecipitationRadar() {
+
+    return new Promise(function (resolve, restrict) {
+        $.ajax({
+            type: "Get",
+            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd/precipiation',
+            data: {
+            }
+        })
+            .done(function (response) {
+                return response;
+            })
+            .fail(function (err) {
+                console.log(err);
+                console.log(err.message);
+            });
+    })
+}
+
+
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
 radarlayer = L.tileLayer.wms(rootUrl, {
@@ -368,6 +389,8 @@ radarlayer = L.tileLayer.wms(rootUrl, {
     opacity: 0.8,
     attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a>'
 }).addTo(map);
+
+//var radarLayer = L.leafletGeotiff(requestPrecipitationRadar()).addTo(map);
 
 var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,

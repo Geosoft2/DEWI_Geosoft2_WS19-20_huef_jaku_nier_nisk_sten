@@ -33,6 +33,7 @@
     "jquery": "^3.4.1",
     "leaflet": "^1.5.1",
     "leaflet-easybutton": "^2.4.0",
+    "leaflet-geotiff": "^0.2.0",
     "leaflet.pancontrol": "^1.0.0",
     "morgan": "~1.9.1",
     "oauth": "^0.9.15",

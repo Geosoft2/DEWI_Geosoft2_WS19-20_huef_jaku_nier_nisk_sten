@@ -28,8 +28,6 @@ const requestExtremeWeather = function(){
     srsName: 'EPSG:4326'
   };
 
-  getRadarData("rw");
-
   if(isSeverity()){
     var severity = readSeverity();
     defaultParameters.cql_filter = "SEVERITY in ("+severity+")";

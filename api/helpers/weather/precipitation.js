@@ -11,7 +11,8 @@ var getRadarData = function(productId) {
             .call(function(err, r) {
                 if(err) throw err;
 
-                console.log(r);
+                console.log("PRECIPITATION");
+                // console.log(r);
 
                 if(r) {
                     resolve(r);
