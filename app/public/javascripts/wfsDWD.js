@@ -6,8 +6,8 @@
 let socket = io('http://' + location.hostname + ':3001');
 
 var greenIcon = new L.Icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconUrl: 'images/marker-icon-green.png',
+    //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -15,8 +15,8 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconUrl: 'images/marker-icon-blue.png',
+    //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -38,10 +38,15 @@ const osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: 'Map data: &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
 });
+
+//event handler when all tiles of the background map are loaded
 osmlayer.on('load', () => {maploaded(); loading=false});
 var loading=false;
 osmlayer.on('loading', () => {loading=true});
 
+/**
+ * @desc Show a Snackbar and advances the progress bar when map is loaded
+ */
 function maploaded(){
     document.getElementById("progressbar").value +=25;
     isProgress();
@@ -59,7 +64,7 @@ var baseLayers = {
 };
 
 // add pan-control in the bottomleft of the map
-L.control.pan({position: 'bottomleft'}).addTo(map);
+L.control.pan({position: 'bottomright'}).addTo(map);
 
 /**
  * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
@@ -98,6 +103,9 @@ var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
 var radarlayer;
 
+/**
+ * @desc Removes all Tweets from the Map and updates List
+ */
 function removeAllTweets(){
     var tweetsInMap = getState("tweets");
     for(var i =0; i<tweetsInMap.length; i++){
@@ -109,6 +117,12 @@ function removeAllTweets(){
     }
     setTweets([])
 }
+
+/**
+ * @desc Removes all Tweets which are not in wfsLayers or in the current Map extend and updates the list
+ * @param {JSON} wfsLayers to proof if they contains the tweet
+ * @param {JSON} bounds to proof if they contains the tweet
+ */
 function removeTweets(wfsLayers, bounds){
     var tweetsInMap = getState("tweets");
 
@@ -131,22 +145,24 @@ function removeTweets(wfsLayers, bounds){
 
 /**
  * adds the Tweets to the map that lay within the wfslayers and the current mapextend
- * @param wfsLayers
+ * @param {JSON} wfsLayers current data
+ * @param {Array} tweets tweets deliverd by the API
+ * @param {JSON} bounds bounds of the current map extend
  */
-function addTweets(wfsLayers, tweets, bounds) {
-    var tweetsInWfsLayers = [];
-
-    for (var t in tweets) {
-        // if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-            tweetsInWfsLayers.push(tweets[t]);
-        // }
-    }
+function addTweets(tweets) {
+    // var tweetsInWfsLayers = [];
+    //
+    // for (var t in tweets) {
+    //     if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
+    //         tweetsInWfsLayers.push(tweets[t]);
+    //     }
+    // }
 
     var newTweets = [];
-    for (var t in tweetsInWfsLayers) {   // creates a marker for each tweet and adds them to the map
+    for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
         // should only add a marker if not already one with the same id exists
-        if (!isMarkerAlreadyThere(tweetsInWfsLayers[t])) {
-            newTweets.push(tweetsInWfsLayers[t])
+        if (!isMarkerAlreadyThere(tweets[t])) {
+            newTweets.push(tweets[t])
         }
     }
 
@@ -171,18 +187,22 @@ function addTweets(wfsLayers, tweets, bounds) {
         markersInMap.push(marker);
         //marker.setIcon()
     }
+    //highlites tweets if they should be highlited
     setMarkerColor(getState("highlighted"))
+    //advance the progress bar
     if (loading){
         document.getElementById("progressbar").value +=25;
     }
     else{
         document.getElementById("progressbar").value =100;
     }
-
     isProgress();
     snackbarWithText("tweet(s) added to the map");
 }
 
+/**
+ * Hides the prograss bar, if she is fullfilled
+ */
 async function isProgress(){
     const delay = ms => new Promise(res => setTimeout(res, ms));
     if (document.getElementById("progressbar").value===100){
@@ -193,7 +213,7 @@ async function isProgress(){
 
 /**
  * checks whether a marker with the same id as the given tweet already exists
- * @param tweet
+ * @param {JSON} tweet to proof
  * @returns {boolean}
  */
 function isMarkerAlreadyThere(tweet) {
@@ -207,8 +227,9 @@ function isMarkerAlreadyThere(tweet) {
 
 /**
  * checks if the Tweet is located in the current mapextend
- * @param marker
- * @returns {*} boolean
+ * @param {L.marker} marker to proof
+ * @param {JSON} bounds to proof after
+ * @returns {boolean}
  */
 function isTweetInMapextend(marker, bounds) {
     var point = {   //convert the tweet location in a readable format for turf
@@ -230,9 +251,9 @@ function isTweetInMapextend(marker, bounds) {
 }
 
 /**
- * checks if the given tweet lays within the given layers and the current mapextend
- * @param tweet
- * @param wfsLayers
+ *@desc checks if the given tweet lays within the given layers and the current mapextend
+ * @param {JSON} tweet to proof
+ * @param {Array} wfsLayers cuurent data
  * @returns {boolean}
  */
 function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
@@ -323,7 +344,7 @@ function requestExtremeWeather(bbox, events) {
                 console.log(err);
                 console.log(err.message);
             });
-    })
+    });
 }
 
 
@@ -387,7 +408,7 @@ radarlayer = L.tileLayer.wms(rootUrl, {
     format: 'image/png',
     transparent: true,
     opacity: 0.8,
-    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a>'
+    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
 }).addTo(map);
 
 //var radarLayer = L.leafletGeotiff(requestPrecipitationRadar()).addTo(map);
@@ -413,6 +434,10 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+/**
+ * @desc Changes the colors of the marker, if they should be highlitet
+ * @param {JSON} coordinates of the tweets that shoul be highlited
+ */
 function setMarkerColor(coordinates) {
     for (var marker of markersInMap){
         if(JSON.stringify(marker._latlng) === JSON.stringify(coordinates)){

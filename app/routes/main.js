@@ -4,8 +4,7 @@
 
 
 const getMainPage = function(req, res){
-  var bbox, events;
-  var textfilter = req.query.textfilter;
+  var bbox, events, textfilter;
   var error = [];
 
   if(req.query.bbox){
@@ -23,10 +22,21 @@ const getMainPage = function(req, res){
   if(req.query.events){
     var regExEvents = /^\[(("[a-zA-Z]+")|(("[a-zA-Z]+"),)+("[a-zA-Z]+"))\]$/;
     if(regExEvents.test(req.query.events)){
-    events = req.query.events;
+      events = req.query.events;
     }
     else{
       error.push('The syntax of the given parameter "events" was wrong, therefore the default events were queried initially. More information...');
+    }
+  }
+
+  console.log(req.query.textfilter);
+  if(req.query.textfilter){
+    var regExFilter = /^\[(("[^"']+")|(("[^"']+"),)+("[^"']+"))\]$/;
+    if(regExFilter.test(req.query.textfilter)){
+      textfilter = req.query.textfilter;
+    }
+    else{
+      error.push('The syntax of the given parameter "textfilter" was wrong, therefore the default filter were queried initially. More information...');
     }
   }
 

@@ -30,6 +30,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.7.1",
     "morgan": "~1.9.1",
+    "nodemailer": "^6.4.2",
     "oauth": "^0.9.15",
     "r-script": "0.0.4",
     "popper.js": "^1.15.0",
