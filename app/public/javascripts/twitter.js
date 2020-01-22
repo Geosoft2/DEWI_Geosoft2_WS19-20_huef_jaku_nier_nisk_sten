@@ -1,6 +1,6 @@
-
+"use strict";
 const e = React.createElement;
-let setTweets= ()=>{};
+let setTweets;
 let getState= ()=>{};
 let pushTweets= () =>{};
 let setHighlighted=  () => {};
@@ -68,10 +68,10 @@ class TwitterList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {tweets: [], timeout: false, highlighted : null};
-        setTweets = this.setTweets;
-        getState = this.getState;
-        pushTweets = this.pushTweets;
-        setHighlighted = this.setHighlighted;
+        setTweets = this.setTweets.bind(this);
+        getState = this.getState.bind(this);
+        pushTweets = this.pushTweets.bind(this);
+        setHighlighted = this.setHighlighted.bind(this);
 
     }
 
@@ -80,15 +80,15 @@ class TwitterList extends React.Component {
      */
     componentDidMount() {
         this.startSocket();
-    }
+    };
 
     /**
      * @desc Shows tweets in the List
      * @param {JSON} tweet to be displayerd
      */
-    setTweets = (tweets) => {
+    setTweets (tweets)  {
         //sort Tweets
-        tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)})
+        tweets.sort(function (a,b)  {return new Date(a.createdAt) - new Date(b.createdAt)});
         this.setState({tweets: tweets})
     };
 
@@ -97,7 +97,8 @@ class TwitterList extends React.Component {
      * @param {string} state name of the variable to return
      * @return {*} value of the Parameter
      */
-    getState = (state) => {
+    getState (state) {
+        console.log(this);
         return this.state[state]
     };
 
@@ -105,7 +106,7 @@ class TwitterList extends React.Component {
      * @desc Opens a Link in a new Tab
      * @param {String} Link to go to
      */
-    goToTweet = (url) =>{
+    goToTweet (url) {
         window.open(url);
     };
 
@@ -113,7 +114,7 @@ class TwitterList extends React.Component {
      * @desc Adds a tweet to the List
      * @param {JSON} tweet to add
      */
-    pushTweets= (tweet) => {
+    pushTweets (tweet) {
         const tweets2 = this.state.tweets;
         tweets2.push(tweet);
         this.setState({tweets: tweets2});
@@ -124,7 +125,7 @@ class TwitterList extends React.Component {
      * @param {JSON} coordinates of wich Tweet shoul be highlited
      * @param {Boolean} scroll boolean if to the tweet should be scrolled
      */
-    setHighlighted= (coordinates, scroll) => {
+    setHighlighted (coordinates, scroll) {
         this.setState({highlighted: coordinates}, () =>{
             if(scroll){
                 var element = document.getElementsByClassName("highlighted");
@@ -137,7 +138,7 @@ class TwitterList extends React.Component {
      * @desc Event handler if a tweet was clicked
      * @param {JSON} tweet that was clicked
      */
-    tweetClicked = (tweet) => {
+    tweetClicked (tweet) {
         const coordinates = {lat: tweet.geometry.coordinates[1], lng: tweet.geometry.coordinates[0]};
         if(JSON.stringify(this.state.highlighted)=== JSON.stringify(coordinates)){
             this.setHighlighted(null);
@@ -152,7 +153,7 @@ class TwitterList extends React.Component {
     /**
      * @desc Starts a socket listener
      */
-    startSocket= () => {
+    startSocket () {
         const self=this;
         socket.on('timeout', function (timeout) {
             self.setState({timeout: timeout})
