@@ -3,6 +3,8 @@
 "use strict";
 
 const fs = require('fs');
+const gaze = require('gaze'); // fs.watch() does not work in dcoker
+const path = require('path');
 const {requestExtremeWeather} = require('../helpers/weather/dwdWFS');
 const {twitterdata} = require('../demo/twitter.js');
 const {postTweet, deleteDemoTweets} = require('../helpers/mongo/tweets.js');
@@ -13,7 +15,7 @@ const {postTweet, deleteDemoTweets} = require('../helpers/mongo/tweets.js');
 const saveDemoTweets = async function(){
   var shuffledTweets = twitterdata.sort(() => 0.5 - Math.random());
   var savedTweets = 0;
-  while(JSON.parse(fs.readFileSync('demo/isDemo.json')).demo && savedTweets < shuffledTweets.length){
+  while(JSON.parse(fs.readFileSync(path.join(__dirname, 'isDemo.json'))).demo && savedTweets < shuffledTweets.length){
     await postTweet(shuffledTweets[savedTweets]);
     var randomInt = Math.floor(Math.random() * (5000 - 3000 + 1)) + 3000;
     await timeout(randomInt); // between 3 and 5 seconds
@@ -28,17 +30,16 @@ const saveDemoTweets = async function(){
  */
 const isDemo = function(){
   var timestamp = Date.now();
-  fs.watch('demo/isDemo.json', async (eventType, filename) => {
-    var now = Date.now();
-    // ensures that event is listen only once.
-    if(timestamp+20 > now){
+  // watch isDemo.js file in process.cwd()
+  gaze(path.join(__dirname, 'isDemo.json'), function(err, watcher) {
+    this.on('changed', async function(filepath) {
+      console.log(filepath + ' was changed');
       requestExtremeWeather();
       await deleteDemoTweets(); // ensure that every demodata is deleted
-      if(JSON.parse(fs.readFileSync('demo/isDemo.json')).demo){
+      if(JSON.parse(fs.readFileSync(path.join(__dirname, 'isDemo.json'))).demo){
         saveDemoTweets();
       }
-    }
-    timestamp = now;
+    });
   });
 };
 

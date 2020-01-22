@@ -53,8 +53,13 @@ const requestExtremeWeather = function(){
         body += decoder.write(chunk);
       });
       response.on('end', function(){
-        var features = JSON.parse(body).features;
-        saveExtremeWeatherInMongo(features);
+        try{
+          var features = JSON.parse(body).features;
+          saveExtremeWeatherInMongo(features);
+        }
+        catch(err){
+          console.log(chalk.red('Error parsing weather data.'));
+        }
       });
     })
     .on('error', function(err) {
@@ -64,7 +69,8 @@ const requestExtremeWeather = function(){
   else{
     console.log('demo');
     // save random weather-demo data
-    saveExtremeWeatherInMongo(weatherdata[Math.floor(Math.random() * weatherdata.length)].features);
+    var random = Math.floor(Math.random() * weatherdata.length);
+    saveExtremeWeatherInMongo(weatherdata[random].features);
   }
 };
 

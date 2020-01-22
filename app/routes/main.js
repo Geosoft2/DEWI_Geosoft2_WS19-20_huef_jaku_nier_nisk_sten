@@ -2,18 +2,11 @@
 // jshint node: true
 "use strict";
 
-const fs = require('fs');
+const {demoRequest} = require('../helpers/demo');
 
 const getMainPage = function(req, res){
   console.log('real');
   // application with real data
-  if(JSON.parse(fs.readFileSync('../api/demo/isDemo.json')).demo){
-    var content = {
-      demo: false,
-    };
-    fs.writeFileSync('../api/demo/isDemo.json', JSON.stringify(content));
-  }
-
   var bbox, events, textfilter;
   var error = [];
 
@@ -48,13 +41,14 @@ const getMainPage = function(req, res){
       error.push('The syntax of the given parameter "textfilter" was wrong, therefore the default filter were queried initially. More information...');
     }
   }
-
-  res.render('index', {
-    title: 'Home',
-    bbox: bbox,
-    events: events,
-    textfilter: textfilter,
-    errormessage: error
+  demoRequest(false, function(){
+    res.render('index', {
+      title: 'Home',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      errormessage: error
+    });
   });
 };
 
@@ -62,10 +56,6 @@ const getMainPage = function(req, res){
 const getDemoPage = function(req, res){
   console.log('demo');
   // application with demo data
-  var content = {
-    demo: true,
-  };
-  fs.writeFileSync('../api/demo/isDemo.json', JSON.stringify(content));
 
   var bbox, events, textfilter;
   var error = [];
@@ -101,13 +91,14 @@ const getDemoPage = function(req, res){
       error.push('The syntax of the given parameter "textfilter" was wrong, therefore the default filter were queried initially. More information...');
     }
   }
-
-  res.render('index', {
-    title: 'Demo',
-    bbox: bbox,
-    events: events,
-    textfilter: textfilter,
-    errormessage: error
+  demoRequest(true, function(){
+    res.render('index', {
+      title: 'Demo',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      errormessage: error
+    });
   });
 };
 
