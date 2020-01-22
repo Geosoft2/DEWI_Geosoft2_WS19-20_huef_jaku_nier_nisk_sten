@@ -73,14 +73,14 @@ class TwitterList extends React.Component {
         pushTweets = this.pushTweets;
         setHighlighted = this.setHighlighted;
 
-    }
+    };
 
     /**
      * @desc Function wich starts when the page is loaded
      */
     componentDidMount() {
         this.startSocket();
-    }
+    };
 
     /**
      * @desc Shows tweets in the List
@@ -88,8 +88,8 @@ class TwitterList extends React.Component {
      */
     setTweets = (tweets) => {
         //sort Tweets
-        tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)})
-        this.setState({tweets: tweets})
+        tweets.sort((a,b) => {return new Date(a.createdAt) - new Date(b.createdAt)});
+        this.setState({tweets: tweets});
     };
 
     /**
