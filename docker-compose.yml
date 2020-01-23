@@ -8,7 +8,7 @@ services:
       api:
         condition: service_healthy
     environment:
-      - API_Domain=http://192.168.99.100:3001
+      - API_Domain=http://localhost:3001
   api:
     build: ./api
     ports:
@@ -16,7 +16,7 @@ services:
     depends_on:
       - mongo
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://192.168.99.100:3001"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
       interval: 5s
       timeout: 2s
       retries: 5
@@ -24,5 +24,3 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-    volumes:
-    - ./data:/data/db

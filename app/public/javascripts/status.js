@@ -3,15 +3,15 @@ let setStatus= ()=>{};
 let addRequest= () =>{};
 
 showStatus= () => {
-       $('#status')[0].style.visibility = "visible"
+       $('#status')[0].style.visibility = 'visible'
 }
 
 hideStatus= () =>  {
-    $('#status')[0].style.visibility = "hidden"
+    $('#status')[0].style.visibility = 'hidden'
 }
 
 $( function() {
-    $( "#status" ).draggable();
+    $( "#status" ).draggable(  {containment: "document"});
   } )
 
   class Status extends React.Component {

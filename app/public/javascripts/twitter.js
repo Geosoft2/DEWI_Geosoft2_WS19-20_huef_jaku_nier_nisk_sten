@@ -179,7 +179,7 @@ class TwitterList extends React.Component {
                 Icon,
             } = window['MaterialUI'];
 
-
+            
             const cards = [];
             cards.unshift(e("br"));
 

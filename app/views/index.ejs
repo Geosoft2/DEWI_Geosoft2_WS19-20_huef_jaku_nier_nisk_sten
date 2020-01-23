@@ -16,7 +16,7 @@
 
   </head>
 
-  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
+  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')" style="overflow: hidden;">
 
   <progress id="progressbar" value="22" max="100"></progress>
 
@@ -126,9 +126,11 @@
       </div>
 
             <!-- Status View -->
-            <div id="status" style="width: 400px; height: 400px; padding: 0.5em; z-index: 1000; visibility: hidden; left: 100px; top: -700px; position: relative;">
+          <div id="statusBox" style="width: 0px; height: 0px; position: relative;">
+            <div id="status" style="width: 500px; height: 800px; padding: 0.5em; z-index: 3000; visibility: hidden; left: 100px; top: -700px; position: relative;">
               <p>Drag</p>
             </div>
+          </div>
 
 
 
