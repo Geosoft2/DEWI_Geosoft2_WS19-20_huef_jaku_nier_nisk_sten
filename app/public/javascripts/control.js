@@ -303,8 +303,8 @@ function getCookie(cname) {
  */
  function startSocket() {
     socket.on('tweet', async function (tweet) {
-      const date= new Date(Date.now())
-      setStatus("lastTweet", date.toUTCString())
+      const date= new Date(Date.now());
+      setStatus("lastTweet", date.toUTCString());
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
@@ -312,19 +312,18 @@ function getCookie(cname) {
         var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
         if(!jQuery.isEmptyObject(twitterResponse)){
           addTweets([twitterResponse]);
-            var audio = new Audio('media/audio/twitter-notification-sound.mp3');
+            var audio = new Audio('/media/audio/twitter-notification-sound.mp3');
             audio.play();
         }
-
     });
 
     socket.on('status', (text) =>{
-      setStatus("lastUpdates", text)
-      console.log(text)
+      setStatus("lastUpdates", text);
+      console.log(text);
     })
     socket.on('weatherchanges', async function (data) {
-      const date= new Date(Date.now())
-        setStatus("lastWeather", date.toUTCString())
+      const date= new Date(Date.now());
+        setStatus("lastWeather", date.toUTCString());
         browserNotification('DEWI', 'Extreme weather events changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
