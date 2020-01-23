@@ -359,6 +359,30 @@ function removeExistingLayer(layer) {
     }
 }
 
+function getDateTime(ISODate) {
+    // example ISODate: 2020-01-23T10:35:00Z
+    var DateTime = ISODate.substring(0,10) + ", " + ISODate.substring(11,19);
+
+    return DateTime;
+}
+
+function getFillColor(severity) {
+    var color = "green";
+    if(severity =="Minor") {
+        color = "yellow"
+    }
+    if(severity == "Moderate") {
+        color = "orange"
+    }
+    if(severity == "Severe") {
+        color = "red"
+    }
+    if(severity == "Extreme") {
+        color = "purple"
+    }
+    return color;
+}
+
 /**
  * @desc creates a layer from GeoJson
  * @param {geoJson} data
@@ -368,15 +392,48 @@ function createLayer(data) {
         style: function (feature) {
             return {
                 stroke: false,
-                fillColor: 'FFFFFF',
+                fillColor: getFillColor(feature.properties.SEVERITY),
                 fillOpacity: 0.5
             };
         },
         onEachFeature: function (feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p>');
+            layer.bindPopup('<h5>' + feature.properties.HEADLINE + '</h5>' +
+                '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
+                '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
+                '<p><b>' + "from: " + '</b>' + getDateTime(feature.properties.ONSET) + '</br>' +
+                 '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
+                '<b>' + "last updated: " + '</b>' + getDateTime(feature.updatedAt) + '</p>',
+                {
+                    autoPan: true,
+                    autoClose: false
+                }
+            );
+            console.log(feature);
         }
     });
 }
+
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        colors = ['yellow', 'orange', 'red', 'purple'],
+        labels = ['Minor', 'Moderate', 'Severe', 'Extreme'];
+    div.innerHTML = '<b>' + "Extreme Weather" + '<br>' + "Severity" + '</b><br>';
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < colors.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + colors[i] + '"></i> ' +
+            labels[i] + '<br>';
+    }
+    div.innerHTML += "(Colors might differ" + '<br>' + "at overlapping areas)";
+
+    return div;
+};
+
+legend.addTo(map);
 
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
