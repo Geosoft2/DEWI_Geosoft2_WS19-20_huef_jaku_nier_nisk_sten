@@ -14,5 +14,6 @@ const V1Router = express.Router();
 // Put route handels here;
 V1Router.use('/weather', require('./weather'));
 V1Router.use('/social', require('./social'));
+V1Router.use('/demo', require('./demo'));
 
 module.exports = V1Router;

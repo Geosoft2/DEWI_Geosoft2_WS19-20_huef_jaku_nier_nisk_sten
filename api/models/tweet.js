@@ -38,6 +38,7 @@ const TweetSchema = mongoose.Schema({
     createdAt: {
         type: Date,
         required: true,
+        default: Date.now(),
         index: { expires: Number(config.social.twitter.storageDuration) }
     },
     geometry: {
@@ -76,6 +77,11 @@ const TweetSchema = mongoose.Schema({
     media: {  //[MediaSchema]
         type: mongoose.Mixed
     },
+    demo: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 
 TweetSchema.index({text: 'text'});
