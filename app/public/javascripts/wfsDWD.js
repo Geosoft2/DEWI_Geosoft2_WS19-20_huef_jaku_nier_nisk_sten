@@ -79,6 +79,7 @@ function changeDefaultMapExtent() {
     var bbox = boundingbox(bounds);
     var cookieValue = JSON.stringify(bbox);
     setCookie("defaultBbox", cookieValue, 1000000);
+    snackbarWithText('Successfully set new default map extent.');
 }
 
 /**
@@ -86,13 +87,20 @@ function changeDefaultMapExtent() {
  * its the initial map extent.
  */
 function backToDefaultMapExtent() {
-    getBoundingBboxFromCookie();
-
     var isThereCookie = getBoundingBboxFromCookie();
-
     if (isThereCookie == false) {
         map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
     }
+    snackbarWithText('Successfully get default map extent.');
+}
+
+/**
+ * @desc function which deletes the defaultBbox cookie
+ */
+function deleteDefaultBbox() {
+    var name = "defaultBbox";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    snackbarWithText('Successfully delete default map extent.');
 }
 
 /**
@@ -102,7 +110,31 @@ function setDefaultEvents() {
     var events = $('#selectEvent').val();
     var cookieValue = JSON.stringify(events);
     setCookie("defaultEvents", cookieValue, 1000000);
+    snackbarWithText('Successfully set new default weather events.');
 }
+
+
+/**
+ * @desc function which sets the weather events back to the defaultEvents.If there is no default weather event set by the user,
+ * its the initial weather event.
+ */
+function getDefaultEvents() {
+    var events = getInitialEvents();
+    $('.selectpicker').selectpicker('val', events);
+    eventsOrFilterChanged();
+    snackbarWithText('Successfully get default weather events.');
+}
+
+
+/**
+ * @desc function which deletes the defaultEvents cookie
+ */
+function deleteDefaultEvents() {
+    var name = "defaultEvents";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    snackbarWithText('Successfully delete default weather events.');
+}
+
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
