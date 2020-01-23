@@ -16,7 +16,7 @@ const {booleanValid} = require('../../../../helpers/validation/boolean');
 const postDemo = async function(req, res){
   try{
     var active = req.body.active;
-    const valid = booleanValid(active);
+    const valid = booleanValid(active, 'active');
     if(valid.error){
       return res.status(400).send({message: valid.error});
     }
