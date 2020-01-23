@@ -70,7 +70,7 @@ $( function() {
 
 
             const header= e(CardHeader, {title: "Status Informations",
-                                        action: e(IconButton, {onClick: ()=> hideStatus()}, e("i", {className: "fas fa-times icon", "aria-hidden":"true"}))})
+                                        action: e(IconButton, {onClick: ()=> hideStatus(), style: {color: "red"}}, e("i", {className: "fas fa-times", color: "red", style: {"font-size": "1.8em"}}))})
 
             const tableRows = [];
             const headerRow = e("thead", null, e("tr", null, e("th",null , "Request Id"), e("th",null , "Send"), e("th",null , "Status")))
@@ -87,9 +87,11 @@ $( function() {
                  updates.push(item)
                 updates.push(e("br"))
             })
-            
+
             const table = e("table", {className : "striped bordered hover"}, tableRows)
-            return e(Card, null, header, e("p", null, "Last Tweet Recived: " +self.state.lastTweet), e("p", null, "Last Weather Update: " +self.state.lastWeather), table, e("br"), e("h4", null, "Last Status recived from API"), updates)
+            const content = e(CardContent,null ,  e("p", null, "Last Tweet Recived: " +self.state.lastTweet), e("p", null, "Last Weather Update: " +self.state.lastWeather), table, e("br"), e("h4", null, "Last Status recived from API"), updates)
+
+            return e(Card, null, header, content)
         }
 
 

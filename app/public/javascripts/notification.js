@@ -28,11 +28,11 @@ function snackbarWithText(text) {
       '<div class="toast-header">'+
       '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
       '<strong class="mr-auto">'+text +'</strong>'+
+      '<button type="button" class="btn2" onclick="showStatus()" aria-label="Info">'+
+      '<span aria-hidden="true">More Info</span>'+
+      '</button>'+
       '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
       '<span aria-hidden="true">×</span>'+
-      '</button>'+
-      '<button type="button"  onclick="showStatus()" aria-label="Info">'+
-      '<span aria-hidden="true">More Info</span>'+
       '</button>'+
       '</div>'+
       // '<div class="toast-body">'+

@@ -22,23 +22,6 @@ oauth2.getOAuthAccessToken('', {
  * @returns {Promise<tweets>}
  */
 const sandboxSearch = function(filter, area) {
-
-    /*
-    var mongoFilter = ["ein", "und", "am", "bei"];
-    var bbox = {
-        southWest: {
-            lat: 49.816,
-            lng: 6.663
-        },
-        northEast: {
-            lat: 52.261,
-            lng: 9.701
-        }
-    };
-    var mongoTweets = getTweetsFromMongo(mongoFilter, bbox);
-*/
-
-
     return new Promise(function (resolve, reject) {
 
         //build the endpoint url
