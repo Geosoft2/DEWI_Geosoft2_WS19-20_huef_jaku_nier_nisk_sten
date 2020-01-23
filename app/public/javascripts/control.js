@@ -13,6 +13,10 @@ let wfsLayer;
  */
 async function initial (boundingbox, events, filter) {
 
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("loader-wrapper").style.visibility='visible';
+    document.getElementById("loadingPage").style.visibility='visible';
+
     document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
 
@@ -40,6 +44,23 @@ async function initial (boundingbox, events, filter) {
           (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))();
   addTweets(twitterResponse);
   }
+    await delay(1000);
+  // fade(document.getElementById("loader-wrapper"));
+    // document.getElementById("loader-wrapper").classList.add('hidden');
+    // document.getElementById("loader-wrapper").style.visibility='hidden';
+}
+
+function fade(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
 }
 
 /**
