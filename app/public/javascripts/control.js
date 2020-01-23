@@ -243,7 +243,7 @@ function createFilterBadge(filter){
   $('#textFilters').append(
     '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
       filter+
-      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; text-shadow: none; ">'+
         '<span class="fas fa-times fa-xs">'+
         '</span>'+
       '</button>'+
@@ -374,15 +374,14 @@ function updateURL(bbox, events, filter) {
 function snackbarWithText(text) {
     const date = Date.now()
     $('.snackbar').prepend(
-        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(232,89,23);" ' +
+        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(30,93,136);" ' +
         'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
-        '<div class="toast-header">'+
-        '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
-        '<strong class="mr-auto">'+text +'</strong>'+
-        '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
-        '<span aria-hidden="true">×</span>'+
-        '</button>'+
-        '</div>'+
+          '<div class="toast-header">'+
+            '<strong class="mr-auto">'+text +'</strong>'+
+            '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
+              '<span aria-hidden="true">×</span>'+
+            '</button>'+
+          '</div>'+
         // '<div class="toast-body">'+
         //   'Some Toast Body'+
         // '</div>'+
