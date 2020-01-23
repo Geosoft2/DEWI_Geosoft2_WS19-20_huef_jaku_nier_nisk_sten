@@ -376,8 +376,10 @@ function removeExistingLayer(layer) {
 
 function getDateTime(ISODate) {
     // example ISODate: 2020-01-23T10:35:00Z
-    var DateTime = ISODate.substring(0,10) + ", " + ISODate.substring(11,19);
-
+    var DateTime;
+    if (ISODate) {
+        DateTime = ISODate.substring(0,10) + ", " + ISODate.substring(11,19);
+    }
     return DateTime;
 }
 
@@ -390,7 +392,7 @@ function getFillColor(severity) {
         color = "orange"
     }
     if(severity == "Severe") {
-        color = "red"
+        color = "#cc0000"
     }
     if(severity == "Extreme") {
         color = "purple"
@@ -413,15 +415,14 @@ function createLayer(data) {
         },
         onEachFeature: function (feature, layer) {
             layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p><p>' + feature.properties.IDENTIFIER + '</p>');
-            layer.bindPopup('<h5>' + feature.properties.HEADLINE + '</h5>' +
+            layer.bindPopup(('<h5>' + feature.properties.HEADLINE + '</h5>' +
                 '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
                 '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
                 '<p><b>' + "from: " + '</b>' + getDateTime(feature.properties.ONSET) + '</br>' +
                  '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
-                '<b>' + "last updated: " + '</b>' + getDateTime(feature.updatedAt) + '</p>',
+                '<b>' + "created at : " + '</b>' + getDateTime(feature.properties.EFFECTIVE) + '</p>'),
                 {
-                    autoPan: true,
-                    autoClose: false
+                    autoPan: false
                 }
             );
             console.log(feature);
@@ -434,9 +435,9 @@ var legend = L.control({position: 'bottomleft'});
 legend.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info legend'),
-        colors = ['yellow', 'orange', 'red', 'purple'],
+        colors = ['yellow', 'orange', '#cc0000', 'purple'],
         labels = ['Minor', 'Moderate', 'Severe', 'Extreme'];
-    div.innerHTML = '<b>' + "Extreme Weather" + '<br>' + "Severity" + '</b><br>';
+    div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
 
     // loop through our density intervals and generate a label with a colored square for each interval
     for (var i = 0; i < colors.length; i++) {
