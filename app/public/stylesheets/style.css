@@ -10,6 +10,7 @@ html,body {
 }
 
 .btn2 {
+  min-width: fit-content;
   border: none;
   background-color: inherit;
   font-size: 16px;
@@ -192,6 +193,7 @@ progress[value]::-moz-progress-bar {
 }
 
 .toast {
+  width: 300px;
   margin-bottom: 0 !important;
   margin-top: 0.75rem ;
   border-radius: 0.25rem !important;
