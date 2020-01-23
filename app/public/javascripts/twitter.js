@@ -1,5 +1,4 @@
 "use strict";
-const e = React.createElement;
 let setTweets;
 let getState= ()=>{};
 let pushTweets= () =>{};
@@ -13,11 +12,14 @@ let setHighlighted=  () => {};
 function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
     return new Promise(function (resolve, restrict) {
-        console.log(bounds);
+        const TID = "T" +idGenerator()
+        const date = new Date(Date.now());
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+                'X-Request-Id': TID
             },
             data: JSON.stringify({
                 "bbox": bounds.bbox,
@@ -27,11 +29,11 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
             type: "post"
         })
             .done(function (response) {
-                console.log("tweets");
-                console.log(response);
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
                 resolve(response.tweets);
             })
             .fail(function (err) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
                 console.log(err);
             });
     });
@@ -45,19 +47,15 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
  */
 function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
 
-    // let words= [];
-    // while(filter.indexOf(" ") !== -1){
-    //     const word= filter.substring(0, filter.indexOf(" "));
-    //     filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
-    //     words.push(word);
-    // }
-    // words.push(filter);
     return new Promise(function (resolve, restrict) {
-        console.log(bounds);
+        const TID = "T" +idGenerator()
+        const date = new Date(Date.now());
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts/'+id, // URL der Abfrage,
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+                'X-Request-Id': TID
             },
             data: JSON.stringify({
                 "bbox": bounds.bbox,
@@ -75,22 +73,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
     });
 }
 
-/**
 
-function startStream() {
-    $.ajax({
-        url: "http://" +location.hostname+':3001/api/v1/social/twitter/stream', // URL der Abfrage,
-        data:{},
-        type: "get"
-    })
-        .done(function (response) {
-        })
-        .fail(function (err) {
-            console.log(err)
-        });
-
-}
- */
 
 /**
  * updates the TwitterStream with a new boundingbox
@@ -140,7 +123,6 @@ class TwitterList extends React.Component {
      * @return {*} value of the Parameter
      */
     getState (state) {
-        console.log(this);
         return this.state[state]
     };
 

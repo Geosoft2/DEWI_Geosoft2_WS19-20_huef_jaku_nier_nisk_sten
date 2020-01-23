@@ -75,7 +75,6 @@ const postTweet = async function (tweet) {
 };
 
 
-
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
  * @param filter: array with filter words
@@ -85,108 +84,106 @@ const postTweet = async function (tweet) {
  */
 const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
     try {
-      var match = [];
-      var result = [];
-      if(filter){
-        console.log(filter);
-          const valid= stringArrayValid(filter, 'filter');
-          if(valid.error){
-              return{
-                  error: {
-                      code: 400,
-                      message : valid.error
-                  }
-              };
-          }
-          if(filter.length > 0){
-            var regExpWords = filter.map(function(e){
-              var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
-              return new RegExp(regExpEscape, "i");
-            });
+        var match = [];
+        var result = [];
+        if (filter) {
+            console.log(filter);
+            const valid = stringArrayValid(filter, 'filter');
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            if (filter.length > 0) {
+                var regExpWords = filter.map(function (e) {
+                    var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+                    return new RegExp(regExpEscape, "i");
+                });
+                match.push({
+                    $match: {
+                        // $text = {$search: words};
+                        text: {$in: regExpWords}
+                    }
+                });
+            }
+        }
+        if (bbox) {
+            const valid = bboxValid(bbox);
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            var polygonCoords = [bboxToPolygon(bbox)];
+            var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
             match.push({
-              $match: {
-                // $text = {$search: words};
-                text: {$in: regExpWords}
-              }
+                $match: {
+                    geometry: {
+                        $geoWithin: {$geometry: bboxPolygon}
+                    }
+                }
             });
-          }
-      }
-      if(bbox){
-        const valid = bboxValid(bbox);
-        if(valid.error){
-            return {
-                error: {
-                    code: 400,
-                    message : valid.error
-                }
-            };
         }
-        var polygonCoords = [bboxToPolygon(bbox)];
-        var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
-        match.push({
-          $match: {
-            geometry: {
-              $geoWithin: {$geometry: bboxPolygon}
+        if (extremeWeatherEvents) {
+            const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
             }
-          }
-        });
-      }
-      if(extremeWeatherEvents){
-        const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
-        if(valid.error){
-            return {
-                error: {
-                    code: 400,
-                    message : valid.error
-                }
-            };
-        }
-        var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
-        if(geometryCollection.geometries.length > 0){
-          match.push({
-            $match: {
-              geometry: {
-                $geoWithin: {$geometry: geometryCollection}
-              }
+            var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+            if (geometryCollection.geometries.length > 0) {
+                match.push({
+                    $match: {
+                        geometry: {
+                            $geoWithin: {$geometry: geometryCollection}
+                        }
+                    }
+                });
+                // Aggregation with extremeWeatherEvents-filter,
+                // requirement: at least one feature
+                result = await Tweet.aggregate(match);
+            } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+        } else {
+            if (match.length > 0) {
+                // Aggregation without extremeWeatherEvents-filter
+                result = await Tweet.aggregate(match);
+            } else {
+                // no filter is set
+                result = await Tweet.find({});
             }
-          });
-          // Aggregation with extremeWeatherEvents-filter,
-          // requirement: at least one feature
-          result = await Tweet.aggregate(match);
-        } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
-      }
-      else {
-        if(match.length > 0){
-          // Aggregation without extremeWeatherEvents-filter
-          result = await Tweet.aggregate(match);
         }
-        else {
-          // no filter is set
-          result = await Tweet.find({});
-        }
-      }
 
-      console.log("filtered Tweets: ");
-      console.log(result);
-      return result;
+        console.log("filtered Tweets: ");
+        console.log(result);
+        return result;
     } catch (err) {
-        if(err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)){
-          return {error: {
-              code: 400,
-              message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
-              }
-          };
+        if (err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)) {
+            return {
+                error: {
+                    code: 400,
+                    message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
+                }
+            };
         }
         console.log(err);
-        return {error: {
-            code: 500,
-            message: err,
+        return {
+            error: {
+                code: 500,
+                message: err,
             }
         };
     }
 };
-
-
 
 
 /**
@@ -199,134 +196,132 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
  */
 const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id) {
     try {
-      var result = []; // no result
-      if (id) {
-        const valid = idValid(id, 'objectId');
-        if(valid.error){
-            return{
-                error: {
-                    code: 400,
-                    message : valid.error
-                }
-            };
-        }
-        var match = [];
-        match.push({
-          $match: {
-            _id: new mongoose.Types.ObjectId(id)
-          }
-        });
-        if(filter){
-            const valid= stringArrayValid(filter, 'filter');
-            if(valid.error){
-                return{
+        var result = []; // no result
+        if (id) {
+            const valid = idValid(id, 'objectId');
+            if (valid.error) {
+                return {
                     error: {
                         code: 400,
-                        message : valid.error
+                        message: valid.error
                     }
                 };
             }
-            if(filter.length > 0){
-              var regExpWords = filter.map(function(e){
-                var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
-                return new RegExp(regExpEscape, "i");
-              });
-              match.push({
-                $match: {
-                  // $text = {$search: words};
-                  text: {$in: regExpWords}
-                }
-              });
-            }
-        }
-        if(bbox){
-          const valid = bboxValid(bbox);
-          if(valid.error){
-              return {
-                  error: {
-                      code: 400,
-                      message : valid.error
-                  }
-              };
-          }
-          var polygonCoords = [bboxToPolygon(bbox)];
-          var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
-          match.push({
-            $match: {
-              geometry: {
-                $geoWithin: {$geometry: bboxPolygon}
-              }
-            }
-          });
-        }
-        if(extremeWeatherEvents){
-          const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
-          if(valid.error){
-              return {
-                  error: {
-                      code: 400,
-                      message : valid.error
-                  }
-              };
-          }
-          var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
-          if(geometryCollection.geometries.length > 0){
+            var match = [];
             match.push({
-              $match: {
-                geometry: {
-                  $geoWithin: {$geometry: geometryCollection}
+                $match: {
+                    _id: new mongoose.Types.ObjectId(id)
                 }
-              }
             });
-            // Aggregation with extremeWeatherEvents-filter,
-            // requirement: at least one feature
-            result = await Tweet.aggregate(match);
-          } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+            if (filter) {
+                const valid = stringArrayValid(filter, 'filter');
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                if (filter.length > 0) {
+                    var regExpWords = filter.map(function (e) {
+                        var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+                        return new RegExp(regExpEscape, "i");
+                    });
+                    match.push({
+                        $match: {
+                            // $text = {$search: words};
+                            text: {$in: regExpWords}
+                        }
+                    });
+                }
+            }
+            if (bbox) {
+                io.emit("status", id + ": Searching for Tweets in extreme weather areas")
+                const valid = bboxValid(bbox);
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                var polygonCoords = [bboxToPolygon(bbox)];
+                var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+                match.push({
+                    $match: {
+                        geometry: {
+                            $geoWithin: {$geometry: bboxPolygon}
+                        }
+                    }
+                });
+            }
+            if (extremeWeatherEvents) {
+                const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+                if (geometryCollection.geometries.length > 0) {
+                    match.push({
+                        $match: {
+                            geometry: {
+                                $geoWithin: {$geometry: geometryCollection}
+                            }
+                        }
+                    });
+                    // Aggregation with extremeWeatherEvents-filter,
+                    // requirement: at least one feature
+                    result = await Tweet.aggregate(match);
+                } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+            } else {
+                if (match.length > 1) {
+                    // Aggregation without extremeWeatherEvents-filter
+                    result = await Tweet.aggregate(match);
+                } else {
+                    result = await Tweet.find({_id: id});
+                }
+            }
         }
-        else {
-          if(match.length > 1){
-            // Aggregation without extremeWeatherEvents-filter
-            result = await Tweet.aggregate(match);
-          }
-          else {
-            result = await Tweet.find({_id: id});
-          }
+        console.log("filtered Tweet: ");
+        if (result.length > 0) {
+            console.log(result[0]); // maximal length is 1 -> only one Document has the given ID.
+            return result[0];
+        } else {
+            console.log({});
+            return {};
         }
-      }
-      console.log("filtered Tweet: ");
-      if(result.length > 0){
-        console.log(result[0]); // maximal length is 1 -> only one Document has the given ID.
-        return result[0];
-      }
-      else{
-        console.log({});
-        return {};
-      }
     } catch (err) {
-        if(err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)){
-          return {error: {
-              code: 400,
-              message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
-              }
-          };
+        if (err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)) {
+            return {
+                error: {
+                    code: 400,
+                    message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
+                }
+            };
         }
         console.log(err);
-        return {error: {
-            code: 500,
-            message: err,
+        return {
+            error: {
+                code: 500,
+                message: err,
             }
         };
     }
 };
 
-
-
 /**
  * remove all Tweets from database except the example data, created by DEWI
  * @returns {Promise<void>}
  */
-const deleteTweets = async function() {
-    await Tweet.remove({author: { name : {$ne: "DEWI"} } });
+const deleteTweets = async function () {
+    await Tweet.remove({author: {name: {$ne: "DEWI"}}});
 };
 
 module.exports = {

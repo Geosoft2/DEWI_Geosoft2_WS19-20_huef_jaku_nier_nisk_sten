@@ -124,6 +124,15 @@
       <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
       </div>
 
+            <!-- Status View -->
+          <div id="statusBox" style="width: 0px; height: 0px; position: relative;">
+            <div id="status" style="width: 500px; height: fit-content; padding: 0.5em; z-index: 3000; visibility: hidden; left: 100px; top: -700px; position: relative;">
+              <p>Drag</p>
+            </div>
+          </div>
+
+
+
     </main>
   </div>
 
@@ -143,6 +152,7 @@
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
+<script src="/jquery-ui/jquery-ui.min.js"></script>
 <script src="/popper/umd/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
@@ -156,6 +166,7 @@
 <script src="/bootstrapSelect/dist/js/bootstrap-select.min.js"></script>
 <script src="/push/push.min.js"></script>
 
+<script src="javascripts/status.js"></script>
 <script src="javascripts/wfsDWD.js"></script>
 <script src="javascripts/twitter.js"></script>
 <script src="javascripts/notification.js"></script>

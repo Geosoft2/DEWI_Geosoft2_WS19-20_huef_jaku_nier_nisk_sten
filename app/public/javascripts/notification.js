@@ -23,18 +23,17 @@ function browserNotification(title, content){
 function snackbarWithText(text) {
   const date = Date.now()
   $('.snackbar').prepend(
-      '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(232,89,23);" ' +
+      '<div class="toast '+date+' rounded-0" style="border: 1px solid blue; background-color: lightblue" ' +
       'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
       '<div class="toast-header">'+
-      '<span class="fa fa-star mr-2" style="color: rgb(232,89,23);"></span>'+
-      '<strong class="mr-auto">'+text +'</strong>'+
+      '<strong class="mr-auto" background-color: lightblue>'+text +'</strong>'+
+      '<button type="button" class="btn2" background-color: lightblue onclick="showStatus()" aria-label="Info">'+
+      '<span aria-hidden="true">More Info</span>'+
+      '</button>'+
       '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
       '<span aria-hidden="true">×</span>'+
       '</button>'+
       '</div>'+
-      // '<div class="toast-body">'+
-      //   'Some Toast Body'+
-      // '</div>'+
       '</div>');
   $('.toast.'+date).toast('show');
 
