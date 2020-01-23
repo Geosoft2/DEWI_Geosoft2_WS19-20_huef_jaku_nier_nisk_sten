@@ -17,6 +17,7 @@ const {stream} = require('../routes/api/v1/social/twitter/stream/twitterStream')
 const {getToken} = require('../helpers/twitter/stream');
 const {updateExtremeWeather} = require('../helpers/weather/dwdWFS');
 const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
+const {isDemo} = require('../demo/config');
 
 /**
  * Get port from environment and store in Express.
@@ -50,6 +51,8 @@ api.set('port', port);
      updateExtremeWeather();
      // starts Twitter-Stream
      //stream();
+     // checks if Demo-Mode is active (and pushes some example data)
+     isDemo();
    });
    io.attach(server);
    server.on('error', onError);

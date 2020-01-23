@@ -6,7 +6,7 @@
 let socket = io('http://' + location.hostname + ':3001');
 
 var greenIcon = new L.Icon({
-    iconUrl: 'images/marker-icon-green.png',
+    iconUrl: '/media/images/marker-icon-green.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -15,7 +15,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: 'images/marker-icon-blue.png',
+    iconUrl: '/media/images/marker-icon-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -40,22 +40,27 @@ const osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 });
 
 //event handler when all tiles of the background map are loaded
-osmlayer.on('load', () => {maploaded(); loading=false});
-var loading=false;
-osmlayer.on('loading', () => {loading=true});
+osmlayer.on('load', () => { maploaded(); loading = false });
+var loading = false;
+osmlayer.on('loading', () => { loading = true });
 
 /**
  * @desc Show a Snackbar and advances the progress bar when map is loaded
  */
-function maploaded(){
-    document.getElementById("progressbar").value +=25;
+function maploaded() {
+    document.getElementById("progressbar").value += 25;
     isProgress();
-    snackbarWithText("map loaded")}
+    snackbarWithText("map loaded")
+}
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 18
 });
+
+Esri_WorldImagery.on('load', () => { maploaded(); loading = false });
+var loading = false;
+Esri_WorldImagery.on('loading', () => { loading = true });
 
 // list of layers which will be initally added to the map
 var baseLayers = {
@@ -64,7 +69,7 @@ var baseLayers = {
 };
 
 // add pan-control in the bottomleft of the map
-L.control.pan({position: 'bottomright'}).addTo(map);
+L.control.pan({ position: 'bottomright' }).addTo(map);
 
 /**
  * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
@@ -106,9 +111,9 @@ var radarlayer;
 /**
  * @desc Removes all Tweets from the Map and updates List
  */
-function removeAllTweets(){
+function removeAllTweets() {
     var tweetsInMap = getState("tweets");
-    for(var i =0; i<tweetsInMap.length; i++){
+    for (var i = 0; i < tweetsInMap.length; i++) {
         map.removeLayer(markersInMap[i]);
         markersInMap.splice(i, 1);
         tweetsInMap.splice(i, 1);
@@ -123,7 +128,7 @@ function removeAllTweets(){
  * @param {JSON} wfsLayers to proof if they contains the tweet
  * @param {JSON} bounds to proof if they contains the tweet
  */
-function removeTweets(wfsLayers, bounds){
+function removeTweets(wfsLayers, bounds) {
     var tweetsInMap = getState("tweets");
 
     for (var t = 0; t < tweetsInMap.length; t++) {
@@ -150,13 +155,6 @@ function removeTweets(wfsLayers, bounds){
  * @param {JSON} bounds bounds of the current map extend
  */
 function addTweets(tweets) {
-    // var tweetsInWfsLayers = [];
-    //
-    // for (var t in tweets) {
-    //     if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-    //         tweetsInWfsLayers.push(tweets[t]);
-    //     }
-    // }
 
     var newTweets = [];
     for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
@@ -175,7 +173,7 @@ function addTweets(tweets) {
         //TODO: give the marker the attributes of the tweets that it should have
         marker.tweetId = newTweets[n].tweetId;
         marker.on("click", function (e) {
-            if(JSON.stringify(e.target._latlng) === JSON.stringify(getState('highlighted'))){
+            if (JSON.stringify(e.target._latlng) === JSON.stringify(getState('highlighted'))) {
                 setMarkerColor(null);
                 setHighlighted(null);
             }
@@ -190,24 +188,26 @@ function addTweets(tweets) {
     //highlites tweets if they should be highlited
     setMarkerColor(getState("highlighted"))
     //advance the progress bar
-    if (loading){
-        document.getElementById("progressbar").value +=25;
+    if (loading) {
+        document.getElementById("progressbar").value += 25;
     }
-    else{
-        document.getElementById("progressbar").value =100;
+    else {
+        document.getElementById("progressbar").value = 100;
     }
     isProgress();
-    snackbarWithText("tweet(s) added to the map");
+    if (tweets.length > 1) {
+        snackbarWithText("tweets added to the map");
+    }
 }
 
 /**
  * Hides the prograss bar, if she is fullfilled
  */
-async function isProgress(){
+async function isProgress() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
-    if (document.getElementById("progressbar").value===100){
+    if (document.getElementById("progressbar").value === 100) {
         await delay(2000);
-        document.getElementById("progressbar").style.visibility='hidden';
+        document.getElementById("progressbar").style.visibility = 'hidden';
     }
 }
 
@@ -274,9 +274,9 @@ function isTweetInWfsLayer(tweet, wfsLayers, bounds) {
     ]]);
 
     for (var w in wfsLayers) {
-        var p=[];
-        for (var i of wfsLayers[w].geometry.coordinates[0][0]){
-            p.push([i[1],i[0]]);
+        var p = [];
+        for (var i of wfsLayers[w].geometry.coordinates[0][0]) {
+            p.push([i[1], i[0]]);
         }
         var polygon = turf.polygon([
             p
@@ -318,29 +318,44 @@ function requestExtremeWeather(bbox, events) {
 
 
     return new Promise(function (resolve, restrict) {
+        const WID = "W" +idGenerator();
+        const date = new Date(Date.now());
+        addRequest({id: WID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
-            type: "Get",
+            type: "post",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
-            data: {
+            headers: {
+              "Content-Type": "application/json",
+                'X-Request-Id': WID
+            },
+            data: JSON.stringify({
+                bbox: bbox.bbox,
                 events: events,
-                bbox: bbox.bbox
-            }
-            // contentType: "application/json",
+            })
         })
             .done(function (response) {
-                console.log('mongo', response.result);
+                addRequest({id: WID, send: date.toUTCString(), status: "Success"})
                 // remove existing layer
                 removeExistingLayer(warnlayer);
                 // create new layer
-                warnlayer = createLayer(response.result);
+                warnlayer = createLayer(response.weatherEvents);
                 // add layer to layerGroup and map
                 extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-                resolve(response.result);
                 document.getElementById("progressbar").value +=25;
+                resolve(response.weatherEvents);
+                if(response.weatherEvents.features.length == 0){
+                    document.getElementById("progressbar").value += 100;
+                    isProgress();
+                    snackbarWithText("Weather data loaded. No Critical Situation found");
+                }
+                else{
+                document.getElementById("progressbar").value += 25;
                 isProgress();
                 snackbarWithText("weather data loaded");
+                }
             })
             .fail(function (err) {
+                addRequest({id: WID, send: date.toUTCString(), status: "Failed"})
                 console.log(err);
                 console.log(err.message);
             });
@@ -397,6 +412,7 @@ function createLayer(data) {
             };
         },
         onEachFeature: function (feature, layer) {
+            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p><p>' + feature.properties.IDENTIFIER + '</p>');
             layer.bindPopup('<h5>' + feature.properties.HEADLINE + '</h5>' +
                 '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
                 '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
@@ -473,11 +489,11 @@ function setCookie(cname, cvalue, exdays) {
  * @param {JSON} coordinates of the tweets that shoul be highlited
  */
 function setMarkerColor(coordinates) {
-    for (var marker of markersInMap){
-        if(JSON.stringify(marker._latlng) === JSON.stringify(coordinates)){
+    for (var marker of markersInMap) {
+        if (JSON.stringify(marker._latlng) === JSON.stringify(coordinates)) {
             marker.setIcon(greenIcon)
         }
-        else{
+        else {
             marker.setIcon(blueIcon)
         }
     }

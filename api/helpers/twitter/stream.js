@@ -20,9 +20,6 @@ var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, '
 //specify the twitter Endpoint to set/delete and get rules
 const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
 
-let bbox;
-let keyword;
-
 var token;
 /**
  * Creates a twiitter token
@@ -42,12 +39,6 @@ const getToken= function(){
     )
 };
 
-
-const setRules = (rules) => {
-    console.log(chalk.blue("Stream Rules are set to" + JSON.stringify(rules)));
-    bbox = rules.bbox;
-    keyword = rules.keyword;
-};
 
 /**
  * Get all active rules of the twitter stream
@@ -221,63 +212,10 @@ const streamConnect = function() {
     return stream;
 };
 
-function matchesTweetFilter(tweet, filter, bbox){
-    console.log(chalk.blue("Proof Tweet against Keyword " + keyword + " and BBOX " + JSON.stringify(bbox)));
-    if(bbox){
-        if(!isTweetInMapextend(tweet.geometry.coordinates, bbox)){
-            console.log(chalk.blue("Tweet don't matches BBOX"));
-            return false;
-        }
-    }
-    const words = [];
-    if(filter) {
-        while (filter.indexOf(" ") !== -1) {
-            const word = filter.substring(0, filter.indexOf(" "));
-            filter = filter.substring(filter.indexOf(" ") + 1, filter.length);
-            words.push(word);
-        }
-        words.push(filter);
-        for (var word of words) {
-                if (tweet.text.includes(word)) {
-                    console.log(chalk.blue("Tweet matches keyword: " + word));
-                    return true;
-                }
-        }
-        console.log(chalk.blue("Tweet don't matches keyword"));
-        return false;
-    }
-    return true;
-}
-/**
- * checks if the Tweet is located in the current mapextend
- * @param marker
- * @returns {*} boolean
- */
-function isTweetInMapextend(tweetCoordinates, bounds) {
-    var point = {   //convert the tweet location in a readable format for turf
-        type: 'Feature',
-        geometry: {
-            type: 'Point',
-            coordinates: tweetCoordinates
-        },
-        properties: {}
-    };
-    var bbox = turf.polygon([[
-        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng],
-        [bounds.bbox.southWest.lat, bounds.bbox.northEast.lng],
-        [bounds.bbox.northEast.lat, bounds.bbox.northEast.lng],
-        [bounds.bbox.northEast.lat, bounds.bbox.southWest.lng],
-        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
-    ]]);
-    return turf.booleanWithin(point, bbox);
-}
-
-
 module.exports = {
     getToken,
     getAllRules,
     deleteAllRules,
-    setRules,
     setTwitterRules,
     streamConnect,
 };

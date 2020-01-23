@@ -1,5 +1,4 @@
 "use strict";
-const e = React.createElement;
 let setTweets;
 let getState= ()=>{};
 let pushTweets= () =>{};
@@ -10,22 +9,63 @@ let setHighlighted=  () => {};
  * @param {JSON} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
-function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
+function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
     return new Promise(function (resolve, restrict) {
-        console.log(bounds);
+        const TID = "T" +idGenerator()
+        const date = new Date(Date.now());
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
-            data: {
+            headers: {
+              "Content-Type": "application/json",
+                'X-Request-Id': TID
+            },
+            data: JSON.stringify({
                 "bbox": bounds.bbox,
                 "filter": filter,
-                "extremeWeatherEvents": extremeWeatherEvents,
-                "createdAt": createdAt
-            },
+                "extremeWeatherEvents": extremeWeatherEvents
+            }),
             type: "post"
         })
             .done(function (response) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
                 resolve(response.tweets);
+            })
+            .fail(function (err) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
+                console.log(err);
+            });
+    });
+}
+
+
+/**
+ * Search for tweets and show them in the List
+ * @param {JSON} bounds where the tweest must be in
+ * @param {array} filter array of keyword to filter the tweets after
+ */
+function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
+
+    return new Promise(function (resolve, restrict) {
+        const TID = "T" +idGenerator()
+        const date = new Date(Date.now());
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
+        $.ajax({
+            url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts/'+id, // URL der Abfrage,
+            headers: {
+              "Content-Type": "application/json",
+                'X-Request-Id': TID
+            },
+            data: JSON.stringify({
+                "bbox": bounds.bbox,
+                "filter": filter,
+                "extremeWeatherEvents": extremeWeatherEvents
+            }),
+            type: "post"
+        })
+            .done(function (response) {
+                resolve(response.tweet);
             })
             .fail(function (err) {
                 console.log(err);
@@ -33,22 +73,7 @@ function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
     });
 }
 
-/**
 
-function startStream() {
-    $.ajax({
-        url: "http://" +location.hostname+':3001/api/v1/social/twitter/stream', // URL der Abfrage,
-        data:{},
-        type: "get"
-    })
-        .done(function (response) {
-        })
-        .fail(function (err) {
-            console.log(err)
-        });
-
-}
- */
 
 /**
  * updates the TwitterStream with a new boundingbox
@@ -98,7 +123,6 @@ class TwitterList extends React.Component {
      * @return {*} value of the Parameter
      */
     getState (state) {
-        console.log(this);
         return this.state[state]
     };
 

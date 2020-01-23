@@ -18,20 +18,25 @@
 
   <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
 
-  <progress id="progressbar" value="22" max="100"></progress>
+
 
   <div class="wrapper">
 
     <% include partials/header.ejs %>
 
+    <progress id="progressbar" class="sticky-top" value="22" max="100"></progress>
+
     <main role="main" class="container-fluid" id="main">
       <!-- TODO:  snackbar???-->
       <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
         <div class="row">
-          <div class="col-12" style="margin-top: 20px;">
+          <div class="col-12">
             <% for(var i=0; i < errormessage.length; i++) {%>
-              <div class="alert alert-danger">
+              <div style="margin-top: 20px; margin-bottom: -10px;" class="alert alert-danger alert-dismissible fade show" role="alert">
                 <%= errormessage[i] %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
             <% } %>
           </div>
@@ -45,12 +50,19 @@
           <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
             <div class="row" style="margin-left: 0; margin-right: 0">
               <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-                <button title="by pushing the button, the actual shown map extent is set as new default map extent" type="button" id="newDefaultMapExtent" onclick="changeDefaultMapExtent()" style="">set default map extent</button>
+                <div class="btn-group" style="width: 100%;">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    map extent
+                  </button>
+                  <div class="dropdown-menu">
+                    <button class="dropdown-item" type="button" title="the current shown map extent will be set as new default map extent" onclick="changeDefaultMapExtent()">set current map extent</button>
+                    <button class="dropdown-item" type="button" title="the map extent will be changed to the default map extent" onclick="backToDefaultMapExtent()">get default map extent</button>
+                    <button class="dropdown-item" type="button" title="the default map extent will be deleted">delete default map extent</button>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-                <button title="by pushing the button, the actual shown map extent is the default map extent" type="button" id="backToDefaultMapExtent" onclick="backToDefaultMapExtent()" style="">get default map extent</button>
-              </div>
-              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+
+              <div class="col-md-3 ml-auto" style="margin-top: 10px; margin-bottom: 10px;">
                 <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
                   <option value="THUNDERSTORM">thunderstorm</option>
                   <option value="WIND">wind</option>
@@ -70,7 +82,16 @@
                 </select>
               </div>
               <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-                <button title="by pushing the button, the actual activated events are set as default events" type="button" id="setDefaultEvents" onclick="setDefaultEvents()" style="">set default events</button>
+                <div class="btn-group" style="width: 100%;">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    weather event
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <button class="dropdown-item" type="button" title="the current selected events will be set as default weather events" onclick="setDefaultEvents()">set default weather events</button>
+                    <button class="dropdown-item" type="button">get default weather events</button>
+                    <button class="dropdown-item" type="button">delete default weather events</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -83,7 +104,7 @@
         <div id="twitterSection" class="col-md-4 order-md-2" style="margin-top: 20px;">
           <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
             <div class="row" style="margin-right: 0px; margin-left: 0px;">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
                   <input id="textFilter" class="form-control" type="text" name="" value="" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)'/>
                   <div class="input-group-append">
@@ -97,11 +118,18 @@
               <!-- <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
                 <textarea rows="1" style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' id="textFilter" onchange="eventsOrFilterChanged()"></textarea>
               </div> -->
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
-                <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord" onclick="setDefaultSearchWord()" style="">set default search word</button>
-              </div>
-              <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
-                <button title="by pushing the button, the default search word is deleted" type="button" id="deleteDefaultSearchWord" onclick="deleteDefaultSearchWord()" style="">delete default search word</button>
+              <div class="col-md-6" style="margin-top: 10px; margin-bottom: 10px;">
+                <!-- <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord"  style="">set default search word</button> -->
+                <div class="btn-group" style="width: 100%;">
+                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    tweet filter
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <button class="dropdown-item" type="button" title="the current used search words will be used as default search word" onclick="setDefaultSearchWord()">set current search filter</button>
+                    <button class="dropdown-item" type="button">get default search filter</button>
+                    <button class="dropdown-item" type="button" title="the default search words will be deleted" onclick="deleteDefaultSearchWord()">delete default search filter</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -125,15 +153,35 @@
       <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
       </div>
 
+            <!-- Status View -->
+          <div id="statusBox" style="width: 0px; height: 0px; position: relative;">
+            <div id="status" style="width: 500px; height: fit-content; padding: 0.5em; z-index: 3000; visibility: hidden; left: 100px; top: -700px; position: relative;">
+              <p>Drag</p>
+            </div>
+          </div>
+
+
+
     </main>
   </div>
 
   <% include partials/footer.ejs %>
-
+  <div id="loader-wrapper" class="loader-wrapper" onclick='fade(document.getElementById("loader-wrapper"))'>
+  <span class="loader"><span class="loader-inner"></span></span>
+    <h1 id="startPage">
+    The DEWI-Application uses Cookies to enhance the user experience.</br>
+      Cookies are required to keep the data up-to-date in real time without requiring user interaction.</br>
+      Furthermore cookies are used to save user specific default values or rather basic settings.</br>
+      Cookies are not passed on to third parties and are not used for other purposes.</br>
+      If you continue, you agree to the above circumstances.</br>
+      To continue click anywhere
+    </h1>
+  </div>
   </body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
+<script src="/jquery-ui/jquery-ui.min.js"></script>
 <script src="/popper/umd/popper.min.js"></script>
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 <script src="/leaflet/leaflet.js"></script>
@@ -147,7 +195,8 @@
 <script src="/bootstrapSelect/dist/js/bootstrap-select.min.js"></script>
 <script src="/push/push.min.js"></script>
 
-<script src="javascripts/wfsDWD.js"></script>
-<script src="javascripts/twitter.js"></script>
-<script src="javascripts/notification.js"></script>
-<script src="javascripts/control.js"></script>
+<script src="/javascripts/status.js"></script>
+<script src="/javascripts/wfsDWD.js"></script>
+<script src="/javascripts/twitter.js"></script>
+<script src="/javascripts/notification.js"></script>
+<script src="/javascripts/control.js"></script>

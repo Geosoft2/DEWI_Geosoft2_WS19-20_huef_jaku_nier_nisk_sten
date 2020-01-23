@@ -3,13 +3,13 @@
 "use strict";
 
 /**
-* routes/api/v1/weather/events/index.js
+* routes/api/v1/demo/index.js
 * @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
 */
 
 const express = require('express');
-const DWDRouter = express.Router();
+const DemoRouter = express.Router();
 
-DWDRouter.post('/', require('./extremeWeather').getExtremeWeather);
+DemoRouter.post('/', require('./demo').postDemo);
 
-module.exports = DWDRouter;
+module.exports = DemoRouter;

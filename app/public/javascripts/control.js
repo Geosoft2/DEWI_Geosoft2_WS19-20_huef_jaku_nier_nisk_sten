@@ -13,6 +13,9 @@ let wfsLayer;
  */
 async function initial (boundingbox, events, filter) {
 
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("loader-wrapper").style.visibility='visible';
+
     document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
 
@@ -33,14 +36,29 @@ async function initial (boundingbox, events, filter) {
   if (bbox) {
       // updateTwitterStream(bbox, filter);
       // Start 2 "jobs" in parallel and wait for both of them to complete
-
-          (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
-
-
-          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
+          map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
+          wfsLayer = await requestExtremeWeather(bbox, events);
+          twitterResponse = await twitterSearch(bbox, filter, wfsLayer);
 
   addTweets(twitterResponse);
   }
+    await delay(1000);
+  // fade(document.getElementById("loader-wrapper"));
+    // document.getElementById("loader-wrapper").classList.add('hidden');
+    // document.getElementById("loader-wrapper").style.visibility='hidden';
+}
+
+function fade(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
 }
 
 /**
@@ -243,7 +261,7 @@ function createFilterBadge(filter){
   $('#textFilters').append(
     '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
       filter+
-      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; color: blue; text-shadow: none; ">'+
+      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; text-shadow: none; ">'+
         '<span class="fas fa-times fa-xs">'+
         '</span>'+
       '</button>'+
@@ -285,14 +303,28 @@ function getCookie(cname) {
  */
  function startSocket() {
     socket.on('tweet', async function (tweet) {
+      const date= new Date(Date.now())
+      setStatus("lastTweet", date.toUTCString())
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
-        addTweets(twitterResponse);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
+        if(!jQuery.isEmptyObject(twitterResponse)){
+          addTweets([twitterResponse]);
+            var audio = new Audio('media/audio/twitter-notification-sound.mp3');
+            audio.play();
+        }
+
     });
+
+    socket.on('status', (text) =>{
+      setStatus("lastUpdates", text)
+      console.log(text)
+    })
     socket.on('weatherchanges', async function (data) {
+      const date= new Date(Date.now())
+        setStatus("lastWeather", date.toUTCString())
         browserNotification('DEWI', 'Extreme weather events changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
@@ -364,6 +396,35 @@ function updateURL(bbox, events, filter) {
   // create querystring
   var querystring = $.param(parameters);
   // new URL
-  window.history.pushState("object or string", "Title", "/?" + querystring);
+  window.history.pushState("object or string", "Title", window.location.pathname+"?" + querystring);
 }
 
+/**
+ * Shows a snackbar on the Top Right
+ * @param {String} text to show in the snackbar
+ */
+function snackbarWithText(text) {
+    const date = Date.now()
+    $('.snackbar').prepend(
+        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(30,93,136);" ' +
+        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
+          '<div class="toast-header">'+
+            '<strong class="mr-auto">'+text +'</strong>'+
+            '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
+              '<span aria-hidden="true">×</span>'+
+            '</button>'+
+          '</div>'+
+        // '<div class="toast-body">'+
+        //   'Some Toast Body'+
+        // '</div>'+
+        '</div>');
+    $('.toast.'+date).toast('show');
+}
+function idGenerator(){
+    let id=""
+    for( var i = 0; i < 5; ++i ) {
+        var number = Math.floor(Math.random() * 10); ;
+        id += number;
+    }
+    return id;
+}

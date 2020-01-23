@@ -5,8 +5,13 @@
 const Tweet = require('../../models/tweet');
 const chalk = require('chalk');
 const io = require("../socket-io").io;
+const mongoose = require('mongoose');
 // Tweet.index({text: 'text'});
-const {bboxToPolygon, isBbox, featureCollectionToGeometryCollection} = require('../geoJSON');
+const {bboxToPolygon, featureCollectionToGeometryCollection} = require('../geoJSON');
+const {stringArrayValid} = require('../validation/array');
+const {idValid} = require('../validation/id');
+const {bboxValid} = require('../validation/bbox');
+const {multiPolygonFeatureCollectionValid} = require('../validation/geojson');
 
 /**
  * save tweet in database if it is not already stored
@@ -44,22 +49,29 @@ const postTweet = async function (tweet) {
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
         } else {
-            var newTweet = new Tweet({
+            var tweetObject = {
+                _id: mongoose.Types.ObjectId(),
                 tweetId: tweet.tweetId,
                 url: tweet.url,
                 text: tweet.text,
-                createdAt: tweet.createdAt,
                 geometry: tweet.geometry,
                 accuracy: tweet.accuracy,
                 place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
                 // author und media noch splitten oder einfach als Mixed definieren??
-            });
+            };
+            if (tweet.createdAt) { // default: Date.now()
+                tweetObject.createdAt = tweet.createdAt;
+            }
+            if (tweet.demo) { // default: false
+                tweetObject.demo = tweet.demo;
+            }
+            var newTweet = new Tweet(tweetObject);
             try {
                 console.log(newTweet);
-                await newTweet.save();
-                io.emit('tweet', newTweet);
+                var savedTweet = await newTweet.save();
+                io.emit('tweet', savedTweet);
                 return "tweet stored in db.";
             } catch (e) {
                 return e;
@@ -68,110 +80,241 @@ const postTweet = async function (tweet) {
     }
 };
 
-const filterValid = (filter) => {
-        if(!Array.isArray(filter)){
-            return{error: "filter mus be an array"}
-        }
-        else if(filter.every(function(i){ return typeof i === "string" }) == false){
-            return{error: "filter mus be an Array of Strings"}
-        }
-        else{
-            return true
-        }
-
-}
-
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
  * @param filter: array with filter words
  * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
+ * @param {geojson} extremeWeatherEvents
  * @returns {Promise<void>}
  */
-const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, createdAt) {
-    // write words in the filter in a String to search for them
-    // assumes the filter words format is an array
-
-
-    // var words = filter[0];
-    // if (filter.length > 1) {
-    //     for (var i = 1; i < filter.length; i++) {
-    //         words = filter[i] + " " + words;
-    //     }
-    // }
-
-    var regExpWords;
-    if(filter){
-        const valid= filterValid(filter);
-        if(valid.error){
-            return{
-                error: {
-                    code: 400,
-                    message : valid.error
+const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
+    try {
+        var match = [];
+        var result = [];
+        if (filter) {
+            console.log(filter);
+            const valid = stringArrayValid(filter, 'filter');
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            if (filter.length > 0) {
+                var regExpWords = filter.map(function (e) {
+                    var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+                    return new RegExp(regExpEscape, "i");
+                });
+                match.push({
+                    $match: {
+                        // $text = {$search: words};
+                        text: {$in: regExpWords}
+                    }
+                });
+            }
+        }
+        if (bbox) {
+            const valid = bboxValid(bbox);
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            var polygonCoords = [bboxToPolygon(bbox)];
+            var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+            match.push({
+                $match: {
+                    geometry: {
+                        $geoWithin: {$geometry: bboxPolygon}
+                    }
                 }
-            };
+            });
         }
-        if(filter.length > 0){
-          regExpWords = filter.map(function(e){
-            var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
-            return new RegExp(regExpEscape, "i");
-          });
+        if (extremeWeatherEvents) {
+            const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+            if (geometryCollection.geometries.length > 0) {
+                match.push({
+                    $match: {
+                        geometry: {
+                            $geoWithin: {$geometry: geometryCollection}
+                        }
+                    }
+                });
+                // Aggregation with extremeWeatherEvents-filter,
+                // requirement: at least one feature
+                result = await Tweet.aggregate(match);
+            } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+        } else {
+            if (match.length > 0) {
+                // Aggregation without extremeWeatherEvents-filter
+                result = await Tweet.aggregate(match);
+            } else {
+                // no filter is set
+                result = await Tweet.find({});
+            }
         }
-    }
 
-    // console.log(chalk.yellow("Searching for Tweets with keyword:" +words +""));
-    var polygonCoords = [bboxToPolygon(bbox)];
-    var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
-    var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
-    if(bbox){
-        const valid = isBbox(bbox);
-        if(valid.error){
+        console.log("filtered Tweets: ");
+        console.log(result);
+        return result;
+    } catch (err) {
+        if (err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)) {
             return {
                 error: {
                     code: 400,
-                    message : valid.error
+                    message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
                 }
             };
         }
-    }
-    try {
-      var match = [{
-        $match: {
-          geometry: {
-            $geoWithin: {$geometry: bboxPolygon}
-          }
-        }
-      }, {
-        $match: {
-          geometry: {
-            $geoWithin: {$geometry: geometryCollection}
-          }
-        }
-      }];
-
-      if (createdAt) {
-        match.push({
-          $match: {
-            createdAt: {$eq: new Date(createdAt)}
-          }
-        });
-      }
-      if (regExpWords) {
-        match.push({
-          $match: {
-            // $text = {$search: words};
-            text: {$in: regExpWords}
-          }
-        });
-      }
-      const result= await Tweet.aggregate(match);
-      console.log("filtered Tweets: ");
-      console.log(result);
-      return result;
-    } catch (err) {
         console.log(err);
-        return {error: {
-            code: 500,
-            message: err,
+        return {
+            error: {
+                code: 500,
+                message: err,
+            }
+        };
+    }
+};
+
+/**
+ * get one Tweet from the database by ObjectID, fitting to the filter and boundingbox
+ * @param {array} filter array with filter words
+ * @param {JSON} bbox with southWest: lat, lng and northEast: lat, lng
+ * @param {geojson} extremeWeatherEvents
+ * @param {string} id mongoDB-ObjectID
+ * @returns {Promise<void>}
+ */
+const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id) {
+    try {
+        var result = []; // no result
+        if (id) {
+            const valid = idValid(id, 'objectId');
+            if (valid.error) {
+                return {
+                    error: {
+                        code: 400,
+                        message: valid.error
+                    }
+                };
+            }
+            var match = [];
+            match.push({
+                $match: {
+                    _id: new mongoose.Types.ObjectId(id)
+                }
+            });
+            if (filter) {
+                const valid = stringArrayValid(filter, 'filter');
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                if (filter.length > 0) {
+                    var regExpWords = filter.map(function (e) {
+                        var regExpEscape = e.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, '\\$&');
+                        return new RegExp(regExpEscape, "i");
+                    });
+                    match.push({
+                        $match: {
+                            // $text = {$search: words};
+                            text: {$in: regExpWords}
+                        }
+                    });
+                }
+            }
+            if (bbox) {
+                io.emit("status", id + ": Searching for Tweets in extreme weather areas")
+                const valid = bboxValid(bbox);
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                var polygonCoords = [bboxToPolygon(bbox)];
+                var bboxPolygon = {type: 'Polygon', coordinates: polygonCoords};
+                match.push({
+                    $match: {
+                        geometry: {
+                            $geoWithin: {$geometry: bboxPolygon}
+                        }
+                    }
+                });
+            }
+            if (extremeWeatherEvents) {
+                const valid = multiPolygonFeatureCollectionValid(extremeWeatherEvents, 'extremeWeatherEvents');
+                if (valid.error) {
+                    return {
+                        error: {
+                            code: 400,
+                            message: valid.error
+                        }
+                    };
+                }
+                var geometryCollection = featureCollectionToGeometryCollection(extremeWeatherEvents);
+                if (geometryCollection.geometries.length > 0) {
+                    match.push({
+                        $match: {
+                            geometry: {
+                                $geoWithin: {$geometry: geometryCollection}
+                            }
+                        }
+                    });
+                    // Aggregation with extremeWeatherEvents-filter,
+                    // requirement: at least one feature
+                    result = await Tweet.aggregate(match);
+                } // else: result is [], because no extremeWeatherEvent-MultiPolygon is delivered.
+            } else {
+                if (match.length > 1) {
+                    // Aggregation without extremeWeatherEvents-filter
+                    result = await Tweet.aggregate(match);
+                } else {
+                    result = await Tweet.find({_id: id});
+                }
+            }
+        }
+        console.log("filtered Tweet: ");
+        if (result.length > 0) {
+            console.log(result[0]); // maximal length is 1 -> only one Document has the given ID.
+            return result[0];
+        } else {
+            console.log({});
+            return {};
+        }
+    } catch (err) {
+        if (err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)) {
+            return {
+                error: {
+                    code: 400,
+                    message: "'Parameter \'extremeWeatherEvents\': Coordinates must have at least three different vertices.",
+                }
+            };
+        }
+        console.log(err);
+        return {
+            error: {
+                code: 500,
+                message: err,
             }
         };
     }
@@ -181,11 +324,18 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents, c
  * remove all Tweets from database except the example data, created by DEWI
  * @returns {Promise<void>}
  */
-const deleteTweets = async function() {
-    await Tweet.remove({author: { name : {$ne: "DEWI"} } });
+const deleteDemoTweets = async function () {
+    try {
+        await Tweet.deleteMany({demo: true});
+        console.log('all demo-tweets deleted');
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 module.exports = {
     postTweet,
-    getTweetsFromMongo
+    getTweetsFromMongo,
+    getTweetFromMongo,
+    deleteDemoTweets
 };

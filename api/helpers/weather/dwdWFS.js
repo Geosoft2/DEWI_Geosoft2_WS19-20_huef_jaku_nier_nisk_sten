@@ -8,8 +8,10 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('config-yml');
 const chalk = require('chalk');
 const util = require('util');
+const fs = require('fs');
 const setIntervalPromise = util.promisify(setInterval);
 const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather');
+const {weatherdata} = require('../../demo/weather.js');
 
 
 /**
@@ -17,44 +19,59 @@ const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather'
  */
 const requestExtremeWeather = function(){
   // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
-  var rootUrl = config.weather.dwd.wfs.url;
-  var defaultParameters = {
-    service: 'WFS',
-    version: config.weather.dwd.wfs.parameter.version,
-    request: 'GetFeature',
-    typeName: config.weather.dwd.wfs.parameter.typeName,
-    outputFormat: 'application/json',
-    format_option: 'charset:UTF-8',
-    srsName: 'EPSG:4326'
-  };
-  if(isSeverity()){
-    var severity = readSeverity();
-    defaultParameters.cql_filter = "SEVERITY in ("+severity+")";
+  var demo = JSON.parse(fs.readFileSync('demo/isDemo.json')).demo;
+  if(!demo) {
+    console.log('real');
+    var rootUrl = config.weather.dwd.wfs.url;
+    var defaultParameters = {
+      service: 'WFS',
+      version: config.weather.dwd.wfs.parameter.version,
+      request: 'GetFeature',
+      typeName: config.weather.dwd.wfs.parameter.typeName,
+      outputFormat: 'application/json',
+      format_option: 'charset:UTF-8',
+      srsName: 'EPSG:4326'
+    };
+    if(isSeverity()){
+      var severity = readSeverity();
+      defaultParameters.cql_filter = "SEVERITY in ("+severity+")";
+    }
+
+    var parameters = querystring.stringify(defaultParameters);
+
+    const options = {
+      url: rootUrl + '?' + parameters
+    };
+    request.get(options)
+    .on('response', function(response) {
+      // concatenate updates from datastream
+      var body = '';
+      var decoder = new StringDecoder('utf8');
+      response.on('data', function(chunk){
+        // @see: https://stackoverflow.com/questions/12121775/convert-streamed-buffers-to-utf8-string
+        //       https://nodejs.org/api/string_decoder.html
+        body += decoder.write(chunk);
+      });
+      response.on('end', function(){
+        try{
+          var features = JSON.parse(body).features;
+          saveExtremeWeatherInMongo(features);
+        }
+        catch(err){
+          console.log(chalk.red('Error parsing weather data.'));
+        }
+      });
+    })
+    .on('error', function(err) {
+      console.log(chalk.red('Error: DWD WFS is not working.'));
+    });
   }
-
-  var parameters = querystring.stringify(defaultParameters);
-
-  const options = {
-    url: rootUrl + '?' + parameters
-  };
-  request.get(options)
-  .on('response', function(response) {
-    // concatenate updates from datastream
-    var body = '';
-    var decoder = new StringDecoder('utf8');
-    response.on('data', function(chunk){
-      // @see: https://stackoverflow.com/questions/12121775/convert-streamed-buffers-to-utf8-string
-      //       https://nodejs.org/api/string_decoder.html
-      body += decoder.write(chunk);
-    });
-    response.on('end', function(){
-      var features = JSON.parse(body).features;
-      saveExtremeWeatherInMongo(features);
-    });
-  })
-  .on('error', function(err) {
-    console.log(chalk.red('Error: DWD WFS is not working.'));
-  });
+  else{
+    console.log('demo');
+    // save random weather-demo data
+    var random = Math.floor(Math.random() * weatherdata.length);
+    saveExtremeWeatherInMongo(weatherdata[random].features);
+  }
 };
 
 
