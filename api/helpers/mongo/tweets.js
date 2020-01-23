@@ -195,14 +195,15 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
  * @param {array} filter array with filter words
  * @param {JSON} bbox with southWest: lat, lng and northEast: lat, lng
  * @param {geojson} extremeWeatherEvents
- * @param {string} id mongoDB-ObjectID
+ * @param {string} tweetId mongoDB-ObjectID
+ * @param {string} headerId
  * @returns {Promise<void>}
  */
-const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id) {
+const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tweetId, headerId) {
     try {
         var result = []; // no result
-        if (id) {
-            const valid = idValid(id, 'objectId');
+        if (tweetId) {
+            const valid = idValid(tweetId, 'objectId');
             if (valid.error) {
                 return {
                     error: {
@@ -214,7 +215,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id
             var match = [];
             match.push({
                 $match: {
-                    _id: new mongoose.Types.ObjectId(id)
+                    _id: new mongoose.Types.ObjectId(tweetId)
                 }
             });
             if (filter) {
@@ -241,7 +242,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, id
                 }
             }
             if (bbox) {
-                io.emit("status", id + ": Searching for Tweets in extreme weather areas")
+                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas")
                 const valid = bboxValid(bbox);
                 if (valid.error) {
                     return {

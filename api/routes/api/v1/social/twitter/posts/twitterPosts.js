@@ -59,7 +59,7 @@ const postMongoSearch = async function (req, res) {
         console.log("sending result");
         res.status(200).json(result2);
     }
-
+    
 };
 
 
@@ -71,7 +71,7 @@ const postMongoSearchById = async function (req, res) {
     const id = req.params.tweetId;
 
 
-    const result = await getTweetFromMongo(filter, bbox, extremeWeatherEvents, req.id);
+    const result = await getTweetFromMongo(filter, bbox, extremeWeatherEvents, id, req.id);
     io.emit("status", req.id + ": Sending result");
 
     if (result.error) {
