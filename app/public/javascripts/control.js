@@ -13,6 +13,9 @@ let wfsLayer;
  */
 async function initial (boundingbox, events, filter) {
 
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("loader-wrapper").style.visibility='visible';
+
     document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
 
@@ -37,10 +40,26 @@ async function initial (boundingbox, events, filter) {
           (async()=> wfsLayer = await requestExtremeWeather(bbox, events))();
 
 
-          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))(); //TODO: get the tweets from mongodb and not direct from Twitter
-
+          (async()=> twitterResponse = await twitterSearch(bbox, filter, wfsLayer))();
   addTweets(twitterResponse);
   }
+    await delay(1000);
+  // fade(document.getElementById("loader-wrapper"));
+    // document.getElementById("loader-wrapper").classList.add('hidden');
+    // document.getElementById("loader-wrapper").style.visibility='hidden';
+}
+
+function fade(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
 }
 
 /**
@@ -289,8 +308,13 @@ function getCookie(cname) {
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearch(bounds, filter, wfsLayer, tweet.createdAt);
-        addTweets(twitterResponse);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
+        if(!jQuery.isEmptyObject(twitterResponse)){
+          addTweets([twitterResponse]);
+            var audio = new Audio('media/audio/twitter-notification-sound.mp3');
+            audio.play();
+        }
+
     });
     socket.on('weatherchanges', async function (data) {
         browserNotification('DEWI', 'Extreme weather events changed.');

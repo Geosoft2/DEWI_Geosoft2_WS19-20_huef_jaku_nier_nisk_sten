@@ -10,6 +10,6 @@
 const express = require('express');
 const DWDRouter = express.Router();
 
-DWDRouter.get('/', require('./extremeWeather').getExtremeWeather);
+DWDRouter.post('/', require('./extremeWeather').getExtremeWeather);
 
 module.exports = DWDRouter;

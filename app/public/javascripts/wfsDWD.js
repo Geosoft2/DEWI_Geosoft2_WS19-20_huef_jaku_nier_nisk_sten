@@ -6,7 +6,7 @@
 let socket = io('http://' + location.hostname + ':3001');
 
 var greenIcon = new L.Icon({
-    iconUrl: 'images/marker-icon-green.png',
+    iconUrl: 'media/images/marker-icon-green.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -15,7 +15,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: 'images/marker-icon-blue.png',
+    iconUrl: 'media/images/marker-icon-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -150,13 +150,6 @@ function removeTweets(wfsLayers, bounds){
  * @param {JSON} bounds bounds of the current map extend
  */
 function addTweets(tweets) {
-    // var tweetsInWfsLayers = [];
-    //
-    // for (var t in tweets) {
-    //     if (isTweetInWfsLayer(tweets[t], wfsLayers.features, bounds)) {
-    //         tweetsInWfsLayers.push(tweets[t]);
-    //     }
-    // }
 
     var newTweets = [];
     for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
@@ -319,23 +312,24 @@ function requestExtremeWeather(bbox, events) {
 
     return new Promise(function (resolve, restrict) {
         $.ajax({
-            type: "Get",
+            type: "post",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
-            data: {
+            headers: {
+              "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+                bbox: bbox.bbox,
                 events: events,
-                bbox: bbox.bbox
-            }
-            // contentType: "application/json",
+            })
         })
             .done(function (response) {
-                console.log('mongo', response.result);
                 // remove existing layer
                 removeExistingLayer(warnlayer);
                 // create new layer
-                warnlayer = createLayer(response.result);
+                warnlayer = createLayer(response.weatherEvents);
                 // add layer to layerGroup and map
                 extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-                resolve(response.result);
+                resolve(response.weatherEvents);
                 document.getElementById("progressbar").value +=25;
                 isProgress();
                 snackbarWithText("weather data loaded");

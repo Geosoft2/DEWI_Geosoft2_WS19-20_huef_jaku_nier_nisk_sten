@@ -10,22 +10,64 @@ let setHighlighted=  () => {};
  * @param {JSON} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
-function twitterSearch(bounds, filter, extremeWeatherEvents, createdAt) {
+function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
     return new Promise(function (resolve, restrict) {
         console.log(bounds);
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
-            data: {
+            headers: {
+              "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
                 "bbox": bounds.bbox,
                 "filter": filter,
-                "extremeWeatherEvents": extremeWeatherEvents,
-                "createdAt": createdAt
-            },
+                "extremeWeatherEvents": extremeWeatherEvents
+            }),
             type: "post"
         })
             .done(function (response) {
+                console.log("tweets");
+                console.log(response);
                 resolve(response.tweets);
+            })
+            .fail(function (err) {
+                console.log(err);
+            });
+    });
+}
+
+
+/**
+ * Search for tweets and show them in the List
+ * @param {JSON} bounds where the tweest must be in
+ * @param {array} filter array of keyword to filter the tweets after
+ */
+function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
+
+    // let words= [];
+    // while(filter.indexOf(" ") !== -1){
+    //     const word= filter.substring(0, filter.indexOf(" "));
+    //     filter =filter.substring(filter.indexOf(" ") +1 , filter.length);
+    //     words.push(word);
+    // }
+    // words.push(filter);
+    return new Promise(function (resolve, restrict) {
+        console.log(bounds);
+        $.ajax({
+            url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts/'+id, // URL der Abfrage,
+            headers: {
+              "Content-Type": "application/json"
+            },
+            data: JSON.stringify({
+                "bbox": bounds.bbox,
+                "filter": filter,
+                "extremeWeatherEvents": extremeWeatherEvents
+            }),
+            type: "post"
+        })
+            .done(function (response) {
+                resolve(response.tweet);
             })
             .fail(function (err) {
                 console.log(err);
