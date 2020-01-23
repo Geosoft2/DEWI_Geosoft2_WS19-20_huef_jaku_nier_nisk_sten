@@ -203,15 +203,11 @@ async function mapExtendChange(bounds) {
 
     var events = $('#selectEvent').val();
     var filter = getTweetFilters();
-    // updateTwitterStream(bounds, filter);
-    const tweets= getState('tweets');
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
     let twitterResponse;
-    // await Promise.all([
-        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
-    // ]);
+        wfsLayer = await requestExtremeWeather(bounds, events);
+        twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
     addTweets(twitterResponse)
 }
 
@@ -219,18 +215,17 @@ async function mapExtendChange(bounds) {
  * @desc new extreme weather data and tweets are loaded after each change of the events or filter
  */
 async function eventsOrFilterChanged() {
+  document.getElementById("progressbar").value =25;
+  document.getElementById("progressbar").style.visibility='visible';
   var bounds = map.getBounds();
   bounds = boundingbox(bounds);
     var events = $('#selectEvent').val();
     var filter = getTweetFilters();
-    // updateTwitterStream(bounds, filter);
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
-    // await Promise.all([
-        /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-        /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
-    // ]);
+        wfsLayer = await requestExtremeWeather(bounds, events);
+        twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
     addTweets(twitterResponse);
 }
 

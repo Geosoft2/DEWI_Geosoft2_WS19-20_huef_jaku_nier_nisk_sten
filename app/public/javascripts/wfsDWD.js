@@ -207,7 +207,9 @@ async function isProgress() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
     if (document.getElementById("progressbar").value === 100) {
         await delay(2000);
+        if (document.getElementById("progressbar").value === 100) {
         document.getElementById("progressbar").style.visibility = 'hidden';
+        }
     }
 }
 

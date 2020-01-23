@@ -65,9 +65,11 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
             type: "post"
         })
             .done(function (response) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
                 resolve(response.tweet);
             })
             .fail(function (err) {
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
                 console.log(err);
             });
     });
