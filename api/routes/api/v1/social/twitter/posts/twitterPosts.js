@@ -71,7 +71,7 @@ const postMongoSearchById = async function (req, res) {
     const id = req.params.tweetId;
 
 
-    const result = await getTweetFromMongo(filter, bbox, extremeWeatherEvents, id);
+    const result = await getTweetFromMongo(filter, bbox, extremeWeatherEvents, req.id);
     io.emit("status", req.id + ": Sending result");
 
     if (result.error) {

@@ -86,7 +86,7 @@ const saveExtremeWeatherInMongo = async function (features) {
  * @param {array} events events to query the MongoDB.
  * @param {object} res response, to send back the desired HTTP response
  */
-const getExtremeWeatherFromMongo = async function (bbox, events, res) {
+const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
     io.emit("status", id + ": Searching for extreme weather ares in bbox")
     try {
         var query = {};

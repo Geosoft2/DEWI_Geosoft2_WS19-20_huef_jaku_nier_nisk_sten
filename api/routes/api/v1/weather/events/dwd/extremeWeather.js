@@ -14,7 +14,7 @@ const getExtremeWeather = async function (req, res) {
     io.emit("status", req.id + ": Received")
     var bbox = req.body.bbox;
     var events = req.body.events; // output: ['FOG', 'FROST']
-    var result = await getExtremeWeatherFromMongo(bbox, events, res);
+    var result = await getExtremeWeatherFromMongo(bbox, events, res, req.id);
 
     if (result.error) {
         res.status(result.error.code).send({

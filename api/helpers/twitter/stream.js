@@ -216,7 +216,6 @@ module.exports = {
     getToken,
     getAllRules,
     deleteAllRules,
-    setRules,
     setTwitterRules,
     streamConnect,
 };
