@@ -8,10 +8,16 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const path = require('path');
 
 var addRequestId = require('express-request-id')();
 
+
 var api = express();
+
+
+api.set('views', path.join(__dirname, 'views'));
+api.set('view engine', 'ejs');
 
 api.use("/logo", express.static(__dirname + "/logo/"));
 api.use(express.json({limit: '50mb'})); // for parsing application/json
