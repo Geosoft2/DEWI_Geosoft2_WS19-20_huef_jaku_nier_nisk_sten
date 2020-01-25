@@ -25,10 +25,10 @@
           <div class="col-sm-3">
             <div id="list-nav" class="list-group sticky-top" style="margin-bottom: 30px;">
               <a class="list-group-item list-group-item-action" href="#list-item-1">General</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-2">URL</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-3">Cookies</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-1">Weather</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-2">Twitter</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-2">Weather</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-3">Map</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-4">Twitter</a>
+              <a class="list-group-item list-group-item-action" href="#list-item-5">Twitter</a>
             </div>
           </div>
 
@@ -118,10 +118,144 @@
                     </div>
                   </div>
 
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Seventeen" data-toggle="collapse" data-target="#collapseSeventeen" aria-expanded="false" aria-controls="collapseThree">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Where can I find information about the authors?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseSeventeen" class="collapse" aria-labelledby="Seventeen" data-parent="#accordion">
+                      <div class="card-body">
+                        There are some information about the authors in the Imprint which you find at the footer.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Eigthteen" data-toggle="collapse" data-target="#collapseEigthteen" aria-expanded="false" aria-controls="collapseThree">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Where can I find information concerning the loading status of the application?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseEigthteen" class="collapse" aria-labelledby="Eigthteen" data-parent="#accordion">
+                      <div class="card-body">
+                        On the hand hand there is a loading bar quite above the dropdown menus. Besides there are
+                        some snackbars exactly at the moment something new is loaded. In the snackbar you can open
+                        a popup for further status information. Besides you can reach this status information by the
+                        footer on the "Home"-page.
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div id="list-item-2" style="margin-bottom: 30px;">
                   <p style="font-weight: bold; font-size: 20px;">Weather</p>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseFive">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          How can I change the weather events displayed?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
+                      <div class="card-body">
+                        You can change the displayed weather events by the "thunderstorm, wind, ..." dropdown. In dependency
+                        if the different weather events are checked, the concerning weather event is displayed in map or not.
+                        You can select them individually, delete individually, select all or delete all.</br>
+                        Furthermore you can change the default displayed weather events. After selection like described just
+                        before you can use the "weather events" dropdown to control the default settings:
+                        <ul>
+                          <li>by "set default weather events" you set your actual selection of default weather events as the new default weather events</li>
+                          <li>by "get default weather events" you set the default weather events as the actual in the map displayed weather events</li>
+                          <li>by "delete default weather events" you delete your default weather events (and the corresponding cookie - the initial default weather events are now the new default weather events)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Seven" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSix">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          How can I get more information about weather warnings?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseSeven" class="collapse" aria-labelledby="Seven" data-parent="#accordion">
+                      <div class="card-body">
+                        By clicking on the area of the warning, a popup opens in which further information like type of warning,
+                        description, severity, duration and time are available.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Eight" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseSix">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Where does the data for the warnings come from and when were they last updated?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseEight" class="collapse" aria-labelledby="Eight" data-parent="#accordion">
+                      <div class="card-body">
+                        We receive the data from <a href="https://www.dwd.de/DE/wetter/warnungen/warnWetter_node.html" target="_blank">DWD</a>
+                        and display them on the map. In the right lower corner you can see
+                        the time when we last received data by the DWD. And in the <a href="#Seven">popup</a>
+                        you can see the time the DWD last updated the warning.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Nine" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseSix">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          What is the accuracy of the data?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseNine" class="collapse" aria-labelledby="Nine" data-parent="#accordion">
+                      <div class="card-body">
+                        Accuracy is at community (german: Gemeinde) level, i.e. the warning is issued in the context of the entire community.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="list-item-3">
+                  <p style="font-weight: bold; font-size: 20px;">Map</p>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Ten" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseSix">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          What is the default map extent?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
+                      <div class="card-body">
+                        If there is a bounding box inside the URL, it is used as the default map extent. Is there no bounding box
+                        in the URL the bounding box selected by the user is used as the default bounding box. If the user has not
+                        selected a bounding box, the bounding box of germany is used as default bounding box.
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="card" style="margin-top: 5px;">
                     <div class="card-header" id="Five" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFour" id="Four">
                       <h5 class="mb-0">
@@ -144,100 +278,155 @@
                   </div>
 
                   <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseFive">
+                    <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseFour" id="Four">
                       <h5 class="mb-0">
                         <button class="btn btn-link faq-link" style="padding-left: 0px;">
                           <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I change the weather events displayed?
+                          How can I move the map?
                         </button>
                       </h5>
                     </div>
-                    <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
+                    <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
                       <div class="card-body">
-                        You can change the displayed weather events by the "thunderstorm, wind, ..." dropdown. In dependency
-                        if the different weather events are checked, the concerning weather event is displayed in map or not.
+                        You can move the map by scrolling and zooming with your mouse if possible. An other possibility
+                        is to use the zoom in the upper left corner of the map and the pan in the lower right corner, which
+                        you both can control by clicking.
+                      </div>
+                    </div>
+                  </div>
 
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Twelve" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="true" aria-controls="collapseFour" id="Four">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Influences the map extent the received and displayed data?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseTwelve" class="collapse" aria-labelledby="Twelve" data-parent="#accordion">
+                      <div class="card-body">
+                        Yes it does. Only tweets that are located in the area of one of the warning areas shown in the
+                        current map extent are displayed. Besides there is a specification possible concerning the words
+                        which shall be stated in the tweet (<a href="#...">further information here</a>).
+                      </div>
+                    </div>
+                  </div>
 
-                        after you have
-                        checked the concerning events in the dropdown next to it lefthand. There is a selection of different
-                        weather events which you can select individually, delete individually, select all or delete all.
-                        After selecting you have to specify your request with the "weather events" dropdown:
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Thirteen" data-toggle="collapse" data-target="#collapseThirteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          What happens if I click on a marker?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseThirteen" class="collapse" aria-labelledby="Thirteen" data-parent="#accordion">
+                      <div class="card-body">
+                        If you click on one of the marker the corresponding tweet is highlighted in the tweet section on
+                        the left half of the website (<a href="#...">this works the other way around</a>).
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Fourteen" data-toggle="collapse" data-target="#collapseFourteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Can I change the layer of the map?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseFourteen" class="collapse" aria-labelledby="Fourteen" data-parent="#accordion">
+                      <div class="card-body">
+                        Yes you can do it by the button in the upper right corner of the map. There you can select which
+                        layers are shown (e.g. you can use the "Esri World Imagery"-layer, instead of the
+                        "OpenStreetMap"-layer.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Sixteen" data-toggle="collapse" data-target="#collapseSixteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          Who provides the data for the basic map?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseSixteen" class="collapse" aria-labelledby="Sixteen" data-parent="#accordion">
+                      <div class="card-body">
+                        Information concerning the provider of the basic map and some further information in this context
+                        you can find in the lower right corner of the map.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="list-item-4">
+                  <p style="font-weight: bold; font-size: 20px;">Twitter</p>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Ten" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseSix">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          What is the default map extent?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
+                      <div class="card-body">
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card" style="margin-top: 5px;">
+                    <div class="card-header" id="Five" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFour" id="Four">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                          How can I change the map extent?
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="collapseFive" class="collapse" aria-labelledby="Five" data-parent="#accordion">
+                      <div class="card-body">
+                        You can change the map extent by the "map extent" dropdown:
                         <ul>
-                          <li>by "set default weather events" you set your selection as the new default weather events</li>
-                          <li>by "get default weather events" you set the default weather events as the actual in the map displayed weather events</li>
-                          <li>by "delete default weather events" you delete your default weather events (and the corresponding cookie - the initial default weather events are now the new default weather events)</li>
+                          <li>by "set current" you set the actual map extent as default map extent</li>
+                          <li>by "get default map extent" the default map extent is set as the actual map extent</li>
+                          <li>by "delete default map extent" you delete your seleted default map extent (and the corresponding cookie - the initial default map extent is now the new default map extent)</li>
                         </ul>
                       </div>
                     </div>
                   </div>
 
                   <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseFour" id="Four">
                       <h5 class="mb-0">
                         <button class="btn btn-link faq-link" style="padding-left: 0px;">
                           <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Collapsible Group Item #6
+                          How can I move the map?
                         </button>
                       </h5>
                     </div>
-                    <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
+                    <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
                       <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                        You can move the map by scrolling and zooming with your mouse if possible. An other possibility
+                        is to use the zoom in the upper left corner of the map and the pan in the lower right corner, which
+                        you both can control by clicking.
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div id="list-item-3">
-                  <p style="font-weight: bold; font-size: 20px;">Cookies</p>
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven" id="Seven">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Collapsible Group Item #7
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseSeven" class="collapse" aria-labelledby="Seven" data-parent="#accordion">
-                      <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Eight" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Collapsible Group Item #8
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseEight" class="collapse" aria-labelledby="Eight" data-parent="#accordion">
-                      <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                      </div>
-                    </div>
-                  </div>
 
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Nine" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Collapsible Group Item #9
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseNine" class="collapse" aria-labelledby="Nine" data-parent="#accordion">
-                      <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
               </div>
 

@@ -275,16 +275,31 @@ function setDefaultSearchWord() {
     // $('#textFilter').attr("placeholder", "default search word: " + searchWord);
     var cookieValue = JSON.stringify(searchWord);
     setCookie("defaultSearchWord", cookieValue, 1000000);
+    snackbarWithText('Successfully set new tweet filter.');
+}
+
+
+/**
+ * @desc function which sets the search word back to the defaultSearchWord.
+ */
+function getDefaultSearchWord() {
+    var filter = getInitialFilter();
+    if(filter){
+      eventsOrFilterChanged();
+      snackbarWithText('Successfully get default tweet filter.');
+    }
+    else {
+      snackbarWithText('No default tweet filter found.');
+    }
 }
 
 /**
- * @desc function which deletes the defaultSearchWord cookie if the deleteDefaultSearchWord button is pushed.
+ * @desc function which deletes the defaultSearchWord cookie
  */
 function deleteDefaultSearchWord() {
-    $('#textFilter').attr("placeholder", "search in tweets ...");
-    $('#textFilter').val("");
     var name = "defaultSearchWord";
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    snackbarWithText('Successfully delete default tweet filter.');
 }
 
 /**

@@ -80,7 +80,7 @@ function getInitialEvents(events) {
     if (newDefaultEvents!="") {
         return JSON.parse(newDefaultEvents);
     }
-    else  {
+    else  {       // TODO: Test??? etc
         events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
         return events;
         }

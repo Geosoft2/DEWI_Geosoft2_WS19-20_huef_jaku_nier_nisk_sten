@@ -57,13 +57,13 @@
                   <div class="dropdown-menu">
                     <button class="dropdown-item" type="button" title="the current shown map extent will be set as new default map extent" onclick="changeDefaultMapExtent()">set current map extent</button>
                     <button class="dropdown-item" type="button" title="the map extent will be changed to the default map extent" onclick="backToDefaultMapExtent()">get default map extent</button>
-                    <button class="dropdown-item" type="button" title="the default map extent will be deleted">delete default map extent</button>
+                    <button class="dropdown-item" type="button" title="the default map extent will be deleted" onclick="deleteDefaultBbox()">delete default map extent</button>
                   </div>
                 </div>
               </div>
 
               <div class="col-md-3 ml-auto" style="margin-top: 10px; margin-bottom: 10px;">
-                <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="here you can select which events (if they currently exist) are shown on the map">
+                <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="select which weather events should be requested">
                   <option value="THUNDERSTORM">thunderstorm</option>
                   <option value="WIND">wind</option>
                   <option value="TORNADO">tornado</option>
@@ -77,8 +77,8 @@
                   <option value="THAW">thaw</option>
                   <option value="POWERLINEVIBRATION">powerlinevibration</option>
                   <option value="UV">uv</option>
-                  <option value="HEAT">heat</option>
-                  <option value="TEST">test</option>
+                  <option value="HEAT">heat</option> <!-- TODO:  -->
+                  <option value="TEST">test</option> <!-- TODO:  -->
                 </select>
               </div>
               <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
@@ -87,9 +87,9 @@
                     weather event
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <button class="dropdown-item" type="button" title="the current selected events will be set as default weather events" onclick="setDefaultEvents()">set default weather events</button>
-                    <button class="dropdown-item" type="button">get default weather events</button>
-                    <button class="dropdown-item" type="button">delete default weather events</button>
+                    <button class="dropdown-item" type="button" title="the current selected weather events will be set as default weather events" onclick="setDefaultEvents()">set default weather events</button>
+                    <button class="dropdown-item" type="button" title="the weather events will be changed to the default weather events" onclick="getDefaultEvents()">get default weather events</button>
+                    <button class="dropdown-item" type="button" title="the default weather events will be deleted" onclick="deleteDefaultEvents()">delete default weather events</button>
                   </div>
                 </div>
               </div>
@@ -115,18 +115,14 @@
                 </div>
               </div>
 
-              <!-- <div class="col-md-4" style="margin-top: 10px; margin-bottom: 10px;">
-                <textarea rows="1" style="max-width: 100%;" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)' id="textFilter" onchange="eventsOrFilterChanged()"></textarea>
-              </div> -->
               <div class="col-md-6" style="margin-top: 10px; margin-bottom: 10px;">
-                <!-- <button title="by pushing the button, the actual search word is used as default search word" type="button" id="setDefaultSearchWord"  style="">set default search word</button> -->
                 <div class="btn-group" style="width: 100%;">
                   <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     tweet filter
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">
                     <button class="dropdown-item" type="button" title="the current used search words will be used as default search word" onclick="setDefaultSearchWord()">set current search filter</button>
-                    <button class="dropdown-item" type="button">get default search filter</button>
+                    <button class="dropdown-item" type="button" title="the search words will be changed to the default search words" onclick="getDefaultSearchWord()">get default search filter</button>
                     <button class="dropdown-item" type="button" title="the default search words will be deleted" onclick="deleteDefaultSearchWord()">delete default search filter</button>
                   </div>
                 </div>
@@ -153,7 +149,7 @@
                 <p>Drag</p>
               </div>
             </div>
-  
+
 
       </div>
 
