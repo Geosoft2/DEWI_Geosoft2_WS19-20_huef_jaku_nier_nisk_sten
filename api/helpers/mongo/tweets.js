@@ -215,7 +215,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
             var match = [];
             match.push({
                 $match: {
-                    _id: new mongoose.Types.ObjectId(tweetId)
+                    tweetId: parseInt(tweetId)
                 }
             });
             if (filter) {
@@ -290,7 +290,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                     // Aggregation without extremeWeatherEvents-filter
                     result = await Tweet.aggregate(match);
                 } else {
-                    result = await Tweet.find({_id: id});
+                    result = await Tweet.find({tweetId: tweetId});
                 }
             }
         }

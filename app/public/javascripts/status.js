@@ -50,22 +50,17 @@ $( function() {
             requests.pop();
         }
         requests.unshift(request);
-        console.log(requests)
         this.setState({lastRequests : requests})
-    }
+    };
 
         render()
         {
             const  self =this;
             const {
                 Card,
-                ButtonBase,
-                Paper,
                 CardContent,
                 CardHeader,
-                Avatar,
                 IconButton,
-                Icon,
             } = window['MaterialUI'];
 
 
@@ -74,12 +69,12 @@ $( function() {
 
             const tableRows = [];
             const headerRow = e("thead", null, e("tr", null, e("th",null , "Request Id"), e("th",null , "Send"), e("th",null , "Status")))
-            tableRows.push(headerRow)
+            tableRows.push(headerRow);
 
             self.state.lastRequests.map(function(item, i){
                 const row= e("tbody", null ,e("tr", null, e("td",null , item.id), e("td",null , item.send), e("td",null , item.status)))
                 tableRows.push(row)
-            })
+            });
 
             const updates = [];
 

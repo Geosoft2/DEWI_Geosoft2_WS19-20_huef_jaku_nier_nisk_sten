@@ -304,7 +304,8 @@ function getCookie(cname) {
         bounds = boundingbox(bounds);
         console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet.tweetId);
+        console.log(twitterResponse);
         if(!jQuery.isEmptyObject(twitterResponse)){
           addTweets([twitterResponse]);
             var audio = new Audio('/media/audio/twitter-notification-sound.mp3');
@@ -315,7 +316,7 @@ function getCookie(cname) {
     socket.on('status', (text) =>{
       setStatus("lastUpdates", text);
       console.log(text);
-    })
+    });
     socket.on('weatherchanges', async function (data) {
       const date= new Date(Date.now());
         setStatus("lastWeather", date.toUTCString());
@@ -327,13 +328,9 @@ function getCookie(cname) {
         var events = $('#selectEvent').val();
         var filter = getTweetFilters();
         removeAllTweets();
-        // removeTweets(wfsLayer, bounds);
         let twitterResponse;
-        // await Promise.all([
-            /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-            /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
-        // ]);
-        // removeTweets(wfsLayer, bounds);
+        wfsLayer = await requestExtremeWeather(bounds, events);
+           twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
         addTweets(twitterResponse);
     });
 }
