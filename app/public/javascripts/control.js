@@ -395,7 +395,7 @@ function updateURL(bbox, events, filter) {
  * @param {String} text to show in the snackbar
  */
 function snackbarWithText(text) {
-    const date = Date.now()
+    const date = Date.now();
     $('.snackbar').prepend(
         '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(30,93,136);" ' +
         'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
@@ -412,9 +412,9 @@ function snackbarWithText(text) {
     $('.toast.'+date).toast('show');
 }
 function idGenerator(){
-    let id=""
+    let id="";
     for( var i = 0; i < 5; ++i ) {
-        var number = Math.floor(Math.random() * 10); ;
+        var number = Math.floor(Math.random() * 10);
         id += number;
     }
     return id;

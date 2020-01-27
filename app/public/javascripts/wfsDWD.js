@@ -218,7 +218,7 @@ function addTweets(tweets) {
         //marker.setIcon()
     }
     //highlites tweets if they should be highlited
-    setMarkerColor(getState("highlighted"))
+    setMarkerColor(getState("highlighted"));
     //advance the progress bar
     if (loading) {
         document.getElementById("progressbar").value += 25;
@@ -354,7 +354,7 @@ function requestExtremeWeather(bbox, events) {
     return new Promise(function (resolve, restrict) {
         const WID = "W" +idGenerator();
         const date = new Date(Date.now());
-        addRequest({id: WID, send: date.toUTCString(), status: "Pending"})
+        addRequest({id: WID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             type: "post",
             url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
@@ -368,7 +368,7 @@ function requestExtremeWeather(bbox, events) {
             })
         })
             .done(function (response) {
-                addRequest({id: WID, send: date.toUTCString(), status: "Success"})
+                addRequest({id: WID, send: date.toUTCString(), status: "Success"});
                 // remove existing layer
                 removeExistingLayer(warnlayer);
                 // create new layer
@@ -389,7 +389,7 @@ function requestExtremeWeather(bbox, events) {
                 }
             })
             .fail(function (err) {
-                addRequest({id: WID, send: date.toUTCString(), status: "Failed"})
+                addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
                 console.log(err.message);
             });

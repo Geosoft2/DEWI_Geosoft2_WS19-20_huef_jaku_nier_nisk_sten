@@ -45,7 +45,7 @@ const getToken= function(){
  * @returns {Promise<*>}
  */
 const getAllRules = async function() {
-    console.log("Hello")
+    console.log("Hello");
     const requestConfig = {
         url: rulesURL,
         auth: {
@@ -149,7 +149,7 @@ const streamConnect = function() {
             console.log(data);
             const tweetJSON = JSON.parse(data);
             if (tweetJSON.connection_issue){
-                stream.emit("timeout")
+                stream.emit("timeout");
                 io.emit('timeout', true);
 
             }

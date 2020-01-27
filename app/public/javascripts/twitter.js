@@ -12,9 +12,9 @@ let setHighlighted=  () => {};
 function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
     return new Promise(function (resolve, restrict) {
-        const TID = "T" +idGenerator()
+        const TID = "T" +idGenerator();
         const date = new Date(Date.now());
-        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts', // URL der Abfrage,
             headers: {
@@ -29,11 +29,11 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
             type: "post"
         })
             .done(function (response) {
-                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"});
                 resolve(response.tweets);
             })
             .fail(function (err) {
-                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });
     });
@@ -48,9 +48,9 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
 function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
 
     return new Promise(function (resolve, restrict) {
-        const TID = "T" +idGenerator()
+        const TID = "T" +idGenerator();
         const date = new Date(Date.now());
-        addRequest({id: TID, send: date.toUTCString(), status: "Pending"})
+        addRequest({id: TID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             url: "http://" +location.hostname +':3001/api/v1/social/twitter/posts/'+id, // URL der Abfrage,
             headers: {
@@ -65,11 +65,11 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
             type: "post"
         })
             .done(function (response) {
-                addRequest({id: TID, send: date.toUTCString(), status: "Success"})
+                addRequest({id: TID, send: date.toUTCString(), status: "Success"});
                 resolve(response.tweet);
             })
             .fail(function (err) {
-                addRequest({id: TID, send: date.toUTCString(), status: "Failed"})
+                addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });
     });
@@ -155,7 +155,7 @@ class TwitterList extends React.Component {
         this.setState({highlighted: coordinates}, () =>{
             if(scroll){
                 var element = document.getElementsByClassName("highlighted");
-                if(element[0]) {element[0].scrollIntoView()};
+                if(element[0]) {element[0].scrollIntoView()}
             }
         })
     };
@@ -312,7 +312,7 @@ $(textFilter).keypress(function(event) {
         console.log("keyevent");
         searchTweets();
     }
-})
+});
 
 const domContainer = document.querySelector('#tweets');
 ReactDOM.render(e(TwitterList), domContainer);

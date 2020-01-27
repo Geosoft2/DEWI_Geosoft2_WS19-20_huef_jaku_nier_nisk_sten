@@ -13,7 +13,7 @@ const {
     getRadii,
 } = require('../../../../../../helpers/twitter/calculations');
 
-const {getTweetFromMongo} = require('../../../../../../helpers/mongo/tweets')
+const {getTweetFromMongo} = require('../../../../../../helpers/mongo/tweets');
 
 
 const postSandboxSearch = async function (req, res) {

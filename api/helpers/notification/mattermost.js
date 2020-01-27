@@ -38,7 +38,7 @@ const mattermostNotification = function (weatherChanges) {
     // parameter of the payload (defines the notification)
     var channel = "dewi_service"; // channel in the DEWI-Team: "dewi_service"
     var username  = "DEWI_service";
-    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg"
+    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg";
     var text    = 'Dear user, \n' +
         'the weather situation has changed. Here is a small summary concerning the changes: \n' +
         'There' + past + weatherChanges.deleted + ' extreme weather events deleted, ' +

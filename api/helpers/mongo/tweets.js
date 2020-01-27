@@ -242,7 +242,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                 }
             }
             if (bbox) {
-                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas")
+                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas");
                 const valid = bboxValid(bbox);
                 if (valid.error) {
                     return {

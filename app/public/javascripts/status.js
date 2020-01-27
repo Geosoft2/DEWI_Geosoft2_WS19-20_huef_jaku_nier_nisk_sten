@@ -4,15 +4,15 @@ let addRequest= () =>{};
 
 showStatus= () => {
        $('#status')[0].style.visibility = 'visible'
-}
+};
 
 hideStatus= () =>  {
     $('#status')[0].style.visibility = 'hidden'
-}
+};
 
 $( function() {
     $( "#status" ).draggable(  {containment: "document"});
-  } )
+  } );
 
   class Status extends React.Component {
     constructor(props) {
@@ -29,17 +29,17 @@ $( function() {
             if(updates.length == 10){
                 updates.pop()
             }
-            updates.unshift(value)
+            updates.unshift(value);
             this.setState({lastUpdates: updates})
         }
         else{
         this.setState({[state] : value})
         }
-    }
+    };
 
 
     addRequest= (request) =>{
-        console.log(request)
+        console.log(request);
         const requests = this.state.lastRequests;
         for(var i in requests){
             if (requests[i].id === request.id){
@@ -65,26 +65,26 @@ $( function() {
 
 
             const header= e(CardHeader, {title: "Status Informations",
-                                        action: e(IconButton, {onClick: ()=> hideStatus(), style: {color: "red"}}, e("i", {className: "fas fa-times", color: "red", style: {"font-size": "1.8em"}}))})
+                                        action: e(IconButton, {onClick: ()=> hideStatus(), style: {color: "red"}}, e("i", {className: "fas fa-times", color: "red", style: {"font-size": "1.8em"}}))});
 
             const tableRows = [];
-            const headerRow = e("thead", null, e("tr", null, e("th",null , "Request Id"), e("th",null , "Send"), e("th",null , "Status")))
+            const headerRow = e("thead", null, e("tr", null, e("th",null , "Request Id"), e("th",null , "Send"), e("th",null , "Status")));
             tableRows.push(headerRow);
 
             self.state.lastRequests.map(function(item, i){
-                const row= e("tbody", null ,e("tr", null, e("td",null , item.id), e("td",null , item.send), e("td",null , item.status)))
+                const row= e("tbody", null ,e("tr", null, e("td",null , item.id), e("td",null , item.send), e("td",null , item.status)));
                 tableRows.push(row)
             });
 
             const updates = [];
 
             self.state.lastUpdates.map((item, i) =>{
-                 updates.push(item)
+                 updates.push(item);
                 updates.push(e("br"))
-            })
+            });
 
-            const table = e("table", {className : "striped bordered hover"}, tableRows)
-            const content = e(CardContent,null ,  e("p", null, "Last Tweet Recived: " +self.state.lastTweet), e("p", null, "Last Weather Update: " +self.state.lastWeather), table, e("br"), e("h4", null, "Last Status recived from API"), updates)
+            const table = e("table", {className : "striped bordered hover"}, tableRows);
+            const content = e(CardContent,null ,  e("p", null, "Last Tweet Recived: " +self.state.lastTweet), e("p", null, "Last Weather Update: " +self.state.lastWeather), table, e("br"), e("h4", null, "Last Status recived from API"), updates);
 
             return e(Card, null, header, content)
         }
