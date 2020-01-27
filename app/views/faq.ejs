@@ -1,450 +1,628 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
 
     <meta name="author" content="Jan, Luc, Nick, Phil, Tom"/>
     <meta charset="UTF-8">
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="/fontAwesome/css/all.css"/>
 
-  </head>
+</head>
 
-  <body onload="changeIconCollapse(), isHashInUrl()" onhashchange="collapseHash()" data-spy="scroll" data-target="#list-nav" data-offset="150">
+<body onload="changeIconCollapse(), isHashInUrl()" onhashchange="collapseHash()" data-spy="scroll"
+      data-target="#list-nav" data-offset="150">
 
-    <div class="wrapper">
+<div class="wrapper">
 
-      <% include partials/header.ejs %>
+    <% include partials/header.ejs %>
 
-      <main role="main" class="container-fluid" id="main">
+    <main role="main" class="container-fluid" id="main">
 
         <div class="row" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px">
 
-          <div class="col-sm-3">
-            <div id="list-nav" class="list-group sticky-top" style="margin-bottom: 30px;">
-              <a class="list-group-item list-group-item-action" href="#list-item-1">General</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-2">Weather</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-3">Map</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-4">Twitter</a>
-              <a class="list-group-item list-group-item-action" href="#list-item-5">Twitter</a>
-            </div>
-          </div>
-
-          <div class="col-sm-9">
-
-              <div id="accordion">
-
-                <div id="list-item-1" style="margin-bottom: 30px;">
-                  <p style="font-weight: bold; font-size: 20px;">General</p>
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="One">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What can I do with the application in general?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseOne" class="collapse" aria-labelledby="One" data-parent="#accordion">
-                      <div class="card-body">
-                        The DEWI - Direct Extreme Weather Information application is a Web Platform for the representation of social media data in dependency to actual extreme weather events.
-                        The main part of the platform is a map on which the user can choose an area of interest.
-                        In this area the current extreme weather events and the most recent geotagged twitter posts are shown.
-                        The user can click on one of the twitter posts, which are shown as markers in the map and
-                        the twitter post fitting to the chosen marker will be highlighted in an overview. This works the other way around.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Two" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What is the scope of the application?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="Two" data-parent="#accordion">
-                      <div class="card-body">
-                        The platform can be used especially by civil protection experts to deliver them additional information in extreme weather situations.
-                        The information will support them to manage a possible disaster situation faster and more efficient
-                        because they can recognize the strength of the weather event and send corresponding to their recognitions the best help to this location.
-                        Therefore, timestamps are provided to all information to get a better overview of the most recent data.
-                        Furthermore,the source of data is available, so that the experts can proof if its reliable.
-                        This way information concerning the weather event are much earlier available than if journalists
-                        and emergency crews first must reach the event, what is the main advantage of the platform
-                        compared to the usual procedure.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Three" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Who are the developers of the application?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseThree" class="collapse" aria-labelledby="Three" data-parent="#accordion">
-                      <div class="card-body">
-                        The application was developed by students during the <a href="https://studium.uni-muenster.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=303090&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung" target="_blank">Geosoftware II</a>
-                        course in the bachelor program Geoinformatics in the winter term 2019/ 2020 at the Institute for Geoinformatics (<a href="https://www.uni-muenster.de/Geoinformatics/en/" target="_blank">ifgi</a>) of the University of Münster (<a href="https://www.uni-muenster.de/en/" target="_blank">WWU</a>).
-                        The source code an further information are available on <a href="https://github.com/tnier01/DEWI_Geosoft2_WS19-20_huef_jaku_nier_nisk_sten/" target="_blank">github</a>.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Three" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Why does the application use cookies?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseFour" class="collapse" aria-labelledby="Four" data-parent="#accordion">
-                      <div class="card-body">
-                        The application requires cookies to keep the data up-to-date in real time without requiring user interaction.
-                        Furthermore cookies are used to save user specific default values or rather basic settings.
-                        Cookies are not passed on to third parties and are not used for other purposes.
-                        The user agrees with this circumstances by starting to use the application.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Seventeen" data-toggle="collapse" data-target="#collapseSeventeen" aria-expanded="false" aria-controls="collapseThree">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Where can I find information about the authors?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseSeventeen" class="collapse" aria-labelledby="Seventeen" data-parent="#accordion">
-                      <div class="card-body">
-                        There are some information about the authors in the Imprint which you find at the footer.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Eigthteen" data-toggle="collapse" data-target="#collapseEigthteen" aria-expanded="false" aria-controls="collapseThree">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Where can I find information concerning the loading status of the application?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseEigthteen" class="collapse" aria-labelledby="Eigthteen" data-parent="#accordion">
-                      <div class="card-body">
-                        On the hand hand there is a loading bar quite above the dropdown menus. Besides there are
-                        some snackbars exactly at the moment something new is loaded. In the snackbar you can open
-                        a popup for further status information. Besides you can reach this status information by the
-                        footer on the "Home"-page.
-                      </div>
-                    </div>
-                  </div>
+            <div class="col-sm-3">
+                <div id="list-nav" class="list-group sticky-top" style="margin-bottom: 30px;">
+                    <a class="list-group-item list-group-item-action" href="#list-item-1">General</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-2">Weather</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-3">Map</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-4">Twitter</a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-5">URL</a>
                 </div>
-
-                <div id="list-item-2" style="margin-bottom: 30px;">
-                  <p style="font-weight: bold; font-size: 20px;">Weather</p>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseFive">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I change the weather events displayed?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
-                      <div class="card-body">
-                        You can change the displayed weather events by the "thunderstorm, wind, ..." dropdown. In dependency
-                        if the different weather events are checked, the concerning weather event is displayed in map or not.
-                        You can select them individually, delete individually, select all or delete all.</br>
-                        Furthermore you can change the default displayed weather events. After selection like described just
-                        before you can use the "weather events" dropdown to control the default settings:
-                        <ul>
-                          <li>by "set default weather events" you set your actual selection of default weather events as the new default weather events</li>
-                          <li>by "get default weather events" you set the default weather events as the actual in the map displayed weather events</li>
-                          <li>by "delete default weather events" you delete your default weather events (and the corresponding cookie - the initial default weather events are now the new default weather events)</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Seven" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSix">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I get more information about weather warnings?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseSeven" class="collapse" aria-labelledby="Seven" data-parent="#accordion">
-                      <div class="card-body">
-                        By clicking on the area of the warning, a popup opens in which further information like type of warning,
-                        description, severity, duration and time are available.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Eight" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseSix">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Where does the data for the warnings come from and when were they last updated?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseEight" class="collapse" aria-labelledby="Eight" data-parent="#accordion">
-                      <div class="card-body">
-                        We receive the data from <a href="https://www.dwd.de/DE/wetter/warnungen/warnWetter_node.html" target="_blank">DWD</a>
-                        and display them on the map. In the right lower corner you can see
-                        the time when we last received data by the DWD. And in the <a href="#Seven">popup</a>
-                        you can see the time the DWD last updated the warning.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Nine" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseSix">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What is the accuracy of the data?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseNine" class="collapse" aria-labelledby="Nine" data-parent="#accordion">
-                      <div class="card-body">
-                        Accuracy is at community (german: Gemeinde) level, i.e. the warning is issued in the context of the entire community.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div id="list-item-3">
-                  <p style="font-weight: bold; font-size: 20px;">Map</p>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Ten" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseSix">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What is the default map extent?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
-                      <div class="card-body">
-                        If there is a bounding box inside the URL, it is used as the default map extent. Is there no bounding box
-                        in the URL the bounding box selected by the user is used as the default bounding box. If the user has not
-                        selected a bounding box, the bounding box of germany is used as default bounding box.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Five" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I change the map extent?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseFive" class="collapse" aria-labelledby="Five" data-parent="#accordion">
-                      <div class="card-body">
-                        You can change the map extent by the "map extent" dropdown:
-                        <ul>
-                          <li>by "set current" you set the actual map extent as default map extent</li>
-                          <li>by "get default map extent" the default map extent is set as the actual map extent</li>
-                          <li>by "delete default map extent" you delete your seleted default map extent (and the corresponding cookie - the initial default map extent is now the new default map extent)</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I move the map?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
-                      <div class="card-body">
-                        You can move the map by scrolling and zooming with your mouse if possible. An other possibility
-                        is to use the zoom in the upper left corner of the map and the pan in the lower right corner, which
-                        you both can control by clicking.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Twelve" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Influences the map extent the received and displayed data?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseTwelve" class="collapse" aria-labelledby="Twelve" data-parent="#accordion">
-                      <div class="card-body">
-                        Yes it does. Only tweets that are located in the area of one of the warning areas shown in the
-                        current map extent are displayed. Besides there is a specification possible concerning the words
-                        which shall be stated in the tweet (<a href="#...">further information here</a>).
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Thirteen" data-toggle="collapse" data-target="#collapseThirteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What happens if I click on a marker?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseThirteen" class="collapse" aria-labelledby="Thirteen" data-parent="#accordion">
-                      <div class="card-body">
-                        If you click on one of the marker the corresponding tweet is highlighted in the tweet section on
-                        the left half of the website (<a href="#...">this works the other way around</a>).
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Fourteen" data-toggle="collapse" data-target="#collapseFourteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Can I change the layer of the map?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseFourteen" class="collapse" aria-labelledby="Fourteen" data-parent="#accordion">
-                      <div class="card-body">
-                        Yes you can do it by the button in the upper right corner of the map. There you can select which
-                        layers are shown (e.g. you can use the "Esri World Imagery"-layer, instead of the
-                        "OpenStreetMap"-layer.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Sixteen" data-toggle="collapse" data-target="#collapseSixteen" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          Who provides the data for the basic map?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseSixteen" class="collapse" aria-labelledby="Sixteen" data-parent="#accordion">
-                      <div class="card-body">
-                        Information concerning the provider of the basic map and some further information in this context
-                        you can find in the lower right corner of the map.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div id="list-item-4">
-                  <p style="font-weight: bold; font-size: 20px;">Twitter</p>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Ten" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseSix">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          What is the default map extent?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
-                      <div class="card-body">
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Five" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I change the map extent?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseFive" class="collapse" aria-labelledby="Five" data-parent="#accordion">
-                      <div class="card-body">
-                        You can change the map extent by the "map extent" dropdown:
-                        <ul>
-                          <li>by "set current" you set the actual map extent as default map extent</li>
-                          <li>by "get default map extent" the default map extent is set as the actual map extent</li>
-                          <li>by "delete default map extent" you delete your seleted default map extent (and the corresponding cookie - the initial default map extent is now the new default map extent)</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card" style="margin-top: 5px;">
-                    <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseFour" id="Four">
-                      <h5 class="mb-0">
-                        <button class="btn btn-link faq-link" style="padding-left: 0px;">
-                          <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                          How can I move the map?
-                        </button>
-                      </h5>
-                    </div>
-                    <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
-                      <div class="card-body">
-                        You can move the map by scrolling and zooming with your mouse if possible. An other possibility
-                        is to use the zoom in the upper left corner of the map and the pan in the lower right corner, which
-                        you both can control by clicking.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-
-
-              </div>
-
             </div>
 
+            <div class="col-sm-9">
+
+                <div id="accordion">
+
+                    <div id="list-item-1" style="margin-bottom: 30px;">
+                        <p style="font-weight: bold; font-size: 20px;">General</p>
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" data-toggle="collapse" data-target="#collapseOne"
+                                 aria-expanded="true" aria-controls="collapseOne" id="One">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What can I do with the application in general?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseOne" class="collapse" aria-labelledby="One" data-parent="#accordion">
+                                <div class="card-body">
+                                    The DEWI - Direct Extreme Weather Information application is a Web Platform for the
+                                    representation of social media data in dependency to actual extreme weather events.
+                                    The main part of the platform is a map on which the user can choose an area of
+                                    interest.
+                                    In this area the current extreme weather events and the most recent geotagged
+                                    twitter posts are shown.
+                                    The user can click on one of the twitter posts, which are shown as markers in the
+                                    map and
+                                    the twitter post fitting to the chosen marker will be highlighted in an overview.
+                                    This works the other way around.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Two" data-toggle="collapse" data-target="#collapseTwo"
+                                 aria-expanded="false" aria-controls="collapseTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the scope of the application?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="Two" data-parent="#accordion">
+                                <div class="card-body">
+                                    The platform can be used especially by civil protection experts to deliver them
+                                    additional information in extreme weather situations.
+                                    The information will support them to manage a possible disaster situation faster and
+                                    more efficient
+                                    because they can recognize the strength of the weather event and send corresponding
+                                    to their recognitions the best help to this location.
+                                    Therefore, timestamps are provided to all information to get a better overview of
+                                    the most recent data.
+                                    Furthermore,the source of data is available, so that the experts can proof if its
+                                    reliable.
+                                    This way information concerning the weather event are much earlier available than if
+                                    journalists
+                                    and emergency crews first must reach the event, what is the main advantage of the
+                                    platform
+                                    compared to the usual procedure.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Three" data-toggle="collapse" data-target="#collapseThree"
+                                 aria-expanded="false" aria-controls="collapseThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Who are the developers of the application?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="Three" data-parent="#accordion">
+                                <div class="card-body">
+                                    The application was developed by students during the <a
+                                            href="https://studium.uni-muenster.de/qisserver/rds?state=verpublish&status=init&vmfile=no&publishid=303090&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung"
+                                            target="_blank">Geosoftware II</a>
+                                    course in the bachelor program Geoinformatics in the winter term 2019/ 2020 at the
+                                    Institute for Geoinformatics (<a
+                                            href="https://www.uni-muenster.de/Geoinformatics/en/"
+                                            target="_blank">ifgi</a>) of the University of Münster (<a
+                                            href="https://www.uni-muenster.de/en/" target="_blank">WWU</a>).
+                                    The source code an further information are available on <a
+                                            href="https://github.com/tnier01/DEWI_Geosoft2_WS19-20_huef_jaku_nier_nisk_sten/"
+                                            target="_blank">github</a>.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Four" data-toggle="collapse" data-target="#collapseFour"
+                                 aria-expanded="false" aria-controls="collapseFour">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Why does the application use cookies?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseFour" class="collapse" aria-labelledby="Four" data-parent="#accordion">
+                                <div class="card-body">
+                                    The application requires cookies to keep the data up-to-date in real time without
+                                    requiring user interaction.
+                                    Furthermore cookies are used to save user specific default values or rather basic
+                                    settings.
+                                    Cookies are not passed on to third parties and are not used for other purposes.
+                                    The user agrees with this circumstances by starting to use the application.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Seventeen" data-toggle="collapse"
+                                 data-target="#collapseSeventeen" aria-expanded="false" aria-controls="collapseThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Where can I find information about the authors?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSeventeen" class="collapse" aria-labelledby="Seventeen"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    There are some information about the authors in the <a href="/imprint">Imprint</a> which you find at the
+                                    footer.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Eigthteen" data-toggle="collapse"
+                                 data-target="#collapseEigthteen" aria-expanded="false" aria-controls="collapseThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Where can I find information concerning the loading status of the application?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseEigthteen" class="collapse" aria-labelledby="Eigthteen"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    On the hand hand there is a loading bar quite above the dropdown menus. Besides
+                                    there are
+                                    some snackbars exactly at the moment something new is loaded. In the snackbar you
+                                    can open
+                                    a popup for further status information. Besides you can reach this status
+                                    information by the
+                                    footer on the "Home"-page.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="list-item-2" style="margin-bottom: 30px;">
+                        <p style="font-weight: bold; font-size: 20px;">Weather</p>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix"
+                                 aria-expanded="false" aria-controls="collapseFive">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I change the weather events displayed?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
+                                <div class="card-body">
+                                    You can change the displayed weather events by the "thunderstorm, wind, ..."
+                                    dropdown. In dependency
+                                    if the different weather events are checked, the concerning weather event is
+                                    displayed in map or not.
+                                    You can select them individually, delete individually, select all or delete
+                                    all.</br>
+                                    Furthermore you can change the default displayed weather events. After selection
+                                    like described just
+                                    before you can use the "weather events" dropdown to control the default settings:
+                                    <ul>
+                                        <li>by "set default weather events" you set your actual selection of default
+                                            weather events as the new default weather events
+                                        </li>
+                                        <li>by "get default weather events" you set the default weather events as the
+                                            actual in the map displayed weather events
+                                        </li>
+                                        <li>by "delete default weather events" you delete your default weather events
+                                            (and the corresponding cookie - the initial default weather events are now
+                                            the new default weather events)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Popup" data-toggle="collapse" data-target="#collapsePopup"
+                                 aria-expanded="false" aria-controls="collapsePopup">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I get more information about weather warnings?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapsePopup" class="collapse" aria-labelledby="Popup" data-parent="#accordion">
+                                <div class="card-body">
+                                    By clicking on the area of the warning, a popup opens in which further information
+                                    like type of warning,
+                                    description, severity, duration and time are available.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Eight" data-toggle="collapse" data-target="#collapseEight"
+                                 aria-expanded="false" aria-controls="collapseSix">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Where does the data for the warnings come from and when were they last updated?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseEight" class="collapse" aria-labelledby="Eight" data-parent="#accordion">
+                                <div class="card-body">
+                                    We receive the data from <a
+                                            href="https://www.dwd.de/DE/wetter/warnungen/warnWetter_node.html"
+                                            target="_blank">DWD</a>
+                                    and display them on the map. In the right lower corner you can see
+                                    the time when we last received data by the DWD. And in the <a
+                                            href="#Popup">popup</a>
+                                    you can see the time the DWD last updated the warning.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Nine" data-toggle="collapse" data-target="#collapseNine"
+                                 aria-expanded="false" aria-controls="collapseSix">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the accuracy of the data?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseNine" class="collapse" aria-labelledby="Nine" data-parent="#accordion">
+                                <div class="card-body">
+                                    Accuracy is at community (german: Gemeinde) level, i.e. the warning is issued in the
+                                    context of the entire community.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="list-item-3">
+                        <p style="font-weight: bold; font-size: 20px;">Map</p>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Ten" data-toggle="collapse" data-target="#collapseTen"
+                                 aria-expanded="false" aria-controls="collapseSix">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the default map extent?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
+                                <div class="card-body">
+                                    If there is a bounding box inside the URL, it is used as the default map extent. Is
+                                    there no bounding box
+                                    in the URL the bounding box selected by the user is used as the default bounding
+                                    box. If the user has not
+                                    selected a bounding box, the bounding box of germany is used as default bounding
+                                    box.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Five" data-toggle="collapse" data-target="#collapseFive"
+                                 aria-expanded="true" aria-controls="collapseFour" id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I change the map extent?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseFive" class="collapse" aria-labelledby="Five" data-parent="#accordion">
+                                <div class="card-body">
+                                    You can change the map extent by the "map extent" dropdown:
+                                    <ul>
+                                        <li>by "set current" you set the actual map extent as default map extent</li>
+                                        <li>by "get default map extent" the default map extent is set as the actual map
+                                            extent
+                                        </li>
+                                        <li>by "delete default map extent" you delete your seleted default map extent
+                                            (and the corresponding cookie - the initial default map extent is now the
+                                            new default map extent)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven"
+                                 aria-expanded="true" aria-controls="collapseFour" id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I move the map?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
+                                <div class="card-body">
+                                    You can move the map by scrolling and zooming with your mouse if possible. An other
+                                    possibility
+                                    is to use the zoom in the upper left corner of the map and the pan in the lower
+                                    right corner, which
+                                    you both can control by clicking.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twelve" data-toggle="collapse" data-target="#collapseTwelve"
+                                 aria-expanded="true" aria-controls="collapseFour" id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Influences the map extent the received and displayed data?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwelve" class="collapse" aria-labelledby="Twelve" data-parent="#accordion">
+                                <div class="card-body">
+                                    Yes it does. Only tweets that are located in the area of one of the warning areas
+                                    shown in the
+                                    current map extent are displayed. Besides there is a specification possible
+                                    concerning the words
+                                    which shall be stated in the tweet (<a href="#TwitterFilter">further information here</a>).
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="MarkerHighlighting" data-toggle="collapse"
+                                 data-target="#collapseMarkerHighlighting" aria-expanded="true" aria-controls="collapseMarkerHighlighting"
+                                 id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What happens if I click on a marker?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseMarkerHighlighting" class="collapse" aria-labelledby="MarkerHighlighting"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    If you click on one of the marker the marker and the corresponding tweet is highlighted in the
+                                    tweet section on
+                                    the left half of the website (<a href="#TwitterHighlighting">this works the other way around</a>).
+                                    By clicking again on the marker the highlighting is switched off.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Fourteen" data-toggle="collapse"
+                                 data-target="#collapseFourteen" aria-expanded="true" aria-controls="collapseFour"
+                                 id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Can I change the layer of the map?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseFourteen" class="collapse" aria-labelledby="Fourteen"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    Yes you can do it by the button in the upper right corner of the map. There you can
+                                    select which
+                                    layers are shown (e.g. you can use the "Esri World Imagery"-layer, instead of the
+                                    "OpenStreetMap"-layer.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Sixteen" data-toggle="collapse" data-target="#collapseSixteen"
+                                 aria-expanded="true" aria-controls="collapseFour" id="Four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Who provides the data for the basic map?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSixteen" class="collapse" aria-labelledby="Sixteen"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    Information concerning the provider of the basic map and some further information in
+                                    this context
+                                    you can find in the lower right corner of the map.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div id="list-item-4">
+                        <p style="font-weight: bold; font-size: 20px;">Twitter</p>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Eighteen" data-toggle="collapse"
+                                 data-target="#collapseEighteen"
+                                 aria-expanded="false" aria-controls="collapseEighteen">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the default search?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseEighteen" class="collapse" aria-labelledby="Eighteen"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    If there is a search term inside the URL, it is used as the default search filter.
+                                    Is there no search term in the URL the search filter selected by the user is used as the default search filter.
+                                    If the user has not selected a search filter, all tweets that are located in the
+                                    warning area are displayed.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="TwitterFilter" data-toggle="collapse" data-target="#collapseTwitterFilter"
+                                 aria-expanded="false" aria-controls="collapseTwitterFilter">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I change the displayed tweets?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwitterFilter" class="collapse" aria-labelledby="TwitterFilter"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    Words can be inserted into the word field.
+                                    The input is confirmed with the search symbol.
+                                    The corresponding word will now appear below the word field in a field in which all
+                                    current search terms are displayed. Only tweets containing the search term(s) will
+                                    be searched for.
+                                    Any number of search words can be added. They can be removed again with the "X"
+                                    symbol. <br>
+                                    The search is applied to tweets that have already been displayed
+                                    and tweets that will be displayed in the future. <br>
+                                    You can influence the default search filter by the "tweet filter" dropdown:
+                                    <ul>
+                                        <li>by "set current search filter" the current search entry can be set as the new default filter</li>
+                                        <li>by "get default search filter" the default search filter is used as the actual search filter</li>
+                                        <li>by "delete default search filter" the actual default search filter is deleted and the new default search filter is each tweet in the warning area</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="TweetInformation" data-toggle="collapse" data-target="#collapseTweetInformation"
+                                 aria-expanded="true" aria-controls="collapseTweetInformation" id="TweetInformation">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I see further information about the tweet?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTweetInformation" class="collapse" aria-labelledby="TweetInformation" data-parent="#accordion">
+                                <div class="card-body">
+                                    In the Tweet window you can see the individual tweets and also the name, the image,
+                                    the time of creation, the location, the accuracy of the location and the tweet itself.
+                                    If you click on the name of the account, you get redirected to the twitter account.
+                                    If you click on the tweet symbol, you get redirected to the concerning tweet.
+                                    <a href="#TwitterHighlighting">What happens if I click on the tweet at another place?</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="TwitterHighlighting" data-toggle="collapse" data-target="#collapseTwitterHighlighting"
+                                 aria-expanded="true" aria-controls="collapseTwenty-one" id="TwitterHighlighting">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How can I assign the Tweet to a marker in the map?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwitterHighlighting" class="collapse" aria-labelledby="TwitterHighlighting" data-parent="#accordion">
+                                <div class="card-body">
+                                    If you click on the tweet (<a href="#TweetInformation">apart from the account name and the tweet symbol</a>)
+                                    the tweet and the corresponding marker in the map is highlighted (<a href="#MarkerHighlighting">this works the other way around</a>).
+                                    By clicking again on the marker the highlighting is switched off.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twenty-two" data-toggle="collapse" data-target="#collapseTwenty-two"
+                                 aria-expanded="true" aria-controls="collapseTwenty-two" id="Twenty-two">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Why can I not see tweets?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwenty-two" class="collapse" aria-labelledby="Twenty-two" data-parent="#accordion">
+                                <div class="card-body">
+                                    If there is the notification "No tweets in extreme weather areas available!", there
+                                    either is no extreme weather event and therefore no tweets can be displayed or there
+                                    is no tweet in one of the existing extreme weather events.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twenty-three" data-toggle="collapse" data-target="#collapseTwenty-three"
+                                 aria-expanded="true" aria-controls="collapseTwenty-three" id="Twenty-three">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        How often the tweets are updated?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwenty-three" class="collapse" aria-labelledby="Twenty-three" data-parent="#accordion">
+                                <div class="card-body">
+                                    The tweets get loaded from twitter in real time.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="list-item-5">
+                        <p style="font-weight: bold; font-size: 20px;">URL</p>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twenty-four" data-toggle="collapse" data-target="#collapseTwenty-four"
+                                 aria-expanded="false" aria-controls="collapseTwenty-four">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        ...
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwenty-four" class="collapse" aria-labelledby="Twenty-four" data-parent="#accordion">
+                                <div class="card-body">
+                                    ...
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
 
 
-          </div>
+                </div>
 
-      </main>
+            </div>
 
-    </div>
 
-    </div>
+        </div>
 
-    <% include partials/footer.ejs %>
+    </main>
 
-    </body>
+</div>
+
+</div>
+
+<% include partials/footer.ejs %>
+
+</body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>
