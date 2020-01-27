@@ -17,16 +17,29 @@ const {stream} = require('../routes/api/v1/social/twitter/stream/twitterStream')
 const {getToken} = require('../helpers/twitter/stream');
 const {updateExtremeWeather} = require('../helpers/weather/dwdWFS');
 const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
+const {numberValid} = require('../helpers/validation/number');
 const {isDemo} = require('../demo/config');
 
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(config.api.port);
-api.set('port', port);
+try{
+  var port = normalizePort(config.api.port);
+  api.set('port', port);
+}
+catch(err){
+  console.log(chalk.red('API-Port-Configuration is not complete respectively incorrect.'));
+  process.exit(-1);
+}
 
 /**
- * First connect to MongoDB and then start API-server, then request extreme Weather and starts Stream from Twitter
+ * checks if paramter "storageDuration" is valid, else exit server-process
+ */
+numberValid(config.api.social.twitter.storageDuration, 'Twitter-Configuration is not complete respectively incorrect, especially the storage-duration.');
+
+
+/**
+ * Connect to MongoDB and then start API-server, then request extreme Weather and starts Stream from Twitter
  */
 connectMongoDB(async function () {
     /**
@@ -46,13 +59,13 @@ connectMongoDB(async function () {
      * Listen on provided port, on all network interfaces.
      */
     server.listen(port, () => {
-        console.log(chalk.green.inverse("API listening on port " + port + "!"));
         // requests the WFS service from the DWD at periodic intervals
         updateExtremeWeather();
         // starts Twitter-Stream
         //stream();
         // checks if Demo-Mode is active (and pushes some example data)
         isDemo();
+        console.log(chalk.green.inverse("API listening on port " + port + "!"));
     });
     io.attach(server);
     server.on('error', onError);

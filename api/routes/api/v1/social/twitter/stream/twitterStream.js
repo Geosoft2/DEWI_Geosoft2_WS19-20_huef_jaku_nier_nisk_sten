@@ -13,7 +13,7 @@ const {
 } = require('../../../../../../helpers/twitter/stream');
 
 const stream = async function (req, res) {
-    console.log(chalk.blue("Connecting to Twitter Stream"));
+
     let currentRules;
     const rules = [
         {value: "place_country:DE"},
@@ -28,7 +28,8 @@ const stream = async function (req, res) {
         // Add rules to the stream. Comment this line if you want to keep your existing rules.
         await setTwitterRules(rules);
     } catch (e) {
-        console.error(e);
+        console.log(chalk.red('Twitter-Configuration is not complete respectively incorrect. More info:'));
+        console.log(e);
         process.exit(-1);
     }
 
@@ -36,6 +37,7 @@ const stream = async function (req, res) {
     // This reconnection logic will attempt to reconnect when a disconnection is detected.
 
     let stream = streamConnect();
+    console.log(chalk.blue("Connecting to Twitter Stream"));
     stream.on('timeout', () => {
         console.log(chalk.blue('A connection error occurred. Reconnecting…'));
         loopStreamConnect();

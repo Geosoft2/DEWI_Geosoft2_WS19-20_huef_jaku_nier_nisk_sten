@@ -90,7 +90,7 @@ const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
     try {
         var query = {};
         // ensures that only current data is output
-        query.updatedAt = {$gt: moment().subtract(config.weather.dwd.wfs.refreshIntervall, 'seconds')};
+        query.updatedAt = {$gt: moment().subtract(config.api.weather.dwd.wfs.refreshIntervall, 'seconds')};
         // optional search-parameter bbox
         if (bbox) {
             const valid = bboxValid(bbox);

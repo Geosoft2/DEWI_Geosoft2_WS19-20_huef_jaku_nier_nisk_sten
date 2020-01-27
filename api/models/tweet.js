@@ -25,7 +25,7 @@ const TweetSchema = mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now(),
-        index: {expires: Number(config.social.twitter.storageDuration)}
+        index: {expires: Number(config.api.social.twitter.storageDuration)}
     },
     geometry: {
         type: {

@@ -4,7 +4,7 @@ const config = require('config-yml');
 const twitterToken = require('../../private/token').token.twitter_config;
 const {getTweetsFromMongo} = require('../mongo/tweets.js');
 
-var oauth2 = new OAuth2(config.social.twitter.token.consumerKey, config.social.twitter.token.consumerSecret, config.social.twitter.api.url.protocol+'://'+config.social.twitter.api.url.hostname, null, config.social.twitter.api.url.path, null);
+var oauth2 = new OAuth2(config.api.social.twitter.api.token.consumerKey, config.api.social.twitter.api.token.consumerSecret, config.api.social.twitter.api.url.protocol+'://'+config.api.social.twitter.api.url.hostname, null, config.api.social.twitter.api.url.path.token, null);
 
 var token;
 
