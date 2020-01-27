@@ -9,7 +9,7 @@
 
 api:
   # the port number to which the api attaches to
-  port: 3001
+  port: # 3001
 
   db:
     # database name to use
