@@ -161,16 +161,19 @@
   </div>
 
   <% include partials/footer.ejs %>
-  <div id="loader-wrapper" class="loader-wrapper" onclick='fade(document.getElementById("loader-wrapper"))'>
-  <span class="loader"><span class="loader-inner"></span></span>
-    <h1 id="startPage">
-    The DEWI-Application uses Cookies to enhance the user experience.</br>
+  <div id="loader-wrapper" class="loader-wrapper">
+    </div>
+  </div>
+  <div id="white-background" class="white-background" onclick='fadeText(document.getElementById("white-background")); this.onclick=null'>
+      <h1 id="startPage">
+      The DEWI-Application uses Cookies to enhance the user experience.</br>
       Cookies are required to keep the data up-to-date in real time without requiring user interaction.</br>
       Furthermore cookies are used to save user specific default values or rather basic settings.</br>
       Cookies are not passed on to third parties and are not used for other purposes.</br>
       If you continue, you agree to the above circumstances.</br>
-      To continue click anywhere
+      To continue <font color="red">click anywhere</font>
     </h1>
+    <div id="logoStartpage"></div>
   </div>
   </body>
 </html>
