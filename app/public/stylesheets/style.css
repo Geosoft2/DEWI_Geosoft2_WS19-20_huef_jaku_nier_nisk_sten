@@ -294,7 +294,7 @@ th {
 }
 #startPage{
     left: 0;
-    margin-top: -100px;
+    margin-top: 100px;
     position: absolute;
     font-size: 32px;
     color: #1E5D88;
@@ -302,12 +302,13 @@ th {
     text-align: center;
     top: 50%;
     width: 100%;
+    scroll-behavior: smooth;
 }
 #logoStartpage {
-    width: 30%;
-    height: 30%;
+    width: 60%;
+    height: 60%;
     top: 0;
-    left: 35%;
+    left: 20%;
     background-image: url("../media/images/DEWI_Logo.svg");
     background-repeat: no-repeat;
     background-size: 100% 100%;
