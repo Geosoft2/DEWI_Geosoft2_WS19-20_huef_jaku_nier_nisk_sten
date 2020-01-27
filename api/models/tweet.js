@@ -6,20 +6,6 @@ const mongoose = require('mongoose');
 const config = require('config-yml');
 
 // All parameters "required" ?
-
-// schema for media
-const MediaSchema = mongoose.Schema({
-    id: {
-        type: Number,
-        required: true
-    },
-    url: {
-        type: String,
-        required: true
-    }
-});
-
-
 // schema for tweet
 const TweetSchema = mongoose.Schema({
     tweetId: {
@@ -39,7 +25,7 @@ const TweetSchema = mongoose.Schema({
         type: Date,
         required: true,
         default: Date.now(),
-        index: { expires: Number(config.social.twitter.storageDuration) }
+        index: {expires: Number(config.api.social.twitter.storageDuration)}
     },
     geometry: {
         type: {
@@ -59,22 +45,8 @@ const TweetSchema = mongoose.Schema({
     },
     author: {
         type: mongoose.Mixed
-        /*
-        id: {
-            type: Number,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        url: {
-            type: String,
-            required: true
-        }
-        */
     },
-    media: {  //[MediaSchema]
+    media: {
         type: mongoose.Mixed
     },
     demo: {

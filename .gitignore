@@ -27,3 +27,4 @@ node_modules/
 private/
 package-lock.json
 
+api/config.yml

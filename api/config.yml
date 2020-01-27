@@ -1,74 +1,123 @@
+#------------------------------------------------------------------------------
+# Configuration of the DEWI-API
+# - in order to start the API successfully, all settings must be made,
+#   except those that explicitly indicate
+# - each comment behind a setting option shows you how the setting must
+#   be selected or you can adopt this setting for yourself,
+#   except passwords and tokens
+#------------------------------------------------------------------------------
+
 api:
-  port: 3001
+  # the port number to which the api attaches to
+  port: # 3001
 
-db:
-  name: dewi
-  local:
-    host: localhost
-    port: 27017
-  docker:
-    image: mongo
-  options:
-    useNewUrlParser: true
-    useFindAndModify: false
-    useCreateIndex: true
-    useUnifiedTopology: true
-    autoReconnect: true
-
-weather:
-  dwd:
-    wfs:
-      url: https://maps.dwd.de/geoserver/dwd/ows
-      parameter:
-        version: 2.0.0
-        typeName: dwd:Warnungen_Gemeinden_vereinigt
-        filter:
-          # @see pp.17 https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
-          severity:
-            moderate: true # TODO
-            minor: true  # TODO
-            severe: false # TODO
-            extreme: false # TODO
-      # in seconds
-      refreshIntervall: 30
-
-    radar:
-      url: https://maps.dwd.de/geoserver/dwd/ows # TODO
-      # in seconds
-      refreshIntervall: 300
-
-
-social:
-  twitter:
-    # in seconds
-    storageDuration: 3600
-    # TODO
-    # token:
-    #   consumerKey:
-    #   consumerSecret:
-    #   accessToken:
-    #   accessTokenSecret:
-
-notification:
-  email:
-    from:
-      adress: dewi_service@gmx.de
-      password: # TODO
-    to:
-      sender: \"DEWI\" <dewi_service@gmx.de>
-      receiver: dewi_service@gmx.de
+  db:
+    # database name to use
+    name: # dewi
+    local:
+      # hostname or IP of the database
+      host: # localhost
+      # port of the database
+      port: # 27017
+    docker:
+      # docker-image to dockerize the database
+      image: # mongo
+    # configure database-connection using boolean
     options:
-      host: mail.gmx.net
-      port: 587
-      secure: false
-      tls:
-        rejectUnauthorized: false
-  mattermost:
-    url:
-      parameter:
-        yourMattermostSite: zivmattermost.uni-muenster.de
-        generatedHookKey: qmpo3bj8u3ff7p8corfncqkbrr
-        # Hook for the DEWI-Team: m9oghpjxztfybjatsrmw4u437e
-        # Hook for the GeoSoft2-Team: qmpo3bj8u3ff7p8corfncqkbrr
+      useNewUrlParser: # true
+      useFindAndModify: # false
+      useCreateIndex: # true
+      useUnifiedTopology: # false
+      autoReconnect: # true
+
+  weather:
+    dwd:
+      wfs:
+        # main url of the DWD-WFS
+        url:
+          protocol: # https
+          hostname: # maps.dwd.de
+          # always start with a slash (/)
+          path: # /geoserver/dwd/ows
+        # parameters to specify the DWD-WFS-request
+        parameter:
+          version: # 2.0.0
+          typeName: # dwd:Warnungen_Gemeinden_vereinigt
+          filter:
+            # configure severity-filter using boolean
+            # if severity-setting-options are ignored or all options set to false, the filter is not applied
+            # further information about severity: @see pp.17 https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/einbindung_karten_geowebservice.pdf?__blob=publicationFile&v=11
+            severity:
+              moderate: # false
+              minor: # false
+              severe: # true
+              extreme: # true
+        # in which interval the DWD-WFS should be requested in seconds
+        refreshIntervall: # 30
 
 
+  social:
+    twitter:
+      api:
+        url:
+          protocol: # https
+          hostname: # api.twitter.com
+          # always start with a slash (/)
+          path:
+            # @see: https://developer.twitter.com/en/docs/basics/authentication/api-reference/token
+            token: # /oauth2/token
+            # @see: https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
+            stream: # /labs/1/tweets/stream/filter
+        parameter:
+          # further information: @see https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
+          stream:
+            format: # detailed
+            expansions: # attachments.media_keys,geo.place_id,author_id
+            timeout: # 20000
+            agent: # false
+            pool:
+              maxSockets: # 100
+        # further information: @see https://developer.twitter.com/en/docs/basics/getting-started
+        token:
+          consumerKey: # your token
+          consumerSecret: # your token
+      # how long a tweet should be stored in database in seconds
+      storageDuration: # 3600
+
+
+  notification:
+    email:
+      from:
+        address: # dewi_service@gmx.de
+        password: # your password
+        # if not specified, 'adress' is used as default
+        # adress and sender-email must match
+        sender: # \"DEWI\" <dewi_service@gmx.de>
+      to:
+        # comma separated list or an array of recipients email addresses
+        receiver: # dewi_service@gmx.de
+      # configure email-options concerning sender-email
+      # further information: @see https://nodemailer.com/smtp/
+      options:
+        host: # mail.gmx.net
+        port: # 587
+        secure: # false
+        tls:
+          rejectUnauthorized: # false
+
+    mattermost:
+      # further information: @see https://docs.mattermost.com/developer/webhooks-incoming.html
+      url:
+        hostname:
+          yourMattermostSite: # zivmattermost.uni-muenster.de
+        hook:
+          # Hook for the DEWI-Team: m9oghpjxztfybjatsrmw4u437e
+          # Hook for the GeoSoft2-Team: qmpo3bj8u3ff7p8corfncqkbrr
+          generatedHookKey: # qmpo3bj8u3ff7p8corfncqkbrr
+
+
+app:
+  # the hostname under which the application is available
+  hostname: # localhost
+  # the port number to which the application attaches to
+  port: # 3000

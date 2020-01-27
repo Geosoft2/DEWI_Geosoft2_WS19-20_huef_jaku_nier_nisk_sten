@@ -1,7 +1,7 @@
 // jshint node: true
 // jshint browser: true
 // jshint jquery: true
-// jshint esversion: 6
+// jshint esversion: 8
 "use strict";
 let wfsLayer;
 
@@ -11,44 +11,47 @@ let wfsLayer;
  * @param {*} events weather events to show in the map
  * @param {*} filter initial filter to search the tweets after
  */
-async function initial (boundingbox, events, filter) {
+async function initial(boundingbox, events, filter) {
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
+    document.getElementById("loader-wrapper").style.visibility = 'visible';
 
-    document.getElementById("progressbar").value =25;
+    document.getElementById("progressbar").value = 25;
     events = getInitialEvents(events);
 
     // "activate" select option
-  for(var initialEvent in events){
-    $('#selectEvent option[value='+events[initialEvent]+']').attr('selected', 'selected');
-  }
+    for (var initialEvent in events) {
+        $('#selectEvent option[value=' + events[initialEvent] + ']').attr('selected', 'selected');
+    }
 
-  filter = getInitialFilter(filter);
+    filter = getInitialFilter(filter);
 
-  startSocket();
-  let twitterResponse;
-
-
-  var bbox = getInitialBbox(boundingbox);
+    startSocket();
+    let twitterResponse;
 
 
-  if (bbox) {
-      // updateTwitterStream(bbox, filter);
-      // Start 2 "jobs" in parallel and wait for both of them to complete
-          map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
-          wfsLayer = await requestExtremeWeather(bbox, events);
-          twitterResponse = await twitterSearch(bbox, filter, wfsLayer);
+    var bbox = getInitialBbox(boundingbox);
 
-  addTweets(twitterResponse);
-  }
+
+    if (bbox) {
+        // updateTwitterStream(bbox, filter);
+        // Start 2 "jobs" in parallel and wait for both of them to complete
+        map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
+        wfsLayer = await requestExtremeWeather(bbox, events);
+        twitterResponse = await twitterSearch(bbox, filter, wfsLayer);
+
+        addTweets(twitterResponse);
+    }
     await delay(1000);
+    // fade(document.getElementById("loader-wrapper"));
+    // document.getElementById("loader-wrapper").classList.add('hidden');
+    // document.getElementById("loader-wrapper").style.visibility='hidden';
 }
-
 
 function fade(element) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
-        if (op <= 0.1){
+        if (op <= 0.1) {
             clearInterval(timer);
             element.style.display = 'none';
         }
@@ -70,17 +73,16 @@ function getInitialEvents(events) {
 
     var newDefaultEvents = getCookie("defaultEvents");
 
-    if(events) {
+    if (events) {
         return JSON.parse(events);
     }
 
-    if (newDefaultEvents!="") {
+    if (newDefaultEvents !== "") {
         return JSON.parse(newDefaultEvents);
-    }
-    else  {       // TODO: Test??? etc
-        events = ['TEST','HEAT','UV','POWERLINEVIBRATION','THAW','GLAZE','FROST','FOG','SNOWDRIFT','SNOWFALL','HAIL','RAIN','TORNADO','WIND','THUNDERSTORM'];
+    } else { // TODO Test??
+        events = ['TEST', 'HEAT', 'UV', 'POWERLINEVIBRATION', 'THAW', 'GLAZE', 'FROST', 'FOG', 'SNOWDRIFT', 'SNOWFALL', 'HAIL', 'RAIN', 'TORNADO', 'WIND', 'THUNDERSTORM'];
         return events;
-        }
+    }
 }
 
 
@@ -90,36 +92,33 @@ function getInitialEvents(events) {
  * @param {string} filter set in the link
  * @returns {string} value of the filter
  */
- function getInitialFilter(filter) {
+function getInitialFilter(filter) {
 
-   var newDefaultFilter = getCookie("defaultSearchWord");
+    var newDefaultFilter = getCookie("defaultSearchWord");
 
-   if(filter) {
-     console.log(filter);
-     filter = JSON.parse(filter);
-     // $('#textFilter').val(filter);
-     for(var elem in filter){
-       var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
-       if(!document.getElementById('textFilter'+filterUrlEncoded) ||
-          document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter[elem].toLowerCase()){
-        createFilterBadge(filter[elem]);
-       }
-     }
-     return filter;
-   }
-   else if (newDefaultFilter!="") {
-     newDefaultFilter = JSON.parse(newDefaultFilter);
-     for(var elem in newDefaultFilter){
-       createFilterBadge(newDefaultFilter[elem]);
-     }
-     // $('#textFilter').val(newDefaultFilter);
-     // $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
-     return newDefaultFilter;
-   }
-   else  {
-     return filter;
-   }
- }
+    if (filter) {
+        filter = JSON.parse(filter);
+        // $('#textFilter').val(filter);
+        for (var elem in filter) {
+            var filterUrlEncoded = encodeURIComponent(filter[elem].toLowerCase());
+            if (!document.getElementById('textFilter' + filterUrlEncoded) ||
+                document.getElementById('textFilter' + filterUrlEncoded).innerText.toLowerCase() !== filter[elem].toLowerCase()) {
+                createFilterBadge(filter[elem]);
+            }
+        }
+        return filter;
+    } else if (newDefaultFilter !== "") {
+        newDefaultFilter = JSON.parse(newDefaultFilter);
+        for (var elem in newDefaultFilter) {
+            createFilterBadge(newDefaultFilter[elem]);
+        }
+        // $('#textFilter').val(newDefaultFilter);
+        // $('#textFilter').attr("placeholder", "default search word: " + newDefaultFilter);
+        return newDefaultFilter;
+    } else {
+        return filter;
+    }
+}
 
 
 /**
@@ -127,44 +126,42 @@ function getInitialEvents(events) {
  * predefined map extent is about the area of germany. The user has in the settings the possibility to change
  *
  */
- function getInitialBbox(bbox) {
+function getInitialBbox(bbox) {
 
-   if(bbox){
-     getBoundingBoxFromUrl(bbox);
-     return null;
-   }
-   else if(getBoundingBboxFromCookie()) {
-     return (null);
-   }
-   else {
-     // initial bounding box with the area of germany
-     return {
-       bbox: {
-         southWest: {
-           lat: 47.2704, // southWest.lng
-           lng: 6.6553 // southWest.lat
-         },
-         northEast: {
-           lat: 55.0444, // northEast.lng
-           lng: 15.0176 // southWest.lat
-         }
-       }
-     };
-   }
- }
+    if (bbox) {
+        getBoundingBoxFromUrl(bbox);
+        return null;
+    } else if (getBoundingBboxFromCookie()) {
+        return null;
+    } else {
+        // initial bounding box with the area of germany
+        return {
+            bbox: {
+                southWest: {
+                    lat: 47.2704, // southWest.lng
+                    lng: 6.6553 // southWest.lat
+                },
+                northEast: {
+                    lat: 55.0444, // northEast.lng
+                    lng: 15.0176 // southWest.lat
+                }
+            }
+        };
+    }
+}
 
- /**
-  * @desc Proofs if a Cookie with a Bbox set. If yes sets the Map Extent to this Bbox
-  */
+/**
+ * @desc Proofs if a Cookie with a Bbox set. If yes sets the Map Extent to this Bbox
+ */
 function getBoundingBboxFromCookie() {
     var newDefaultBbox = getCookie("defaultBbox");
 
-    if (newDefaultBbox != "") {
+    if (newDefaultBbox !== "") {
         newDefaultBbox = JSON.parse(newDefaultBbox);
     }
 
     // if there is a boundingbox defined by the user it is used, if not the initial bounding box is used
-    if (newDefaultBbox != "") {
+    if (newDefaultBbox !== "") {
 
         var northEastLat = newDefaultBbox.bbox.northEast.lat;
         var northEastLng = newDefaultBbox.bbox.northEast.lng;
@@ -172,9 +169,9 @@ function getBoundingBboxFromCookie() {
         var southWestLng = newDefaultBbox.bbox.southWest.lng;
 
         map.fitBounds([[northEastLat, northEastLng], [southWestLat, southWestLng]]);
-        return (true);
+        return true;
     }
-    return (false);
+    return false;
 }
 
 /**
@@ -193,79 +190,76 @@ map.on('moveend', function (e) {
  */
 async function mapExtendChange(bounds) {
 
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-    document.getElementById("progressbar").value =25;
-    document.getElementById("progressbar").style.visibility='visible';
-    // TODO: uncomment updateTwitterStream after setStreamfilter works
+    document.getElementById("progressbar").value = 25;
+    document.getElementById("progressbar").style.visibility = 'visible';
 
     var events = $('#selectEvent').val();
     var filter = getTweetFilters();
     removeTweets(wfsLayer, bounds);
     updateURL(bounds, events, filter);
     let twitterResponse;
-        wfsLayer = await requestExtremeWeather(bounds, events);
-        twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
-    addTweets(twitterResponse)
+    wfsLayer = await requestExtremeWeather(bounds, events);
+    twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
+    addTweets(twitterResponse);
 }
 
 /**
  * @desc new extreme weather data and tweets are loaded after each change of the events or filter
  */
 async function eventsOrFilterChanged() {
-  document.getElementById("progressbar").value =25;
-  document.getElementById("progressbar").style.visibility='visible';
-  var bounds = map.getBounds();
-  bounds = boundingbox(bounds);
+    document.getElementById("progressbar").value = 25;
+    document.getElementById("progressbar").style.visibility = 'visible';
+    var bounds = map.getBounds();
+    bounds = boundingbox(bounds);
     var events = $('#selectEvent').val();
     var filter = getTweetFilters();
     updateURL(bounds, events, filter);
     let twitterResponse;
     removeAllTweets();
-        wfsLayer = await requestExtremeWeather(bounds, events);
-        twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
+    wfsLayer = await requestExtremeWeather(bounds, events);
+    twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
     addTweets(twitterResponse);
 }
 
-function getTweetFilters(){
-  var filters = [];
-  $('.tweetFilter').each(function(index, filter){
-    filters.push(filter.innerText);
-  });
-  return filters;
+function getTweetFilters() {
+    var filters = [];
+    $('.tweetFilter').each(function (index, filter) {
+        filters.push(filter.innerText);
+    });
+    return filters;
 }
 
-function searchTweets(){
-  var input = $('#textFilter');
-  if(input.val() !== ""){
-    var filter = input.val();
-    input.val("");
-    var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
-    if(!document.getElementById('textFilter'+filterUrlEncoded) ||
-      document.getElementById('textFilter'+filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()){
-      createFilterBadge(filter);
-      eventsOrFilterChanged();
+function searchTweets() {
+    var input = $('#textFilter');
+    if (input.val() !== "") {
+        var filter = input.val();
+        input.val("");
+        var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+        if (!document.getElementById('textFilter' + filterUrlEncoded) ||
+            document.getElementById('textFilter' + filterUrlEncoded).innerText.toLowerCase() !== filter.toLowerCase()) {
+            createFilterBadge(filter);
+            eventsOrFilterChanged();
+        }
     }
-  }
 }
 
-function createFilterBadge(filter){
-  var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
-  $('#textFilters').append(
-    '<span id="textFilter'+filterUrlEncoded+'" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">'+
-      filter+
-      '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter'+filterUrlEncoded+'\')" style="margin-left: 5px; font-size: 100%; text-shadow: none; ">'+
-        '<span class="fas fa-times fa-xs">'+
-        '</span>'+
-      '</button>'+
-    '</span>'
-  );
+function createFilterBadge(filter) {
+    var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
+    $('#textFilters').append(
+        '<span id="textFilter' + filterUrlEncoded + '" class="tweetFilter badge badge-pill badge-primary" style="margin-right: 3px; margin-bottom: 5px; font-size: 90%; padding-top: 2px; padding-bottom: 2px;">' +
+        filter +
+        '<button type="button" class="close btn btn-link" onclick="removeElementById(\'textFilter' + filterUrlEncoded + '\')" style="margin-left: 5px; font-size: 100%; text-shadow: none; ">' +
+        '<span class="fas fa-times fa-xs">' +
+        '</span>' +
+        '</button>' +
+        '</span>'
+    );
 }
 
-function removeElementById(id){
-  var elem = document.getElementById(id);
-  elem.parentNode.removeChild(elem);
-  // $('#'+id.toString()).remove();
-  eventsOrFilterChanged();
+function removeElementById(id) {
+    var elem = document.getElementById(id);
+    elem.parentNode.removeChild(elem);
+    eventsOrFilterChanged();
 }
 
 /**
@@ -280,10 +274,10 @@ function getCookie(cname) {
     var ca = decodedCookie.split(';');
     for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
@@ -293,44 +287,36 @@ function getCookie(cname) {
 /**
  * @desc Creates some Socket-Client Listener
  */
- function startSocket() {
+function startSocket() {
     socket.on('tweet', async function (tweet) {
-      const date= new Date(Date.now());
-      setStatus("lastTweet", date.toUTCString());
+        const date = new Date(Date.now());
+        setStatus("lastTweet", date.toUTCString());
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
-        console.log(tweet);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet._id);
-        if(!jQuery.isEmptyObject(twitterResponse)){
-          addTweets([twitterResponse]);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet.tweetId);
+        if (!jQuery.isEmptyObject(twitterResponse)) {
+            addTweets([twitterResponse]);
             var audio = new Audio('/media/audio/twitter-notification-sound.mp3');
             audio.play();
         }
     });
-
-    socket.on('status', (text) =>{
-      setStatus("lastUpdates", text);
-      console.log(text);
-    })
+    socket.on('status', (text) => {
+        setStatus("lastUpdates", text);
+    });
     socket.on('weatherchanges', async function (data) {
-      const date= new Date(Date.now());
+        const date = new Date(Date.now());
         setStatus("lastWeather", date.toUTCString());
         browserNotification('DEWI', 'Extreme weather events changed.');
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         console.log('Weather changed');
-        console.log(data.stats);
         var events = $('#selectEvent').val();
         var filter = getTweetFilters();
         removeAllTweets();
-        // removeTweets(wfsLayer, bounds);
         let twitterResponse;
-        // await Promise.all([
-            /*(async()=>*/wfsLayer = await requestExtremeWeather(bounds, events);//)(),
-            /*(async()=>*/twitterResponse = await twitterSearch(bounds, filter, wfsLayer);//)(),//TODO: get the tweets from mongodb and not direct from Twitter
-        // ]);
-        // removeTweets(wfsLayer, bounds);
+        wfsLayer = await requestExtremeWeather(bounds, events);
+        twitterResponse = await twitterSearch(bounds, filter, wfsLayer);
         addTweets(twitterResponse);
     });
 }
@@ -340,22 +326,22 @@ function getCookie(cname) {
  * @param {String} bbox
  */
 function getBoundingBoxFromUrl(bbox) {
-  var splitBbox = bbox.split(',');
-  // bounding box from URL
-  bbox = {
-    bbox: {
-      southWest: {
-        lat: parseFloat(splitBbox[1]),
-        lng: parseFloat(splitBbox[0])
-      },
-      northEast: {
-        lat: parseFloat(splitBbox[3]),
-        lng: parseFloat(splitBbox[2])
-      }
-    }
-  };
-  map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
-  return bbox;
+    var splitBbox = bbox.split(',');
+    // bounding box from URL
+    bbox = {
+        bbox: {
+            southWest: {
+                lat: parseFloat(splitBbox[1]),
+                lng: parseFloat(splitBbox[0])
+            },
+            northEast: {
+                lat: parseFloat(splitBbox[3]),
+                lng: parseFloat(splitBbox[2])
+            }
+        }
+    };
+    map.fitBounds([[bbox.bbox.northEast.lat, bbox.bbox.northEast.lng], [bbox.bbox.southWest.lat, bbox.bbox.southWest.lng]]);
+    return bbox;
 }
 
 /**
@@ -366,28 +352,28 @@ function getBoundingBoxFromUrl(bbox) {
  */
 function updateURL(bbox, events, filter) {
 
-  var parameters = {};
+    var parameters = {};
 
-  if(bbox){
-    // URL has to be updated by filter to
-    var lat1 = Math.round(bbox.bbox.southWest.lat * 10000) / 10000;
-    var lat2 = Math.round(bbox.bbox.northEast.lat * 10000) / 10000;
-    var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
-    var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
+    if (bbox) {
+        // URL has to be updated by filter to
+        var lat1 = Math.round(bbox.bbox.southWest.lat * 10000) / 10000;
+        var lat2 = Math.round(bbox.bbox.northEast.lat * 10000) / 10000;
+        var lng1 = Math.round(bbox.bbox.southWest.lng * 10000) / 10000;
+        var lng2 = Math.round(bbox.bbox.northEast.lng * 10000) / 10000;
 
-    bbox = lng1 + "," + lat1 + "," + lng2 + "," + lat2;
-    parameters.bbox = bbox;
-  }
-  if(events[0]){
-    parameters.events = JSON.stringify(events);
-  }
-  if(filter[0]){
-    parameters.textfilter = JSON.stringify(filter);
-  }
-  // create querystring
-  var querystring = $.param(parameters);
-  // new URL
-  window.history.pushState("object or string", "Title", window.location.pathname+"?" + querystring);
+        bbox = lng1 + "," + lat1 + "," + lng2 + "," + lat2;
+        parameters.bbox = bbox;
+    }
+    if (events[0]) {
+        parameters.events = JSON.stringify(events);
+    }
+    if (filter[0]) {
+        parameters.textfilter = JSON.stringify(filter);
+    }
+    // create querystring
+    var querystring = $.param(parameters);
+    // new URL
+    window.history.pushState("object or string", "Title", window.location.pathname + "?" + querystring);
 }
 
 /**
@@ -395,26 +381,24 @@ function updateURL(bbox, events, filter) {
  * @param {String} text to show in the snackbar
  */
 function snackbarWithText(text) {
-    const date = Date.now()
+    const date = Date.now();
     $('.snackbar').prepend(
-        '<div class="toast '+date+' rounded-0" style="border: 1px solid rgb(30,93,136);" ' +
-        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
-          '<div class="toast-header">'+
-            '<strong class="mr-auto">'+text +'</strong>'+
-            '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">'+
-              '<span aria-hidden="true">×</span>'+
-            '</button>'+
-          '</div>'+
-        // '<div class="toast-body">'+
-        //   'Some Toast Body'+
-        // '</div>'+
+        '<div class="toast ' + date + ' rounded-0" style="border: 1px solid rgb(30,93,136);" ' +
+        'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">' +
+        '<div class="toast-header">' +
+        '<strong class="mr-auto">' + text + '</strong>' +
+        '<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">' +
+        '<span aria-hidden="true">×</span>' +
+        '</button>' +
+        '</div>' +
         '</div>');
-    $('.toast.'+date).toast('show');
+    $('.toast.' + date).toast('show');
 }
-function idGenerator(){
-    let id=""
-    for( var i = 0; i < 5; ++i ) {
-        var number = Math.floor(Math.random() * 10); ;
+
+function idGenerator() {
+    let id = "";
+    for (var i = 0; i < 5; ++i) {
+        var number = Math.floor(Math.random() * 10);
         id += number;
     }
     return id;

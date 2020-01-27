@@ -3,10 +3,8 @@
 "use strict";
 
 const Tweet = require('../../models/tweet');
-const chalk = require('chalk');
 const io = require("../socket-io").io;
 const mongoose = require('mongoose');
-// Tweet.index({text: 'text'});
 const {bboxToPolygon, featureCollectionToGeometryCollection} = require('../geoJSON');
 const {stringArrayValid} = require('../validation/array');
 const {idValid} = require('../validation/id');
@@ -19,32 +17,12 @@ const {multiPolygonFeatureCollectionValid} = require('../validation/geojson');
  * @returns {Promise<string|*>}
  */
 const postTweet = async function (tweet) {
-    var coordinates = [];
     var geometry = {};
     geometry['type'] = 'Point';
-    console.log(tweet);
     console.log("Storing Tweet..");
 
     if (tweet) {
-        // mongoose: findOneAndUpdate
-        /*try {
-            var savedTweet = await Tweet.findOneAndUpdate({
-                tweetId: tweet.tweetId
-            }, {
-                tweet
-            }, {
-                new: true,
-                upsert: true,
-                rawResult: true,
-            });
-        } catch (err) {
-            console.log(err);
-            res.status(400).send({
-                message: 'Error while storing data in MongoDB.'
-            });
-        }*/
         var tweetsWithId = await Tweet.find({tweetId: tweet.tweetId});
-        console.log("size: " + tweetsWithId.length);
 
         if (tweetsWithId.length > 0) {
             return "Tweet is already stored in database.";
@@ -59,7 +37,6 @@ const postTweet = async function (tweet) {
                 place: tweet.place,
                 author: tweet.author,
                 media: tweet.media
-                // author und media noch splitten oder einfach als Mixed definieren??
             };
             if (tweet.createdAt) { // default: Date.now()
                 tweetObject.createdAt = tweet.createdAt;
@@ -69,7 +46,6 @@ const postTweet = async function (tweet) {
             }
             var newTweet = new Tweet(tweetObject);
             try {
-                console.log(newTweet);
                 var savedTweet = await newTweet.save();
                 io.emit('tweet', savedTweet);
                 return "tweet stored in db.";
@@ -92,7 +68,6 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
         var match = [];
         var result = [];
         if (filter) {
-            console.log(filter);
             const valid = stringArrayValid(filter, 'filter');
             if (valid.error) {
                 return {
@@ -215,7 +190,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
             var match = [];
             match.push({
                 $match: {
-                    _id: new mongoose.Types.ObjectId(tweetId)
+                    tweetId: parseInt(tweetId)
                 }
             });
             if (filter) {
@@ -242,7 +217,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                 }
             }
             if (bbox) {
-                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas")
+                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas");
                 const valid = bboxValid(bbox);
                 if (valid.error) {
                     return {
@@ -290,7 +265,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                     // Aggregation without extremeWeatherEvents-filter
                     result = await Tweet.aggregate(match);
                 } else {
-                    result = await Tweet.find({_id: id});
+                    result = await Tweet.find({tweetId: tweetId});
                 }
             }
         }

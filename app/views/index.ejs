@@ -8,11 +8,11 @@
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrapSelect/dist/css/bootstrap-select.min.css" media="screen">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
-    <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
-    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
-    <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+    <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css"/>
+    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css"/>
+    <link rel="stylesheet" href="/fontAwesome/css/all.css"/>
 
   </head>
 
@@ -27,21 +27,22 @@
     <progress id="progressbar" class="sticky-top" value="22" max="100"></progress>
 
     <main role="main" class="container-fluid" id="main">
-      <!-- TODO:  snackbar???-->
-      <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
-        <div class="row">
-          <div class="col-12">
-            <% for(var i=0; i < errormessage.length; i++) {%>
-              <div style="margin-top: 20px; margin-bottom: -10px;" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <%= errormessage[i] %>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            <% } %>
-          </div>
-        </div>
-      <% } %>
+        <!-- TODO:  snackbar???-->
+        <% if (typeof (errormessage) !== 'undefined' && errormessage.length > 0) { %>
+            <div class="row">
+                <div class="col-12">
+                    <% for(var i = 0; i < errormessage.length; i++) { %>
+                        <div style="margin-top: 20px; margin-bottom: -10px;"
+                             class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= errormessage[i] %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
 
 
       <div class="row">
@@ -138,17 +139,20 @@
           </div>
         </div>
 
-        <div class="col-md-4 order-md-4" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
-          <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
-          </div>
+        <div class="col-md-4 order-md-4"
+             style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;">
+            <!--20px(normal margin value) + 24.2px(height of the footer)-->
+            <div class="col-12" id="tweets" style="height:60vh; border-radius: .25rem;">
+            </div>
         </div>
 
-            <!-- Status View -->
-            <div id="statusBox" style="width: 0px; height: 0px; position: relative; display: inline-grid;">
-              <div id="status" style="width: 500px; height: fit-content; padding: 0.5em; z-index: 3000; visibility: hidden; left: 5%; top: 5%; position: absolute;">
+        <!-- Status View -->
+        <div id="statusBox" style="width: 0px; height: 0px; position: relative; display: inline-grid;">
+            <div id="status"
+                 style="width: 500px; height:fit-content; max-height: 80vh; padding: 0.5em; z-index: 5002; visibility: hidden; left: 5%; top: -5vh; position: absolute; overflow: auto">
                 <p>Drag</p>
-              </div>
             </div>
+        </div>
 
 
       </div>

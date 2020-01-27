@@ -23,7 +23,6 @@ const saveExtremeWeatherInMongo = async function (features) {
 
     // only if data are available, data can be stored
     if (features) {
-        // console.log(moment());
         var now = moment();
         var id = [];
         var newEvent = 0;
@@ -87,11 +86,11 @@ const saveExtremeWeatherInMongo = async function (features) {
  * @param {object} res response, to send back the desired HTTP response
  */
 const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
-    io.emit("status", id + ": Searching for extreme weather ares in bbox")
+    io.emit("status", id + ": Searching for extreme weather ares in bbox");
     try {
         var query = {};
         // ensures that only current data is output
-        query.updatedAt = {$gt: moment().subtract(config.weather.dwd.wfs.refreshIntervall, 'seconds')};
+        query.updatedAt = {$gt: moment().subtract(config.api.weather.dwd.wfs.refreshIntervall, 'seconds')};
         // optional search-parameter bbox
         if (bbox) {
             const valid = bboxValid(bbox);
@@ -125,11 +124,11 @@ const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
             query['properties.EC_GROUP'] = {$in: regExEvents};
         }
         const result = await ExtremeWeather.find(query, {_id: 0}); //without _id (ObjectID)
-        io.emit("status", id + ": Sending result")
+        io.emit("status", id + ": Sending result");
 
         return makeGeoJSonFromFeatures(result);
     } catch (err) {
-        io.emit("status", id + ": Sending result")
+        io.emit("status", id + ": Sending result");
         return {
             error: {
                 code: 500,

@@ -21,7 +21,7 @@ function browserNotification(title, content){
  * @param {String} text to show in the snackbar
  */
 function snackbarWithText(text) {
-  const date = Date.now()
+  const date = Date.now();
   $('.snackbar').prepend(
       '<div class="toast '+date+' rounded-0" style="border: 1px solid blue; background-color: lightblue" ' +
       'role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000">'+
