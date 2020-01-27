@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
 
     <meta name="author" content="Jan, Luc, Nick, Phil, Tom"/>
@@ -8,171 +8,209 @@
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrapSelect/dist/css/bootstrap-select.min.css" media="screen">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
     <link rel="stylesheet" href="/leaflet/leaflet.css"/>
-    <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css" />
-    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css" />
-    <link rel="stylesheet" href="/fontAwesome/css/all.css" />
+    <link rel="stylesheet" href="/leafletPan/L.Control.Pan.css"/>
+    <link rel="stylesheet" href="/leafletEasyButton/easy-button.css"/>
+    <link rel="stylesheet" href="/fontAwesome/css/all.css"/>
 
-  </head>
+</head>
 
-  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
+<body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
 
 
-
-  <div class="wrapper">
+<div class="wrapper">
 
     <% include partials/header.ejs %>
 
     <progress id="progressbar" class="sticky-top" value="22" max="100"></progress>
 
     <main role="main" class="container-fluid" id="main">
-      <!-- TODO:  snackbar???-->
-      <% if (typeof(errormessage) !== 'undefined' && errormessage.length > 0) { %>
+        <!-- TODO:  snackbar???-->
+        <% if (typeof (errormessage) !== 'undefined' && errormessage.length > 0) { %>
+            <div class="row">
+                <div class="col-12">
+                    <% for(var i = 0; i < errormessage.length; i++) { %>
+                        <div style="margin-top: 20px; margin-bottom: -10px;"
+                             class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= errormessage[i] %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
         <div class="row">
-          <div class="col-12">
-            <% for(var i=0; i < errormessage.length; i++) {%>
-              <div style="margin-top: 20px; margin-bottom: -10px;" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <%= errormessage[i] %>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            <% } %>
-          </div>
-        </div>
-      <% } %>
 
+            <div id="mapSection" class="col-md-8 order-md-1" style="margin-top: 20px;">
+                <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
+                    <div class="row" style="margin-left: 0; margin-right: 0">
+                        <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="btn-group" style="width: 100%;">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    map extent
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" type="button"
+                                            title="the current shown map extent will be set as new default map extent"
+                                            onclick="changeDefaultMapExtent()">set current map extent
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the map extent will be changed to the default map extent"
+                                            onclick="backToDefaultMapExtent()">get default map extent
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the default map extent will be deleted"
+                                            onclick="deleteDefaultBbox()">delete default map extent
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-      <div class="row">
-
-        <div id="mapSection" class="col-md-8 order-md-1" style="margin-top: 20px;">
-          <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
-            <div class="row" style="margin-left: 0; margin-right: 0">
-              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-                <div class="btn-group" style="width: 100%;">
-                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    map extent
-                  </button>
-                  <div class="dropdown-menu">
-                    <button class="dropdown-item" type="button" title="the current shown map extent will be set as new default map extent" onclick="changeDefaultMapExtent()">set current map extent</button>
-                    <button class="dropdown-item" type="button" title="the map extent will be changed to the default map extent" onclick="backToDefaultMapExtent()">get default map extent</button>
-                    <button class="dropdown-item" type="button" title="the default map extent will be deleted" onclick="deleteDefaultBbox()">delete default map extent</button>
-                  </div>
+                        <div class="col-md-3 ml-auto" style="margin-top: 10px; margin-bottom: 10px;">
+                            <select class="selectpicker" data-width="100%" multiple data-actions-box="true"
+                                    id="selectEvent" name="event" onchange="eventsOrFilterChanged()"
+                                    title="select which weather events should be requested">
+                                <option value="THUNDERSTORM">thunderstorm</option>
+                                <option value="WIND">wind</option>
+                                <option value="TORNADO">tornado</option>
+                                <option value="RAIN">rain</option>
+                                <option value="HAIL">hail</option>
+                                <option value="SNOWFALL">snowfall</option>
+                                <option value="SNOWDRIFT">snowdrift</option>
+                                <option value="FOG">fog</option>
+                                <option value="FROST">frost</option>
+                                <option value="GLAZE">glaze</option>
+                                <option value="THAW">thaw</option>
+                                <option value="POWERLINEVIBRATION">powerlinevibration</option>
+                                <option value="UV">uv</option>
+                                <option value="HEAT">heat</option> <!-- TODO:  -->
+                                <option value="TEST">test</option> <!-- TODO:  -->
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="btn-group" style="width: 100%;">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    weather event
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"
+                                            title="the current selected weather events will be set as default weather events"
+                                            onclick="setDefaultEvents()">set default weather events
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the weather events will be changed to the default weather events"
+                                            onclick="getDefaultEvents()">get default weather events
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the default weather events will be deleted"
+                                            onclick="deleteDefaultEvents()">delete default weather events
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-
-              <div class="col-md-3 ml-auto" style="margin-top: 10px; margin-bottom: 10px;">
-                <select class="selectpicker" data-width="100%" multiple data-actions-box="true" id="selectEvent" name="event" onchange="eventsOrFilterChanged()" title="select which weather events should be requested">
-                  <option value="THUNDERSTORM">thunderstorm</option>
-                  <option value="WIND">wind</option>
-                  <option value="TORNADO">tornado</option>
-                  <option value="RAIN">rain</option>
-                  <option value="HAIL">hail</option>
-                  <option value="SNOWFALL">snowfall</option>
-                  <option value="SNOWDRIFT">snowdrift</option>
-                  <option value="FOG">fog</option>
-                  <option value="FROST">frost</option>
-                  <option value="GLAZE">glaze</option>
-                  <option value="THAW">thaw</option>
-                  <option value="POWERLINEVIBRATION">powerlinevibration</option>
-                  <option value="UV">uv</option>
-                  <option value="HEAT">heat</option> <!-- TODO:  -->
-                  <option value="TEST">test</option> <!-- TODO:  -->
-                </select>
-              </div>
-              <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
-                <div class="btn-group" style="width: 100%;">
-                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    weather event
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <button class="dropdown-item" type="button" title="the current selected weather events will be set as default weather events" onclick="setDefaultEvents()">set default weather events</button>
-                    <button class="dropdown-item" type="button" title="the weather events will be changed to the default weather events" onclick="getDefaultEvents()">get default weather events</button>
-                    <button class="dropdown-item" type="button" title="the default weather events will be deleted" onclick="deleteDefaultEvents()">delete default weather events</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-8 order-md-3" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
-          <div class="col-12" id="mapWFS" style="height:560px; border-radius: .25rem;"></div>
-        </div>
-
-        <div id="twitterSection" class="col-md-4 order-md-2" style="margin-top: 20px;">
-          <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
-            <div class="row" style="margin-right: 0px; margin-left: 0px;">
-              <div class="col-md-6">
-                <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
-                  <input id="textFilter" class="form-control" type="text" name="" value="" placeholder="search in tweets ..." title='textfilter to filter the tweets (search starts by pushing the "enter" button)'/>
-                  <div class="input-group-append">
-                    <button id="tweetSearch" class="btn btn-secondary" type="submit" onclick="searchTweets()">
-                      <span class="fas fa-search"></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-6" style="margin-top: 10px; margin-bottom: 10px;">
-                <div class="btn-group" style="width: 100%;">
-                  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    tweet filter
-                  </button>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <button class="dropdown-item" type="button" title="the current used search words will be used as default search word" onclick="setDefaultSearchWord()">set current search filter</button>
-                    <button class="dropdown-item" type="button" title="the search words will be changed to the default search words" onclick="getDefaultSearchWord()">get default search filter</button>
-                    <button class="dropdown-item" type="button" title="the default search words will be deleted" onclick="deleteDefaultSearchWord()">delete default search filter</button>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <div class="row" style="margin-top: 0px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
-              <div class="col-12">
-                <div id="textFilters">
-                </div>
-              </div>
+            <div class="col-md-8 order-md-3" style="margin-top: 20px; margin-right: 0px; margin-left: 0px;">
+                <div class="col-12" id="mapWFS" style="height: 60vh; border-radius: .25rem;"></div>
             </div>
-          </div>
-        </div>
 
-        <div class="col-md-4 order-md-4" style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;"> <!--20px(normal margin value) + 24.2px(height of the footer)-->
-          <div class="col-12" id="tweets" style="height:560px; border-radius: .25rem;">
-          </div>
-        </div>
+            <div id="twitterSection" class="col-md-4 order-md-2" style="margin-top: 20px;">
+                <div style="width: 100%; height: 100%; background-color: lightgrey; border-radius: .25rem;">
+                    <div class="row" style="margin-right: 0px; margin-left: 0px;">
+                        <div class="col-md-6">
+                            <div class="input-group" style="margin-top: 10px; margin-bottom: 10px;">
+                                <input id="textFilter" class="form-control" type="text" name="" value=""
+                                       placeholder="search in tweets ..."
+                                       title='textfilter to filter the tweets (search starts by pushing the "enter" button)'/>
+                                <div class="input-group-append">
+                                    <button id="tweetSearch" class="btn btn-secondary" type="submit"
+                                            onclick="searchTweets()">
+                                        <span class="fas fa-search"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div class="btn-group" style="width: 100%;">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    tweet filter
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <button class="dropdown-item" type="button"
+                                            title="the current used search words will be used as default search word"
+                                            onclick="setDefaultSearchWord()">set current search filter
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the search words will be changed to the default search words"
+                                            onclick="getDefaultSearchWord()">get default search filter
+                                    </button>
+                                    <button class="dropdown-item" type="button"
+                                            title="the default search words will be deleted"
+                                            onclick="deleteDefaultSearchWord()">delete default search filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row"
+                         style="margin-top: 0px; margin-right: 0px; margin-left: 0px; background-color: lightgrey; border-radius: .25rem;">
+                        <div class="col-12">
+                            <div id="textFilters">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 order-md-4"
+                 style="margin-top: 20px; margin-right: 0px; margin-left: 0px; margin-bottom: 44.2px;">
+                <!--20px(normal margin value) + 24.2px(height of the footer)-->
+                <div class="col-12" id="tweets" style="height:60vh; border-radius: .25rem;">
+                </div>
+            </div>
 
             <!-- Status View -->
             <div id="statusBox" style="width: 0px; height: 0px; position: relative; display: inline-grid;">
-              <div id="status" style="width: 500px; height: fit-content; padding: 0.5em; z-index: 3000; visibility: hidden; left: 5%; top: 5%; position: absolute;">
-                <p>Drag</p>
-              </div>
+                <div id="status"
+                     style="width: 500px; height:fit-content; max-height: 80vh; padding: 0.5em; z-index: 5002; visibility: hidden; left: 5%; top: -5vh; position: absolute; overflow: auto">
+                    <p>Drag</p>
+                </div>
             </div>
 
 
-      </div>
+        </div>
 
-      <!-- Snackbar -->
-      <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
-      </div>
+        <!-- Snackbar -->
+        <div class="snackbar" style="position: fixed; bottom: calc(44.2px + 1px); left: 15px;">
+        </div>
 
     </main>
-  </div>
+</div>
 
-  <% include partials/footer.ejs %>
-  <div id="loader-wrapper" class="loader-wrapper" onclick='fade(document.getElementById("loader-wrapper"))'>
-  <span class="loader"><span class="loader-inner"></span></span>
+<% include partials/footer.ejs %>
+<div id="loader-wrapper" class="loader-wrapper" onclick='fade(document.getElementById("loader-wrapper"))'>
+    <span class="loader"><span class="loader-inner"></span></span>
     <h1 id="startPage">
-    The DEWI-Application uses Cookies to enhance the user experience.</br>
-      Cookies are required to keep the data up-to-date in real time without requiring user interaction.</br>
-      Furthermore cookies are used to save user specific default values or rather basic settings.</br>
-      Cookies are not passed on to third parties and are not used for other purposes.</br>
-      If you continue, you agree to the above circumstances.</br>
-      To continue click anywhere
+        The DEWI-Application uses Cookies to enhance the user experience.<br/>
+        Cookies are required to keep the data up-to-date in real time without requiring user interaction.<br/>
+        Furthermore cookies are used to save user specific default values or rather basic settings.<br/>
+        Cookies are not passed on to third parties and are not used for other purposes.<br/>
+        If you continue, you agree to the above circumstances.<br/>
+        To continue click anywhere
     </h1>
-  </div>
-  </body>
+</div>
+</body>
 </html>
 
 <script src="/jquery/jquery.min.js"></script>

@@ -23,30 +23,28 @@ const mattermostNotification = function (weatherChanges) {
     // specification concerning plural/ singular
     if (weatherChanges.deleted > 1 || weatherChanges.deleted === 0) {
         past = " were ";
-    }
-    else {
+    } else {
         past = " was ";
     }
 
     if (weatherChanges.new > 1 || weatherChanges.new === 0) {
         present = " are ";
-    }
-    else {
+    } else {
         present = " is ";
     }
 
     // parameter of the payload (defines the notification)
     var channel = "dewi_service"; // channel in the DEWI-Team: "dewi_service"
-    var username  = "DEWI_service";
-    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg"; // TODO:
-    var text    = 'Dear user, \n' +
+    var username = "DEWI_service";
+    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg";
+    var text = 'Dear user, \n' +
         'the weather situation has changed. Here is a small summary concerning the changes: \n' +
         'There' + past + weatherChanges.deleted + ' extreme weather events deleted, ' +
         'and there' + present + weatherChanges.new + ' new extreme weather events. \n' +
         'If you like to have an overview about what has changed, simply visit our ' +
         '[(homepage)](http://localhost:3000)!\n' + //TODO docker
         'Best, your DEWI team!';
-    var payload = {"channel":channel, "username":username, "icon_url":icon_url, "text":text};
+    var payload = {"channel": channel, "username": username, "icon_url": icon_url, "text": text};
     var payloadStringified = JSON.stringify(payload);
 
     const options = {
@@ -63,8 +61,7 @@ const mattermostNotification = function (weatherChanges) {
         .on('response', function (response) {
             if (response.statusCode === 200) {
                 console.log(chalk.green('Mattermost Notification was sent!'));
-            }
-            else {
+            } else {
                 console.log(chalk.red('Mattermost-Configuration is not complete respectively incorrect. Check your generated hook-key.'));
             }
 
