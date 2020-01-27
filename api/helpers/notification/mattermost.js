@@ -38,7 +38,7 @@ const mattermostNotification = function (weatherChanges) {
     // parameter of the payload (defines the notification)
     var channel = "dewi_service"; // channel in the DEWI-Team: "dewi_service"
     var username  = "DEWI_service";
-    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg"
+    var icon_url = "http://localhost:3001/logo/DEWI_Logo.svg"; // TODO:
     var text    = 'Dear user, \n' +
         'the weather situation has changed. Here is a small summary concerning the changes: \n' +
         'There' + past + weatherChanges.deleted + ' extreme weather events deleted, ' +
@@ -62,16 +62,17 @@ const mattermostNotification = function (weatherChanges) {
     request.post(options)
         .on('response', function (response) {
             if (response.statusCode === 200) {
-                console.log(chalk.green('Success: Mattermost Notification was sent!'));
+                console.log(chalk.green('Mattermost Notification was sent!'));
             }
             else {
-                console.log(chalk.red('Error ' + response.statusCode + ': Mattermost Notification was not sent!'));
+                console.log(chalk.red('Mattermost-Configuration is not complete respectively incorrect. Check your generated hook-key.'));
             }
 
         })
 
         .on('error', function (err) {
-            console.log(chalk.red('Error: Mattermost Notification was not sent!'));
+            console.log(chalk.red('Mattermost-Configuration is not complete respectively incorrect. More info:'));
+            console.log(err);
         });
 };
 

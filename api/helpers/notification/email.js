@@ -38,7 +38,7 @@ const emailNotification = function(weatherChanges){
     let transporter = nodemailer.createTransport({
         host: config.notification.email.options.host,
         port: config.notification.email.options.port,
-        secure: false, // if false TLS
+        secure: config.notification.email.options.secure, // if false TLS
         auth: {
             user: config.notification.email.from.adress, // email of the sender
             pass: config.notification.email.from.password // Passwort of the sender
@@ -73,7 +73,8 @@ const emailNotification = function(weatherChanges){
     // send mail with defined transport object
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-            console.log(chalk.red(error));
+            console.log(chalk.red('Email-Configuration is not complete respectively incorrect. More info:'));
+            console.log(error);
         } else {
             console.log(chalk.green('Email sent: ' + info.response));
         }

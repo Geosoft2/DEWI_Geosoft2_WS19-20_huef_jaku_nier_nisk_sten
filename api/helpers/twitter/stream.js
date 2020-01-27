@@ -13,9 +13,10 @@ const {postTweet} = require('../mongo/tweets.js');
 
 const io = require("../socket-io").io;
 
+const config = require('config-yml');
 const twitterToken = require('../../private/token').token.twitter_config;
 
-var oauth2 = new OAuth2(twitterToken.consumerKey, twitterToken.consumerSecret, 'https://api.twitter.com/', null, 'oauth2/token', null);
+var oauth2 = new OAuth2(config.social.twitter.token.consumerKey, config.social.twitter.token.consumerSecret, config.social.twitter.api.url.protocol+'://'+config.social.twitter.api.url.hostname, null, config.social.twitter.api.url.path, null);
 
 //specify the twitter Endpoint to set/delete and get rules
 const rulesURL = new URL('https://api.twitter.com/labs/1/tweets/stream/filter/rules');
@@ -36,7 +37,7 @@ const getToken= function(){
                 resolve(e);
             });
         }
-    )
+    );
 };
 
 

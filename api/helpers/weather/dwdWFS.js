@@ -22,7 +22,7 @@ const requestExtremeWeather = function(){
   var demo = JSON.parse(fs.readFileSync('demo/isDemo.json')).demo;
   if(!demo) {
     console.log('real');
-    var rootUrl = config.weather.dwd.wfs.url;
+    var rootUrl = config.weather.dwd.wfs.url.protocol + '://' + config.weather.dwd.wfs.url.hostname + config.weather.dwd.wfs.url.path;
     var defaultParameters = {
       service: 'WFS',
       version: config.weather.dwd.wfs.parameter.version,
