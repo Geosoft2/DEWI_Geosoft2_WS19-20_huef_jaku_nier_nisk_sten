@@ -14,7 +14,7 @@ const chalk = require('chalk');
  * deleted extreme weather events. Parameters are customizable by the config.yml.
  * @param weatherChanges
  */
-const emailNotification = function(weatherChanges){
+const emailNotification = function (weatherChanges) {
 
     var present; // tense and plural/ singular for notification
     var past; // tense and plural/ singular for notification
@@ -22,15 +22,13 @@ const emailNotification = function(weatherChanges){
     // specification concerning plural/ singular
     if (weatherChanges.deleted > 1 || weatherChanges.deleted === 0) {
         past = " were ";
-    }
-    else {
+    } else {
         past = " was ";
     }
 
     if (weatherChanges.new > 1 || weatherChanges.new === 0) {
         present = " are ";
-    }
-    else {
+    } else {
         present = " is ";
     }
 
@@ -65,13 +63,13 @@ const emailNotification = function(weatherChanges){
             '<img src="cid:DEWILogo" alt="DEWI Logo" style="width: 200px;">',
         attachments: [{
             filename: 'DEWI_Logo.svg',
-            path: path.join(__dirname, '..', '..', 'logo',  'DEWI_Logo.svg'),
+            path: path.join(__dirname, '..', '..', 'logo', 'DEWI_Logo.svg'),
             cid: 'DEWILogo' //same cid value as in the html img src
         }]
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(chalk.red(error));
         } else {

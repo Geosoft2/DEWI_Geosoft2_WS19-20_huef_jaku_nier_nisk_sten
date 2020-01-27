@@ -23,7 +23,6 @@ const saveExtremeWeatherInMongo = async function (features) {
 
     // only if data are available, data can be stored
     if (features) {
-        // console.log(moment());
         var now = moment();
         var id = [];
         var newEvent = 0;

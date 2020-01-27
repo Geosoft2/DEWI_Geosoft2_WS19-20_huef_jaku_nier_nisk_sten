@@ -8,16 +8,15 @@
  * @param {String} parametername
  * @returns {boolean}
  */
-const idValid = function(id, parametername) {
-  var regEx = /^\d+$/;
-  if(!regEx.test(id)){
-    return {error: 'Parameter \''+parametername+'\' must be an ObjectID. This identifier only contains digits.'};
-  }
-  else{
-    return true;
-  }
+const idValid = function (id, parametername) {
+    var regEx = /^\d+$/;
+    if (!regEx.test(id)) {
+        return {error: 'Parameter \'' + parametername + '\' must be an ObjectID. This identifier only contains digits.'};
+    } else {
+        return true;
+    }
 };
 
 module.exports = {
-  idValid
+    idValid
 };
