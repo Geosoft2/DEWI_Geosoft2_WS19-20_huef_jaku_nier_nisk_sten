@@ -14,7 +14,6 @@ let wfsLayer;
 async function initial(boundingbox, events, filter) {
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
-    document.getElementById("loader-wrapper").style.visibility = 'visible';
 
     document.getElementById("progressbar").value = 25;
     events = getInitialEvents(events);

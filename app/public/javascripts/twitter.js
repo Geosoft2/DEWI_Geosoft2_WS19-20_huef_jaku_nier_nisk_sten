@@ -248,7 +248,7 @@ class TwitterList extends React.Component {
             errText.push(e("p", null, "No tweets in extreme weather areas available!"));
         }
 
-        const list = e(Paper, {id: "list"}, cards);
+        const list = e(Paper, {id: "list", style: {"max-height": "60vh"}}, cards);
         return e("div", null, errText, list);
     }
 }

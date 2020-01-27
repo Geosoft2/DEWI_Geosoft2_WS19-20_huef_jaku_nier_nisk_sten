@@ -359,7 +359,7 @@ function requestExtremeWeather(bbox, events) {
                 if (response.weatherEvents.features.length === 0) {
                     document.getElementById("progressbar").value += 100;
                     isProgress();
-                    snackbarWithText("Weather data loaded. No Critical Situation found");
+                    snackbarWithText("Weather data loaded.<br> No extreme weather event found.");
                 } else {
                     document.getElementById("progressbar").value += 25;
                     isProgress();
