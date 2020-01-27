@@ -14,7 +14,6 @@ let wfsLayer;
 async function initial (boundingbox, events, filter) {
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
-    document.getElementById("loader-wrapper").style.visibility='visible';
 
     document.getElementById("progressbar").value =25;
     events = getInitialEvents(events);
@@ -43,10 +42,25 @@ async function initial (boundingbox, events, filter) {
   addTweets(twitterResponse);
   }
     await delay(1000);
-  // fade(document.getElementById("loader-wrapper"));
-    // document.getElementById("loader-wrapper").classList.add('hidden');
-    // document.getElementById("loader-wrapper").style.visibility='hidden';
 }
+
+async function fadeText(element) {
+    element.innerHTML="";
+    var op = 1;  // initial opacity
+    var timer =  setInterval(function () {
+        if (op < 0.01){
+            clearInterval(timer);
+            element.style.display = 'none';
+            fade(document.getElementById("loader-wrapper"));
+
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+
+    }, 50);
+}
+
 
 function fade(element) {
     var op = 1;  // initial opacity
