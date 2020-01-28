@@ -1,6 +1,9 @@
-"use strict";
 // jshint esversion: 8
+// jshint node: true
+"use strict";
+
 const turf = require("@turf/turf");
+const config = require('config-yml');
 
 
 /**
@@ -12,7 +15,7 @@ const getUserInformation = function (userData) {
     return {
         "id": userData.id,
         "name": userData.name,
-        "url": "https://twitter.com/" + userData.username,
+        "url": config.api.social.twitter.app.url.protocol+'://'+config.api.social.twitter.app.url.hostname + "/" + userData.username,
         profileImage: userData.profile_image_url
     };
 };

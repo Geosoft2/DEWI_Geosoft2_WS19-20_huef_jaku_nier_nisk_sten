@@ -25,6 +25,13 @@ var oauth2 = new OAuth2(config.api.social.twitter.api.token.consumerKey, config.
 const rulesURL = new URL(config.api.social.twitter.api.url.protocol+'://'+config.api.social.twitter.api.url.hostname+config.api.social.twitter.api.url.path.stream.rules);
 
 var token;
+var configuration;
+
+var timeout = 20000;
+if(config.api.social.twitter.api.parameter.stream.timeout >= 20000){
+  timeout = config.api.social.twitter.api.parameter.stream.timeout;
+}
+
 /**
  * Creates a twitter token
  */
@@ -140,7 +147,7 @@ const streamConnect = function () {
         auth: {
             bearer: token,
         },
-        timeout: config.api.social.twitter.api.parameter.stream.timeout,
+        timeout: timeout,
         agent: config.api.social.twitter.api.parameter.stream.agent,
         pool: {
           maxSockets: config.api.social.twitter.api.parameter.stream.pool.maxSockets
@@ -150,6 +157,7 @@ const streamConnect = function () {
       const stream = request.get(requestConfig);
       stream.on('data', async data => {
           try {
+              configuration = true;
               const tweetJSON = JSON.parse(data);
               if (tweetJSON.connection_issue) {
                   stream.emit("timeout");
@@ -168,7 +176,7 @@ const streamConnect = function () {
                   const author = getUserInformation(userData);
                   var mongoDB = {
                       tweetId: tweet.id,
-                      "url": "https://twitter.com/i/status/" + tweet.id,
+                      "url": config.api.social.twitter.app.url.protocol+'://'+config.api.social.twitter.app.url.hostname + config.api.social.twitter.app.url.path + "/" + tweet.id,
                       "text": tweet.text,
                       "createdAt": tweet.created_at,
                       "author": author,
@@ -208,19 +216,35 @@ const streamConnect = function () {
               });
               stream.emit('timeout');
           }
-          else {
+          else if(!configuration){
             console.log(chalk.red('Twitter-Configuration is not complete respectively incorrect. More info:'));
             console.log(error);
             process.exit(-1);
+          }
+          else {
+            io.emit('twitterStatus', {
+              connected: false
+            });
+            stream.emit('timeout');
+            console.log(chalk.red('Twitter-Reconnecting was not successfull. Possible error: no internet-connection.'));
           }
       });
 
       return stream;
     }
     catch(err){
-      console.log(chalk.red('Twitter-Configuration is not complete respectively incorrect. More info:'));
-      console.log(err);
-      process.exit(-1);
+      if(!configuration){
+        console.log(chalk.red('Twitter-Configuration is not complete respectively incorrect. More info:'));
+        console.log(err);
+        process.exit(-1);
+      }
+      else {
+        io.emit('twitterStatus', {
+          connected: false
+        });
+        stream.emit('timeout');
+        console.log(chalk.red('Twitter-Reconnecting was not successfull. Possible error: no internet-connection.'));
+      }
     }
 };
 
@@ -266,7 +290,7 @@ const loopStreamConnect = () => {
             console.log(chalk.blue('A connection error occurred. Reconnecting…'));
             loopStreamConnect();
         });
-    }, 20000);
+    }, timeout);
 };
 
 
