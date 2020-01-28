@@ -21,7 +21,7 @@ const postDemo = async function(req, res){
       return res.status(400).send({message: valid.error});
     }
     var content = {
-      demo: active,
+      demo: active
     };
     if(active){
       fs.writeFileSync(path.join(__dirname, '..', '..', '..', '..', 'demo', 'isDemo.json'), JSON.stringify(content));

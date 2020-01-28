@@ -262,7 +262,7 @@ function setDefaultSearchWord() {
     // $('#textFilter').attr("placeholder", "default search word: " + searchWord);
     var cookieValue = JSON.stringify(searchWord);
     setCookie("defaultSearchWord", cookieValue, 1000000);
-    snackbarWithText('Successfully set new tweet filter.');
+    snackbarWithText('Successfully set new tweet filter. <a href="/faq#Twitter" target="_blank">Further information</a>.');
 }
 
 
@@ -273,9 +273,9 @@ function getDefaultSearchWord() {
     var filter = getInitialFilter();
     if (filter) {
         eventsOrFilterChanged();
-        snackbarWithText('Successfully get default tweet filter.');
+        snackbarWithText('Successfully get default tweet filter.  <a href="/faq#Twitter" target="_blank">Further information</a>.');
     } else {
-        snackbarWithText('No default tweet filter found.');
+        snackbarWithText('No default tweet filter found.  <a href="/faq#Twitter" target="_blank">Further information</a>.');
     }
 }
 
@@ -285,16 +285,16 @@ function getDefaultSearchWord() {
 function deleteDefaultSearchWord() {
     var name = "defaultSearchWord";
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    snackbarWithText('Successfully delete default tweet filter.');
+    snackbarWithText('Successfully delete default tweet filter.  <a href="/faq#Twitter" target="_blank">Further information</a>.');
 }
 
 /**
  * @desc event, if in the textFilter the "Enter"-key is pressed, a corresponding function id called which starts the
  * twiiter search
  */
-$(textFilter).keypress(function (event) {
+$('#textFilter').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
-    if (keycode === '13') {
+    if (keycode == '13') {
         searchTweets();
     }
 });
