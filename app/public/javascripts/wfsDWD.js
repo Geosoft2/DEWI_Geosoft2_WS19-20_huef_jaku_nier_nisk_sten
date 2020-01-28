@@ -88,7 +88,7 @@ function changeDefaultMapExtent() {
     var bbox = boundingbox(bounds);
     var cookieValue = JSON.stringify(bbox);
     setCookie("defaultBbox", cookieValue, 1000000);
-    snackbarWithText('Successfully set new default map extent.');
+    snackbarWithText('Successfully set new default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
 }
 
 /**
@@ -100,7 +100,7 @@ function backToDefaultMapExtent() {
     if (isThereCookie === false) {
         map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
     }
-    snackbarWithText('Successfully get default map extent.');
+    snackbarWithText('Successfully get default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
 }
 
 /**
@@ -109,7 +109,7 @@ function backToDefaultMapExtent() {
 function deleteDefaultBbox() {
     var name = "defaultBbox";
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    snackbarWithText('Successfully delete default map extent.');
+    snackbarWithText('Successfully delete default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
 }
 
 /**
@@ -119,7 +119,7 @@ function setDefaultEvents() {
     var events = $('#selectEvent').val();
     var cookieValue = JSON.stringify(events);
     setCookie("defaultEvents", cookieValue, 1000000);
-    snackbarWithText('Successfully set new default weather events.');
+    snackbarWithText('Successfully set new default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
 }
 
 
@@ -131,7 +131,7 @@ function getDefaultEvents() {
     var events = getInitialEvents();
     $('.selectpicker').selectpicker('val', events);
     eventsOrFilterChanged();
-    snackbarWithText('Successfully get default weather events.');
+    snackbarWithText('Successfully get default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
 }
 
 
@@ -141,7 +141,7 @@ function getDefaultEvents() {
 function deleteDefaultEvents() {
     var name = "defaultEvents";
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    snackbarWithText('Successfully delete default weather events.');
+    snackbarWithText('Successfully delete default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
 }
 
 
