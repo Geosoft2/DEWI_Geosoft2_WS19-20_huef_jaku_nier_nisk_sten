@@ -8,15 +8,14 @@
  * @param {String} parametername
  * @returns {boolean}
  */
-const booleanValid = function(boolean, parametername) {
-  if (typeof(boolean) !== "boolean"){
-    return {error: 'Parameter \''+parametername+'\' must be a Boolean.'};
-  }
-  else{
-    return true;
-  }
+const booleanValid = function (boolean, parametername) {
+    if (typeof (boolean) !== "boolean") {
+        return {error: 'Parameter \'' + parametername + '\' must be a Boolean.'};
+    } else {
+        return true;
+    }
 };
 
 module.exports = {
-  booleanValid
+    booleanValid
 };

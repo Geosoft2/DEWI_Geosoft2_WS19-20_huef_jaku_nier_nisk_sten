@@ -13,106 +13,118 @@ const http = require('http');
 const debug = require('debug')('app:server');
 const config = require('config-yml');
 const chalk = require('chalk');
-const {stream} = require('../routes/api/v1/social/twitter/stream/twitterStream');
-const {getToken} = require('../helpers/twitter/stream');
+const {getToken, stream} = require('../helpers/twitter/stream');
 const {updateExtremeWeather} = require('../helpers/weather/dwdWFS');
 const {connectMongoDB} = require('../helpers/mongo/mongoConnection');
+const {numberValid} = require('../helpers/validation/number');
 const {isDemo} = require('../demo/config');
 
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(config.api.port);
-api.set('port', port);
+try{
+  var port = normalizePort(config.api.port);
+  api.set('port', port);
+}
+catch(err){
+  console.log(chalk.red('API-Port-Configuration is not complete respectively incorrect.'));
+  process.exit(-1);
+}
 
 /**
- * First connect to MongoDB and then start API-server, then request extreme Weather and starts Stream from Twitter
+ * checks if paramter "storageDuration" is valid, else exit server-process
  */
- connectMongoDB(async function(){
-   /**
-    * Create HTTP API-server.
-    */
-   var server = http.createServer(api);
+numberValid(config.api.social.twitter.storageDuration, 'Twitter-Configuration is not complete respectively incorrect, especially the storage-duration.');
 
-   /**
-   * Socket.io
-   */
-  var io  = require("../helpers/socket-io").io;
 
-  await getToken();
-  console.log(chalk.blue("Twitter Token generated"));
+/**
+ * Connect to MongoDB and then start API-server, then request extreme Weather and starts Stream from Twitter
+ */
+connectMongoDB(async function () {
+    /**
+     * Create HTTP API-server.
+     */
+    var server = http.createServer(api);
 
-   /**
-    * Listen on provided port, on all network interfaces.
-    */
-   server.listen(port, () =>  {
-     console.log(chalk.green.inverse("API listening on port " + port + "!"));
-     // requests the WFS service from the DWD at periodic intervals
-     updateExtremeWeather();
-     // starts Twitter-Stream
-     //stream();
-     // checks if Demo-Mode is active (and pushes some example data)
-     isDemo();
-   });
-   io.attach(server);
-   server.on('error', onError);
-   server.on('listening', onListening);
+    /**
+     * Socket.io
+     */
+    var io = require("../helpers/socket-io").io;
 
-   /**
-    * Event listener for HTTP server "error" event.
-    */
-   function onError(error) {
-     if (error.syscall !== 'listen') {
-       throw error;
-     }
+    await getToken();
+    console.log(chalk.blue("Twitter Token generated"));
 
-     var bind = typeof port === 'string'
-       ? 'Pipe ' + port
-       : 'Port ' + port;
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(port, () => {
+        // requests the WFS service from the DWD at periodic intervals
+        updateExtremeWeather();
+        // starts Twitter-Stream
+        //stream();
+        // checks if Demo-Mode is active (and pushes some example data)
+        isDemo();
+        console.log(chalk.green.inverse("API listening on port " + port + "!"));
+    });
+    io.attach(server);
+    server.on('error', onError);
+    server.on('listening', onListening);
 
-     // handle specific listen errors with friendly messages
-     switch (error.code) {
-       case 'EACCES':
-         console.error(bind + ' requires elevated privileges');
-         process.exit(1);
-         break;
-       case 'EADDRINUSE':
-         console.error(bind + ' is already in use');
-         process.exit(1);
-         break;
-       default:
-         throw error;
-     }
-   }
+    /**
+     * Event listener for HTTP server "error" event.
+     */
+    function onError(error) {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
 
-   /**
-    * Event listener for HTTP server "listening" event.
-    */
-   function onListening() {
-     var addr = server.address();
-     var bind = typeof addr === 'string'
-       ? 'pipe ' + addr
-       : 'port ' + addr.port;
-     debug('Listening on ' + bind);
-   }
+        var bind = typeof port === 'string'
+            ? 'Pipe ' + port
+            : 'Port ' + port;
 
- });
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+            case 'EACCES':
+                console.error(bind + ' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(bind + ' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+    }
+
+    /**
+     * Event listener for HTTP server "listening" event.
+     */
+    function onListening() {
+        var addr = server.address();
+        var bind = typeof addr === 'string'
+            ? 'pipe ' + addr
+            : 'port ' + addr.port;
+        debug('Listening on ' + bind);
+    }
+
+});
 
 /**
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+    var port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }

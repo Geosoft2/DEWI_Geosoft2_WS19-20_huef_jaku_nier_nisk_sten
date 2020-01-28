@@ -11,7 +11,10 @@ const io = require("../../../../../../helpers/socket-io").io;
  * @param {object} res response, to send back the desired HTTP response
  */
 const getExtremeWeather = async function (req, res) {
-    io.emit("status", req.id + ": Received")
+    io.emit("requestStatus", {
+      id: req.id,
+      message: "Received."
+    });
     var bbox = req.body.bbox;
     var events = req.body.events; // output: ['FOG', 'FROST']
     var result = await getExtremeWeatherFromMongo(bbox, events, res, req.id);

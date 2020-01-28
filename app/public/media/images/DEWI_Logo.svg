@@ -12,20 +12,22 @@
 	<!ENTITY ns_svg "http://www.w3.org/2000/svg">
 	<!ENTITY ns_xlink "http://www.w3.org/1999/xlink">
 ]>
-<svg  version="1.1" id="Ebene_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
-	 xmlns="&ns_svg;" xmlns:xlink="&ns_xlink;" width="142.313" height="117.508" viewBox="0 0 142.313 117.508"
+<svg xmlns:i="&ns_ai;" xmlns:xlink="&ns_xlink;" version="1.1"
+	 id="Ebene_1" xmlns="&ns_svg;" width="142.313" height="117.508" viewBox="0 0 142.313 117.508"
 	 overflow="visible" enable-background="new 0 0 142.313 117.508" xml:space="preserve">
 <switch>
 	<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
-		<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
+		<i:pgfRef xlink:href="#adobe_illustrator_pgf">
 		</i:pgfRef>
 	</foreignObject>
 	<g i:extraneous="self">
 		<g id="Regen">
-			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="28.563" y1="92.133" x2="38.063" y2="82.633"/>
-			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="49.813" y1="91.883" x2="59.313" y2="82.383"/>
-			
-				<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="28.313" y1="113.633" x2="37.813" y2="104.133"/>
+			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="28.563" y1="92.133"
+				  x2="38.063" y2="82.633"/>
+			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="49.813" y1="91.883"
+				  x2="59.313" y2="82.383"/>
+
+			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="28.313" y1="113.633" x2="37.813" y2="104.133"/>
 			<line fill="none" stroke="#1E5D88" stroke-width="4" stroke-linecap="round" x1="7.313" y1="113.383" x2="16.813" y2="103.883"/>
 		</g>
 		<g id="Blitz">

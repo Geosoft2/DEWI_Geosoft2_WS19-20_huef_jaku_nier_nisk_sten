@@ -3,7 +3,7 @@
 // jshint jquery: true
 // jshint esversion: 6
 "use strict";
-let socket = io('http://' + location.hostname + ':3001');
+let socket = io('http://'+ apiHost);
 
 var greenIcon = new L.Icon({
     iconUrl: '/media/images/marker-icon-green.png',
@@ -40,9 +40,14 @@ const osmlayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 });
 
 //event handler when all tiles of the background map are loaded
-osmlayer.on('load', () => { maploaded(); loading = false });
+osmlayer.on('load', () => {
+    maploaded();
+    loading = false;
+});
 var loading = false;
-osmlayer.on('loading', () => { loading = true });
+osmlayer.on('loading', () => {
+    loading = true;
+});
 
 /**
  * @desc Show a Snackbar and advances the progress bar when map is loaded
@@ -50,7 +55,7 @@ osmlayer.on('loading', () => { loading = true });
 function maploaded() {
     document.getElementById("progressbar").value += 25;
     isProgress();
-    snackbarWithText("map loaded")
+    snackbarWithText("map loaded");
 }
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -58,9 +63,13 @@ var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest
     maxZoom: 18
 });
 
-Esri_WorldImagery.on('load', () => { maploaded(); loading = false });
-var loading = false;
-Esri_WorldImagery.on('loading', () => { loading = true });
+Esri_WorldImagery.on('load', () => {
+    maploaded();
+    loading = false;
+});
+Esri_WorldImagery.on('loading', () => {
+    loading = true;
+});
 
 // list of layers which will be initally added to the map
 var baseLayers = {
@@ -69,7 +78,7 @@ var baseLayers = {
 };
 
 // add pan-control in the bottomleft of the map
-L.control.pan({ position: 'bottomright' }).addTo(map);
+L.control.pan({position: 'bottomright'}).addTo(map);
 
 /**
  * @desc function which creates a cookie if the button changeDefaultMapExtent is pushed.
@@ -79,6 +88,7 @@ function changeDefaultMapExtent() {
     var bbox = boundingbox(bounds);
     var cookieValue = JSON.stringify(bbox);
     setCookie("defaultBbox", cookieValue, 1000000);
+    snackbarWithText('Successfully set new default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
 }
 
 /**
@@ -86,13 +96,20 @@ function changeDefaultMapExtent() {
  * its the initial map extent.
  */
 function backToDefaultMapExtent() {
-    getBoundingBboxFromCookie();
-
     var isThereCookie = getBoundingBboxFromCookie();
-
-    if (isThereCookie == false) {
+    if (isThereCookie === false) {
         map.fitBounds([[54.71192884840614, 23.73046875], [46.965259400349275, -3.7353515625000004]]);
     }
+    snackbarWithText('Successfully get default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
+}
+
+/**
+ * @desc function which deletes the defaultBbox cookie
+ */
+function deleteDefaultBbox() {
+    var name = "defaultBbox";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    snackbarWithText('Successfully delete default map extent. <a href="/faq#Map" target="_blank">Further information</a>.');
 }
 
 /**
@@ -102,7 +119,31 @@ function setDefaultEvents() {
     var events = $('#selectEvent').val();
     var cookieValue = JSON.stringify(events);
     setCookie("defaultEvents", cookieValue, 1000000);
+    snackbarWithText('Successfully set new default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
 }
+
+
+/**
+ * @desc function which sets the weather events back to the defaultEvents.If there is no default weather event set by the user,
+ * its the initial weather event.
+ */
+function getDefaultEvents() {
+    var events = getInitialEvents();
+    $('.selectpicker').selectpicker('val', events);
+    eventsOrFilterChanged();
+    snackbarWithText('Successfully get default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
+}
+
+
+/**
+ * @desc function which deletes the defaultEvents cookie
+ */
+function deleteDefaultEvents() {
+    var name = "defaultEvents";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    snackbarWithText('Successfully delete default weather events. <a href="/faq#Weather" target="_blank">Further information</a>.');
+}
+
 
 var extremeWeatherGroup = L.layerGroup();
 var warnlayer;
@@ -118,9 +159,8 @@ function removeAllTweets() {
         markersInMap.splice(i, 1);
         tweetsInMap.splice(i, 1);
         i--;
-        console.log(markersInMap);
     }
-    setTweets([])
+    setTweets([]);
 }
 
 /**
@@ -141,8 +181,6 @@ function removeTweets(wfsLayers, bounds) {
             }
             tweetsInMap.splice(t, 1);
             t--;
-        } else {
-            // console.log(markersInMap[t]._leaflet_id);
         }
     }
     setTweets(tweetsInMap);
@@ -160,7 +198,7 @@ function addTweets(tweets) {
     for (var t in tweets) {   // creates a marker for each tweet and adds them to the map
         // should only add a marker if not already one with the same id exists
         if (!isMarkerAlreadyThere(tweets[t])) {
-            newTweets.push(tweets[t])
+            newTweets.push(tweets[t]);
         }
     }
 
@@ -176,8 +214,7 @@ function addTweets(tweets) {
             if (JSON.stringify(e.target._latlng) === JSON.stringify(getState('highlighted'))) {
                 setMarkerColor(null);
                 setHighlighted(null);
-            }
-            else {
+            } else {
                 setMarkerColor(e.target._latlng);
                 setHighlighted(e.target._latlng, true);
             }
@@ -186,12 +223,11 @@ function addTweets(tweets) {
         //marker.setIcon()
     }
     //highlites tweets if they should be highlited
-    setMarkerColor(getState("highlighted"))
+    setMarkerColor(getState("highlighted"));
     //advance the progress bar
     if (loading) {
         document.getElementById("progressbar").value += 25;
-    }
-    else {
+    } else {
         document.getElementById("progressbar").value = 100;
     }
     isProgress();
@@ -207,7 +243,9 @@ async function isProgress() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
     if (document.getElementById("progressbar").value === 100) {
         await delay(2000);
-        document.getElementById("progressbar").style.visibility = 'hidden';
+        if (document.getElementById("progressbar").value === 100) {
+            document.getElementById("progressbar").style.visibility = 'hidden';
+        }
     }
 }
 
@@ -223,31 +261,6 @@ function isMarkerAlreadyThere(tweet) {
         }
     }
     return false;
-}
-
-/**
- * checks if the Tweet is located in the current mapextend
- * @param {L.marker} marker to proof
- * @param {JSON} bounds to proof after
- * @returns {boolean}
- */
-function isTweetInMapextend(marker, bounds) {
-    var point = {   //convert the tweet location in a readable format for turf
-        type: 'Feature',
-        geometry: {
-            type: 'Point',
-            coordinates: [marker._latlng.lat, marker._latlng.lng]
-        },
-        properties: {}
-    };
-    var bbox = turf.polygon([[
-        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng],
-        [bounds.bbox.southWest.lat, bounds.bbox.northEast.lng],
-        [bounds.bbox.northEast.lat, bounds.bbox.northEast.lng],
-        [bounds.bbox.northEast.lat, bounds.bbox.southWest.lng],
-        [bounds.bbox.southWest.lat, bounds.bbox.southWest.lng]
-    ]]);
-    return turf.booleanWithin(point, bbox);
 }
 
 /**
@@ -318,14 +331,14 @@ function requestExtremeWeather(bbox, events) {
 
 
     return new Promise(function (resolve, restrict) {
-        const WID = "W" +idGenerator();
+        const WID = "W" + idGenerator();
         const date = new Date(Date.now());
-        addRequest({id: WID, send: date.toUTCString(), status: "Pending"})
+        addRequest({id: WID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             type: "post",
-            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
+            url: 'http://' + apiHost + '/api/v1/weather/events/dwd',
             headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
                 'X-Request-Id': WID
             },
             data: JSON.stringify({
@@ -334,7 +347,7 @@ function requestExtremeWeather(bbox, events) {
             })
         })
             .done(function (response) {
-                addRequest({id: WID, send: date.toUTCString(), status: "Success"})
+                addRequest({id: WID, send: date.toUTCString(), status: "Success"});
                 // remove existing layer
                 removeExistingLayer(warnlayer);
                 // create new layer
@@ -343,20 +356,18 @@ function requestExtremeWeather(bbox, events) {
                 extremeWeatherGroup.addLayer(warnlayer);
                 document.getElementById("progressbar").value +=25;
                 resolve(response.weatherEvents);
-                if(response.weatherEvents.features.length == 0){
+                if (response.weatherEvents.features.length === 0) {
                     document.getElementById("progressbar").value += 100;
                     isProgress();
-                    snackbarWithText("Weather data loaded. No Critical Situation found");
-                }
-                else{
-                document.getElementById("progressbar").value += 25;
-                isProgress();
-                snackbarWithText("weather data loaded");
+                    snackbarWithText("Weather data loaded.<br> No extreme weather event found.");
+                } else {
+                    document.getElementById("progressbar").value += 25;
+                    isProgress();
+                    snackbarWithText("weather data loaded");
                 }
             })
             .fail(function (err) {
-                addRequest({id: WID, send: date.toUTCString(), status: "Failed"})
-                console.log(err);
+                addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err.message);
             });
     });
@@ -383,7 +394,7 @@ function getDateTime(ISODate) {
     // example ISODate: 2020-01-23T10:35:00Z
     var DateTime;
     if (ISODate) {
-        DateTime = ISODate.substring(0,10) + ", " + ISODate.substring(11,19);
+        DateTime = ISODate.substring(0, 10) + ", " + ISODate.substring(11, 19);
     }
     return DateTime;
 }
@@ -416,7 +427,6 @@ function getFillColor(severity) {
  * @param {geoJson} data
  */
 function createLayer(data) {
-    //severities = [];
     return L.geoJson(data, {
         style: function (feature) {
             return {
@@ -430,7 +440,7 @@ function createLayer(data) {
                 '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
                 '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
                 '<p><b>' + "from: " + '</b>' + getDateTime(feature.properties.ONSET) + '</br>' +
-                 '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
+                '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
                 '<b>' + "created at : " + '</b>' + getDateTime(feature.properties.EFFECTIVE) + '</p>'),
                 {
                     autoPan: false,
@@ -562,10 +572,9 @@ function setCookie(cname, cvalue, exdays) {
 function setMarkerColor(coordinates) {
     for (var marker of markersInMap) {
         if (JSON.stringify(marker._latlng) === JSON.stringify(coordinates)) {
-            marker.setIcon(greenIcon)
-        }
-        else {
-            marker.setIcon(blueIcon)
+            marker.setIcon(greenIcon);
+        } else {
+            marker.setIcon(blueIcon);
         }
     }
 }
