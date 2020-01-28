@@ -16,7 +16,7 @@
 
   </head>
 
-  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>')">
+  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')">
 
 
 
@@ -170,6 +170,7 @@
   </div>
 
   <% include partials/footer.ejs %>
+  <% if(!cookie){%>
   <div id="white-background" class="white-background" onclick='fade(document.getElementById("white-background")); this.onclick=null'>
       <h1 id="startPage">
       The DEWI-Application uses Cookies to enhance the user experience.</br>
@@ -177,10 +178,11 @@
       Furthermore cookies are used to save user specific default values or rather basic settings.</br>
       Cookies are not passed on to third parties and are not used for other purposes.</br>
       If you continue, you agree to the above circumstances.</br>
-      To continue <font color="red">click anywhere</font>
+      To continue <font color="red">click anywhere</font>.
     </h1>
     <div id="logoStartpage"></div>
   </div>
+  <% } %>
   </body>
 </html>
 

@@ -11,7 +11,10 @@ let wfsLayer;
  * @param {*} events weather events to show in the map
  * @param {*} filter initial filter to search the tweets after
  */
-async function initial(boundingbox, events, filter) {
+async function initial(boundingbox, events, filter, cookie) {
+
+
+
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -58,6 +61,9 @@ function fade(element) {
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op -= op * 0.1;
     }, 50);
+
+    setCookie("acceptCookies", true, 100000);
+    console.log("cookie is set");
 }
 
 /**

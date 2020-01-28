@@ -3,10 +3,13 @@
 "use strict";
 
 const {demoRequest} = require('../helpers/demo');
+const {cookieExtractor} = require('../helpers/cookie');
 
 const getMainPage = function(req, res){
   console.log('real');
   // application with real data
+
+  var cookie = cookieExtractor(req,'acceptCookies');
   var bbox, events, textfilter;
   var error = [];
 
@@ -47,6 +50,7 @@ const getMainPage = function(req, res){
       bbox: bbox,
       events: events,
       textfilter: textfilter,
+      cookie: cookie,
       errormessage: error
     });
   });
@@ -57,6 +61,7 @@ const getDemoPage = function(req, res){
   console.log('demo');
   // application with demo data
 
+  var cookie = cookieExtractor(req,'acceptCookies');
   var bbox, events, textfilter;
   var error = [];
 
@@ -97,6 +102,7 @@ const getDemoPage = function(req, res){
       bbox: bbox,
       events: events,
       textfilter: textfilter,
+      cookie: cookie,
       errormessage: error
     });
   });
