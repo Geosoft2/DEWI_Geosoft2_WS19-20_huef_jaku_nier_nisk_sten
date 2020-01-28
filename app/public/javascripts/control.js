@@ -300,10 +300,18 @@ function startSocket() {
             audio.play();
         }
     });
-    socket.on('status', (text) => {
-        setStatus("lastUpdates", text);
+    socket.on('requestStatus', (status) => {
+        setStatus("lastUpdates", status);
     });
-    socket.on('weatherchanges', async function (data) {
+    socket.on('weatherStatus', (status) => {
+        if(status.success){
+          setStatus("lastWeatherUpdate", new Date(status.timestamp).toUTCString());
+        }
+        else {
+          setStatus("lastWeatherUpdate", 'Weather-Update is currently not avalaible. Last update: '+ new Date(status.timestamp).toUTCString());
+        }
+    });
+    socket.on('weatherChanges', async function (data) {
         const date = new Date(Date.now());
         setStatus("lastWeather", date.toUTCString());
         browserNotification('DEWI', 'Extreme weather events changed.');

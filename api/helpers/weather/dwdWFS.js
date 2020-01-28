@@ -9,6 +9,7 @@ const config = require('config-yml');
 const chalk = require('chalk');
 const util = require('util');
 const fs = require('fs');
+const io = require("../socket-io").io;
 const setIntervalPromise = util.promisify(setInterval);
 const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather');
 const {weatherdata} = require('../../demo/weather.js');
@@ -57,8 +58,16 @@ const requestExtremeWeather = function () {
               response.on('end', function () {
                   try {
                       var features = JSON.parse(body).features;
+                      io.emit('weatherStatus', {
+                          timestamp: Date.now(),
+                          success: true
+                      });
                       saveExtremeWeatherInMongo(features);
                   } catch (err) {
+                    io.emit('weatherStatus', {
+                        timestamp: Date.now(),
+                        success: false
+                    });
                     // parameter of WFS are incorrect. Response is a XML-File
                     if((/<\?xml.*/).test(body.trim())){
                       console.log(chalk.red('DWD-Configuration is not complete respectively incorrect, especially the parameters.'));
@@ -69,6 +78,10 @@ const requestExtremeWeather = function () {
               });
           })
           .on('error', function (err) {
+            io.emit('weatherStatus', {
+                timestamp: Date.now(),
+                success: false
+            });
             console.log(chalk.red('DWD-Configuration is not complete respectively incorrect. More info:'));
             console.log(err);
             process.exit(-1);
@@ -81,6 +94,10 @@ const requestExtremeWeather = function () {
         }
     }
     else {
+        io.emit('weatherStatus', {
+            timestamp: Date.now(),
+            success: true
+        });
         // save random weather-demo data
         var random = Math.floor(Math.random() * weatherdata.length);
         saveExtremeWeatherInMongo(weatherdata[random].features);

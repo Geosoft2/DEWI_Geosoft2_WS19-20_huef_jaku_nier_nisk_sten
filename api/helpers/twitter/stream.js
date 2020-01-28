@@ -152,11 +152,15 @@ const streamConnect = function () {
               const tweetJSON = JSON.parse(data);
               if (tweetJSON.connection_issue) {
                   stream.emit("timeout");
-                  io.emit('timeout', true);
+                  io.emit('twitterStatus', {
+                    connected: false
+                  });
 
               }
               if (tweetJSON.data) {
-                  io.emit('timeout', false);
+                  io.emit('twitterStatus', {
+                    connected: true
+                  });
                   console.log("Tweet Received");
                   const tweet = tweetJSON.data;
                   const userData = tweetJSON.includes.users[0];
@@ -198,7 +202,9 @@ const streamConnect = function () {
 
       }).on('error', error => {
           if (error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
-              io.emit('timeout', true);
+              io.emit('twitterStatus', {
+                connected: false
+              });
               stream.emit('timeout');
           }
           else {

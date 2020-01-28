@@ -38,8 +38,11 @@ const postTweet = async function (tweet) {
                 author: tweet.author,
                 media: tweet.media
             };
-            if (tweet.createdAt) { // default: Date.now()
+            if (tweet.createdAt) {
                 tweetObject.createdAt = tweet.createdAt;
+            }
+            else {
+              tweetObject.createdAt = Date.now(); // for demo-purposes
             }
             if (tweet.demo) { // default: false
                 tweetObject.demo = tweet.demo;
@@ -219,7 +222,10 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                 }
             }
             if (bbox) {
-                io.emit("status", headerId + ": Searching for Tweets in extreme weather areas");
+                io.emit("requestStatus", {
+                  id: headerId,
+                  message: "Searching for Tweets."
+                });
                 const valid = bboxValid(bbox);
                 if (valid.error) {
                     return {

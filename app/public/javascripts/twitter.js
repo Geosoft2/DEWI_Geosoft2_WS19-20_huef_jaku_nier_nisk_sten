@@ -81,7 +81,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
 class TwitterList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {tweets: [], timeout: false, highlighted: null};
+        this.state = {tweets: [], connected: true, highlighted: null};
         setTweets = this.setTweets.bind(this);
         getState = this.getState.bind(this);
         pushTweets = this.pushTweets.bind(this);
@@ -171,8 +171,9 @@ class TwitterList extends React.Component {
      */
     startSocket() {
         const self = this;
-        socket.on('timeout', function (timeout) {
-            self.setState({timeout: timeout});
+        socket.on('twitterStatus', function (status) {
+            self.setState({connected: status.connected});
+            setStatus("streamConnected", status.connected);
         });
     }
 
@@ -194,7 +195,7 @@ class TwitterList extends React.Component {
 
         var errText = [];
 
-        if (this.state.timeout) {
+        if (!this.state.connected) {
             errText.push(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."));
         }
 

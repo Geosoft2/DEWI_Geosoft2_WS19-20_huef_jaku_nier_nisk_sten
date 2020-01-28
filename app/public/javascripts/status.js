@@ -19,7 +19,7 @@ $(function () {
 class Status extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {lastTweet: null, lastWeather: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
+        this.state = {lastTweet: null, lastWeather: null, lastWeatherUpdate: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
         setStatus = this.setStatus;
         addRequest = this.addRequest;
     }
@@ -31,7 +31,7 @@ class Status extends React.Component {
             if (updates.length === 10) {
                 updates.pop();
             }
-            updates.unshift(value);
+            updates.unshift(value.id + ": " +value.message);
             this.setState({lastUpdates: updates});
         } else {
             this.setState({[state]: value});
@@ -67,8 +67,8 @@ class Status extends React.Component {
             title: "Status Informations",
             action: e(IconButton, {
                 onClick: () => hideStatus(),
-                style: {color: "red"}
-            }, e("i", {className: "fas fa-times", color: "red", style: {"font-size": "1.8em"}}))
+                style: {color: "black"}
+            }, e("i", {className: "fas fa-times", color: "black", style: {"font-size": "1.8em"}}))
         });
 
         const tableRows = [];
@@ -88,7 +88,7 @@ class Status extends React.Component {
         });
 
         const table = e("table", {className: "striped bordered hover"}, tableRows);
-        const content = e(CardContent, null, e("p", null, "Last Tweet Recived: " + self.state.lastTweet), e("p", null, "Last Weather Update: " + self.state.lastWeather), table, e("br"), e("h4", null, "Last Status recived from API"), updates);
+        const content = e(CardContent, null, e("p", null, "Last weather update: " + self.state.lastWeatherUpdate), e("p", null, "Last weather change: " + self.state.lastWeather), e("p", null, "Twitter-Stream connected: " + self.state.streamConnected), e("p", null, "Last Tweet received: " + self.state.lastTweet), table, e("br"), e("h4", null, "Last Status recived from API"), updates);
 
         return e(Card, null, header, content);
     }
