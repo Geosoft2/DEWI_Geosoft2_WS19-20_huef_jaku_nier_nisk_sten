@@ -3,7 +3,7 @@
 // jshint jquery: true
 // jshint esversion: 6
 "use strict";
-let socket = io('http://' + location.hostname + ':3001');
+let socket = io('http://'+ apiHost);
 
 var greenIcon = new L.Icon({
     iconUrl: '/media/images/marker-icon-green.png',
@@ -336,7 +336,7 @@ function requestExtremeWeather(bbox, events) {
         addRequest({id: WID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             type: "post",
-            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
+            url: 'http://' + apiHost + '/api/v1/weather/events/dwd',
             headers: {
                 "Content-Type": "application/json",
                 'X-Request-Id': WID

@@ -19,7 +19,7 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
         const date = new Date(Date.now());
         addRequest({id: TID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
-            url: "http://" + location.hostname + ':3001/api/v1/social/twitter/posts', // URL der Abfrage,
+            url: "http://" + apiHost + '/api/v1/social/twitter/post', // URL der Abfrage,
             headers: {
                 "Content-Type": "application/json",
                 'X-Request-Id': TID
@@ -27,7 +27,7 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
             data: JSON.stringify({
                 "bbox": bounds.bbox,
                 "filter": filter,
-                "extremeWeatherEvents": extremeWeatherEvents
+                "weatherEvents": extremeWeatherEvents
             }),
             type: "post"
         })
@@ -55,7 +55,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
         const date = new Date(Date.now());
         addRequest({id: TID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
-            url: "http://" + location.hostname + ':3001/api/v1/social/twitter/posts/' + id, // URL der Abfrage,
+            url: "http://" + apiHost + '/api/v1/social/twitter/post/' + id, // URL der Abfrage,
             headers: {
                 "Content-Type": "application/json",
                 'X-Request-Id': TID
@@ -63,7 +63,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
             data: JSON.stringify({
                 "bbox": bounds.bbox,
                 "filter": filter,
-                "extremeWeatherEvents": extremeWeatherEvents
+                "weatherEvents": extremeWeatherEvents
             }),
             type: "post"
         })
@@ -224,7 +224,7 @@ class TwitterList extends React.Component {
                     avatar: avatar,
                     className: "header",
                     title: e("a", {href: item.author.url, target: "_blank"}, item.author.name,),
-                    subheader: e("span", null, "Created at: " + item.createdAt, e("br"), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
+                    subheader: e("span", null, "Created at: " + new Date(item.createdAt).toUTCString(), e("br"), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
                     action: e(IconButton, {onClick: () => self.goToTweet(item.url)}, e("i", {
                         className: "fab fa-twitter icon",
                         "aria-hidden": "true"
@@ -270,6 +270,10 @@ function setDefaultSearchWord() {
  * @desc function which sets the search word back to the defaultSearchWord.
  */
 function getDefaultSearchWord() {
+    $('.tweetFilter.badge.badge-pill.badge-primary').each(function(i, obj){
+      console.log($(obj));
+      $(obj).remove();
+    });
     var filter = getInitialFilter();
     if (filter) {
         eventsOrFilterChanged();

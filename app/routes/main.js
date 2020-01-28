@@ -47,6 +47,7 @@ const getMainPage = function(req, res){
       bbox: bbox,
       events: events,
       textfilter: textfilter,
+      host: process.env.API_HOST,
       errormessage: error
     });
   });
@@ -97,6 +98,7 @@ const getDemoPage = function(req, res){
       bbox: bbox,
       events: events,
       textfilter: textfilter,
+      host: process.env.API_HOST,
       errormessage: error
     });
   });

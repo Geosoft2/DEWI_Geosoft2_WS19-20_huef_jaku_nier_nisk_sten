@@ -18,7 +18,7 @@ const postMongoSearch = async function (req, res) {
     });
     const filter = req.body.filter;
     const bbox = req.body.bbox;
-    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const extremeWeatherEvents = req.body.weatherEvents;
 
 
     const result = await mongoSearch(filter, bbox, extremeWeatherEvents);
@@ -47,7 +47,7 @@ const postMongoSearchById = async function (req, res) {
     });
     const filter = req.body.filter;
     const bbox = req.body.bbox;
-    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const extremeWeatherEvents = req.body.weatherEvents;
     const id = req.params.tweetId;
 
 
