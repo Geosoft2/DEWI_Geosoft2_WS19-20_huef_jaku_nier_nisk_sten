@@ -12,7 +12,7 @@
 
 </head>
 
-<body onload="changeIconCollapse(), isHashInUrl()" onhashchange="collapseHash()" data-spy="scroll"
+<body onload="changeIconCollapse(), isHashInUrl(), host()" onhashchange="collapseHash()" data-spy="scroll"
       data-target="#list-nav" data-offset="150">
 
 <div class="wrapper">
@@ -25,11 +25,11 @@
 
             <div class="col-sm-3">
                 <div id="list-nav" class="list-group sticky-top" style="margin-bottom: 30px;">
-                    <a class="list-group-item list-group-item-action" href="#list-item-1">General</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-2">Weather</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-3">Map</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-4">Twitter</a>
-                    <a class="list-group-item list-group-item-action" href="#list-item-5">URL</a>
+                    <a class="list-group-item list-group-item-action" href="#general">General</a>
+                    <a class="list-group-item list-group-item-action" href="#weather">Weather</a>
+                    <a class="list-group-item list-group-item-action" href="#map">Map</a>
+                    <a class="list-group-item list-group-item-action" href="#twitter">Twitter</a>
+                    <a class="list-group-item list-group-item-action" href="#url">URL</a>
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
 
                 <div id="accordion">
 
-                    <div id="list-item-1" style="margin-bottom: 30px;">
+                    <div id="general" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">General</p>
                         <div class="card" style="margin-top: 5px;">
                             <div class="card-header" data-toggle="collapse" data-target="#collapseOne"
@@ -189,8 +189,28 @@
                         </div>
                     </div>
 
-                    <div id="list-item-2" style="margin-bottom: 30px;">
+                    <div id="weather" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Weather</p>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twenty-five" data-toggle="collapse" data-target="#collapseTwenty-five"
+                                 aria-expanded="false" aria-controls="collapseTwenty-five">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What are the default extreme weather events?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwenty-five" class="collapse" aria-labelledby="Twenty-five" data-parent="#accordion">
+                                <div class="card-body">
+                                  If there is a events parameter inside the URL, it is used as the default extreme weather events. Is
+                                  there no events parameter in the URL the extreme weather events selected by the user is used as
+                                  the default extreme weather events. If the user has not selected extreme weather events, all extreme
+                                  weather events are displayed.
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="card" style="margin-top: 5px;">
                             <div class="card-header" id="Six" data-toggle="collapse" data-target="#collapseSix"
@@ -205,14 +225,13 @@
                             <div id="collapseSix" class="collapse" aria-labelledby="Six" data-parent="#accordion">
                                 <div class="card-body">
                                     You can change the displayed weather events by the "thunderstorm, wind, ..."
-                                    dropdown. In dependency
+                                    select-dropdown-menu. In dependency
                                     if the different weather events are checked, the concerning weather event is
                                     displayed in map or not.
                                     You can select them individually, delete individually, select all or delete
                                     all.</br>
                                     Furthermore you can change the default displayed weather events. After selection
-                                    like described just
-                                    before you can use the "weather events" dropdown to control the default settings:
+                                    like described above you can use the "weather events" dropdown-menu to control the default settings:
                                     <ul>
                                         <li>by "set default weather events" you set your actual selection of default
                                             weather events as the new default weather events
@@ -290,7 +309,7 @@
                         </div>
                     </div>
 
-                    <div id="list-item-3">
+                    <div id="map" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Map</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -305,8 +324,8 @@
                             </div>
                             <div id="collapseTen" class="collapse" aria-labelledby="Ten" data-parent="#accordion">
                                 <div class="card-body">
-                                    If there is a bounding box inside the URL, it is used as the default map extent. Is
-                                    there no bounding box
+                                    If there is a bounding box parameter inside the URL, it is used as the default map extent. Is
+                                    there no bounding box parameter
                                     in the URL the bounding box selected by the user is used as the default bounding
                                     box. If the user has not
                                     selected a bounding box, the bounding box of germany is used as default bounding
@@ -327,7 +346,7 @@
                             </div>
                             <div id="collapseFive" class="collapse" aria-labelledby="Five" data-parent="#accordion">
                                 <div class="card-body">
-                                    You can change the map extent by the "map extent" dropdown:
+                                    You can change the map extent by <a href="#MoveMap">moving the map</a> or by the "map extent" dropdown-menu:
                                     <ul>
                                         <li>by "set current" you set the actual map extent as default map extent</li>
                                         <li>by "get default map extent" the default map extent is set as the actual map
@@ -343,8 +362,8 @@
                         </div>
 
                         <div class="card" style="margin-top: 5px;">
-                            <div class="card-header" id="Eleven" data-toggle="collapse" data-target="#collapseEleven"
-                                 aria-expanded="true" aria-controls="collapseFour" id="Four">
+                            <div class="card-header" id="MoveMap" data-toggle="collapse" data-target="#collapseMoveMap"
+                                 aria-expanded="false" aria-controls="collapseMoveMap">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link faq-link" style="padding-left: 0px;">
                                         <span class="fa fa-plus" style="margin-right: 8px;"></span>
@@ -352,11 +371,11 @@
                                     </button>
                                 </h5>
                             </div>
-                            <div id="collapseEleven" class="collapse" aria-labelledby="Eleven" data-parent="#accordion">
+                            <div id="collapseMoveMap" class="collapse" aria-labelledby="MoveMap" data-parent="#accordion">
                                 <div class="card-body">
-                                    You can move the map by scrolling and zooming with your mouse if possible. An other
+                                    You can move the map by scrolling (zooming) and moving your mouse with pressed left mouse button on the map (panning) if possible. An other
                                     possibility
-                                    is to use the zoom in the upper left corner of the map and the pan in the lower
+                                    is to use the zoom-button in the upper left corner of the map and the pan-button in the lower
                                     right corner, which
                                     you both can control by clicking.
                                 </div>
@@ -449,8 +468,7 @@
                         </div>
                     </div>
 
-                    <br>
-                    <div id="list-item-4">
+                    <div id="twitter" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Twitter</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -467,8 +485,8 @@
                             <div id="collapseEighteen" class="collapse" aria-labelledby="Eighteen"
                                  data-parent="#accordion">
                                 <div class="card-body">
-                                    If there is a search term inside the URL, it is used as the default search filter.
-                                    Is there no search term in the URL the search filter selected by the user is used as the default search filter.
+                                    If there is a textfilter parameter inside the URL, it is used as the default search filter.
+                                    Is there no textfilter parameter in the URL the search filter selected by the user is used as the default search filter.
                                     If the user has not selected a search filter, all tweets that are located in the
                                     warning area are displayed.
                                 </div>
@@ -583,8 +601,8 @@
                             </div>
                         </div>
                     </div>
-                    <br>
-                    <div id="list-item-5">
+
+                    <div id="url" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">URL</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -593,13 +611,23 @@
                                 <h5 class="mb-0">
                                     <button class="btn btn-link faq-link" style="padding-left: 0px;">
                                         <span class="fa fa-plus" style="margin-right: 8px;"></span>
-                                        ...
+                                        How is the URL constructed?
                                     </button>
                                 </h5>
                             </div>
                             <div id="collapseTwenty-four" class="collapse" aria-labelledby="Twenty-four" data-parent="#accordion">
                                 <div class="card-body">
-                                    ...
+                                    The URL consists of
+                                    <ul>
+                                      <li>a protocol: http</li>
+                                      <li>a host: <host></host></li>
+                                      <li>and optional parameters: bbox, events, textfilter</li>
+                                    </ul>
+                                    The optional parameters are appended to the main URL (<a class="host" target="_blank" href="http://">http://<host></host></a>) with a "?". Several parameters are connected by a "&".
+                                    You can assign a value to a parameter by inserting a "=" between parameter name and parameter value.
+                                    <p>Example:
+                                      <br><a id="host" class="host" target="_blank" href='http://?bbox=1.582,47.2643,23.4229,53.5534&events=["RAIN","FROST"]&textfilter=["rain"]'>http://<host></host>?bbox=1.582,47.2643,23.4229,53.5534&events=["RAIN","FROST"]&textfilter=["rain"]</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -29,6 +29,9 @@ const saveDemoTweets = async function () {
  *  not active: deletes all Demo-Tweets and request the "normal" weather-data
  */
 const isDemo = function () {
+    // default at server-start: demo is deactivated
+    var content = {demo: false};
+    fs.writeFileSync(path.join(__dirname, 'isDemo.json'), JSON.stringify(content));
     // watch isDemo.js file in process.cwd()
     gaze(path.join(__dirname, 'isDemo.json'), function (err, watcher) {
         this.on('changed', async function (filepath) {

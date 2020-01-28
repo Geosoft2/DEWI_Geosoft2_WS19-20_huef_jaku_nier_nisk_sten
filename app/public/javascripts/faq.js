@@ -42,3 +42,15 @@ function collapseHash(){
   var hash = window.location.hash.substring(1);
   $('#collapse'+hash).collapse('show');
 }
+
+
+function host() {
+  var host = location.host;
+  $('host').text(host);
+  $('a.host').each(function(i, obj){
+    var href = $(obj).attr('href');
+    console.log(href.split('//')[0]);
+    console.log(href.split('//')[1]);
+    $(obj).attr('href', href.split('//')[0]+'//'+host+href.split('//')[1]);
+  });
+}
