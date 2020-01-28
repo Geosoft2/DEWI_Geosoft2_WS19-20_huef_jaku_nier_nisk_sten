@@ -67,7 +67,9 @@ api:
             # @see: https://developer.twitter.com/en/docs/basics/authentication/api-reference/token
             token: # /oauth2/token
             # @see: https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
-            stream: # /labs/1/tweets/stream/filter
+            stream:
+              filter: # /labs/1/tweets/stream/filter
+              rules: # /labs/1/tweets/stream/filter/rules
         parameter:
           # further information: @see https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
           stream:
