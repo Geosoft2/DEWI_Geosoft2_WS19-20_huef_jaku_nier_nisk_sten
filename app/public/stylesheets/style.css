@@ -281,6 +281,7 @@ th {
     background: rgba(255,255,255,0.8);
     border-radius: 5px;
     padding: 6px 8px;
+    position: absolute;
 }
 .legend i {
     width: 18px;

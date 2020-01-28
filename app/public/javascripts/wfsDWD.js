@@ -340,7 +340,7 @@ function requestExtremeWeather(bbox, events) {
                 // create new layer
                 warnlayer = createLayer(response.weatherEvents);
                 // add layer to layerGroup and map
-                extremeWeatherGroup.addLayer(warnlayer).addTo(map);
+                extremeWeatherGroup.addLayer(warnlayer);
                 document.getElementById("progressbar").value +=25;
                 resolve(response.weatherEvents);
                 if(response.weatherEvents.features.length == 0){
@@ -383,38 +383,40 @@ function getDateTime(ISODate) {
     return DateTime;
 }
 
+
 function getFillColor(severity) {
-    var color = "green";
-    if(severity =="Minor") {
-        color = "yellow"
+    var color;
+    if(severity ==="Minor") {
+        color = "yellow";
     }
-    if(severity == "Moderate") {
+    if(severity === "Moderate") {
         color = "orange"
     }
-    if(severity == "Severe") {
+    if(severity === "Severe") {
         color = "#cc0000"
     }
-    if(severity == "Extreme") {
+    if(severity === "Extreme") {
         color = "purple"
     }
     return color;
 }
+
 
 /**
  * @desc creates a layer from GeoJson
  * @param {geoJson} data
  */
 function createLayer(data) {
+    //severities = [];
     return L.geoJson(data, {
         style: function (feature) {
             return {
                 stroke: false,
                 fillColor: getFillColor(feature.properties.SEVERITY),
-                fillOpacity: 0.5
+                fillOpacity: 0.4
             };
         },
         onEachFeature: function (feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p><p>' + feature.properties.IDENTIFIER + '</p>');
             layer.bindPopup(('<h5>' + feature.properties.HEADLINE + '</h5>' +
                 '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
                 '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
@@ -422,36 +424,19 @@ function createLayer(data) {
                  '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
                 '<b>' + "created at : " + '</b>' + getDateTime(feature.properties.EFFECTIVE) + '</p>'),
                 {
-                    autoPan: false
+                    autoPan: false,
+                    autoClose: false
                 }
             );
-            console.log(feature);
         }
     });
 }
 
-var legend = L.control({position: 'bottomleft'});
+// legend.addTo(map);
 
-legend.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info legend'),
-        colors = ['yellow', 'orange', '#cc0000', 'purple'],
-        labels = ['Minor', 'Moderate', 'Severe', 'Extreme'];
-    div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
-
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < colors.length; i++) {
-        div.innerHTML +=
-            '<i style="background:' + colors[i] + '"></i> ' +
-            labels[i] + '<br>';
-    }
-    div.innerHTML += "(Colors might differ" + '<br>' + "at overlapping areas)";
-
-    return div;
-};
-
-legend.addTo(map);
-
+extremeWeatherGroup.addTo(map);
+/**
+*/
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
 radarlayer = L.tileLayer.wms(rootUrl, {
@@ -460,16 +445,82 @@ radarlayer = L.tileLayer.wms(rootUrl, {
     // sld: 'https://eigenerserver/alternativer.sld',
     format: 'image/png',
     transparent: true,
-    opacity: 0.8,
+    opacity: 0.5,
     attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
-}).addTo(map);
+});
 
 var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,
     "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
 };
+
 // Layercontrol-Element erstellen und hinzufügen
 L.control.layers(baseLayers, overLayers).addTo(map);
+
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            colors = ['yellow', 'orange', '#cc0000', 'purple'],
+            labels = ["Minor", "Moderate", "Severe", "Extreme"];
+        div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
+
+        for (var i = 0; i < labels.length; i++) {
+            //console.log(severities);
+            //if (severities.includes(labels[i])) {
+            div.innerHTML +=
+                '<i style="background:' + colors[i] + '"></i> ' +
+                labels[i] + '<br>';
+            //}
+        }
+        div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
+
+        div.innerHTML += "Source: DWD" + '<br>'
+            + "Accuracy: " + '<br>' + "communal level";
+
+        return div;
+
+};
+
+var radarLegend = L.control({position: 'bottomleft'});
+
+radarLegend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info radarlegend');
+    div.innerHTML +=
+        '<img src="media/images/radar_legend.png" alt="precipitation radar legend" width="300" height="50" style="opacity: 0.8">';
+
+    return div;
+
+};
+
+
+map.on('overlayadd', function (eventLayer) {
+    // Switch to the Population legend...
+    if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
+        // map.removeControl(legend);
+        legend.addTo(this);
+    }
+    if (eventLayer.name === "<span title='show percipitation radar'>percipitation radar</span>") {
+        // map.removeControl(legend);
+        map.removeControl(radarLegend);
+        radarLegend.addTo(this);
+        legend.addTo(this);
+    }
+});
+
+map.on('overlayremove', function (eventLayer) {
+    // Switch to the Population legend...
+    if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
+        map.removeControl(legend);
+    }
+    if (eventLayer.name === "<span title='show percipitation radar'>percipitation radar</span>") {
+        map.removeControl(radarLegend);
+    }
+});
+
+
 
 /**
  * @desc function for creating a new cookie
