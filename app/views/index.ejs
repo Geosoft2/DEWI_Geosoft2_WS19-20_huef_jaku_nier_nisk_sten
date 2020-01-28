@@ -32,7 +32,7 @@
                 <div class="col-12">
                     <div style="margin-top: 0px;"
                          class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <%= errormessage[0] %>
+                        <%= errormessage[0][0] %> <a href="<%= errormessage[0][1] %>" target="_blank"><%= errormessage[0][2] %></a><%= errormessage[0][3] %>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -40,7 +40,7 @@
                     <% for(var i = 1; i < errormessage.length; i++) { %>
                         <div style="margin-top: 10px;"
                              class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <%= errormessage[i] %>
+                            <%= errormessage[i][0] %> <a href="<%= errormessage[i][1] %>" target="_blank"><%= errormessage[i][2] %></a><%= errormessage[i][3] %>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>

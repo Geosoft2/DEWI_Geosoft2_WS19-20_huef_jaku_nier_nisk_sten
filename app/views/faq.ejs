@@ -13,7 +13,7 @@
 </head>
 
 <body onload="changeIconCollapse(), isHashInUrl(), host()" onhashchange="collapseHash()" data-spy="scroll"
-      data-target="#list-nav" data-offset="150">
+      data-target="#list-nav" data-offset="160">
 
 <div class="wrapper">
 
@@ -25,11 +25,11 @@
 
             <div class="col-sm-3">
                 <div id="list-nav" class="list-group sticky-top" style="margin-bottom: 30px;">
-                    <a class="list-group-item list-group-item-action" href="#general">General</a>
-                    <a class="list-group-item list-group-item-action" href="#weather">Weather</a>
-                    <a class="list-group-item list-group-item-action" href="#map">Map</a>
-                    <a class="list-group-item list-group-item-action" href="#twitter">Twitter</a>
-                    <a class="list-group-item list-group-item-action" href="#url">URL</a>
+                    <a class="list-group-item list-group-item-action" href="#General">General</a>
+                    <a class="list-group-item list-group-item-action" href="#Weather">Weather</a>
+                    <a class="list-group-item list-group-item-action" href="#Map">Map</a>
+                    <a class="list-group-item list-group-item-action" href="#Twitter">Twitter</a>
+                    <a class="list-group-item list-group-item-action" href="#Url">URL</a>
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
 
                 <div id="accordion">
 
-                    <div id="general" style="margin-bottom: 30px;">
+                    <div id="General" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">General</p>
                         <div class="card" style="margin-top: 5px;">
                             <div class="card-header" data-toggle="collapse" data-target="#collapseOne"
@@ -189,7 +189,7 @@
                         </div>
                     </div>
 
-                    <div id="weather" style="margin-bottom: 30px;">
+                    <div id="Weather" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Weather</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -309,7 +309,7 @@
                         </div>
                     </div>
 
-                    <div id="map" style="margin-bottom: 30px;">
+                    <div id="Map" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Map</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -468,7 +468,7 @@
                         </div>
                     </div>
 
-                    <div id="twitter" style="margin-bottom: 30px;">
+                    <div id="Twitter" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">Twitter</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -602,7 +602,7 @@
                         </div>
                     </div>
 
-                    <div id="url" style="margin-bottom: 30px;">
+                    <div id="Url" style="margin-bottom: 30px;">
                         <p style="font-weight: bold; font-size: 20px;">URL</p>
 
                         <div class="card" style="margin-top: 5px;">
@@ -628,6 +628,142 @@
                                     <p>Example:
                                       <br><a id="host" class="host" target="_blank" href='http://?bbox=1.582,47.2643,23.4229,53.5534&events=["RAIN","FROST"]&textfilter=["rain"]'>http://<host></host>?bbox=1.582,47.2643,23.4229,53.5534&events=["RAIN","FROST"]&textfilter=["rain"]</a>
                                     </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="Twenty-five" data-toggle="collapse" data-target="#collapseTwenty-five"
+                                 aria-expanded="false" aria-controls="collapseTwenty-five">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        Why does the URL change?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwenty-five" class="collapse" aria-labelledby="Twenty-five" data-parent="#accordion">
+                                <div class="card-body">
+                                    The URL changes after each change of a setting (map-extent, extreme weather events, textfilter).
+                                    The advantage is that you can share the URL to other users so that they automatically have the same settings as you currently have it.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="ParameterBbox" data-toggle="collapse" data-target="#collapseParameterBbox"
+                                 aria-expanded="false" aria-controls="collapseParameterBbox">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the syntax of the "bbox" parameter?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseParameterBbox" class="collapse" aria-labelledby="ParameterBbox" data-parent="#accordion">
+                                <div class="card-body">
+                                  The "bbox" parameter expects an enumeration of two coordinates separated by a comma.
+                                  A distinction is made between longitude and latitude.
+                                  <br>Scheme: bbox=&lt;longitude&gt;, &lt;latitude&gt;, &lt;longitude&gt;, &lt;latitude&gt;
+                                  <br>The value of longitude must be between 180 and -180, the value of latitude between 90 and -90.
+
+                                  <br>Example: <a id="host" class="host" target="_blank" href='http://?bbox=5.9958,51.599,8.7259,52.3602'>http://<host></host>?bbox=5.9958,51.599,8.7259,52.3602</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="ParameterEvents" data-toggle="collapse" data-target="#collapseParameterEvents"
+                                 aria-expanded="false" aria-controls="collapseParameterEvents">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the syntax of the "events" parameter?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseParameterEvents" class="collapse" aria-labelledby="ParameterEvents" data-parent="#accordion">
+                                <div class="card-body">
+                                  The "events" parameter expects an array of strings.
+                                  <br>Scheme: events=[&lt;string&gt;, &lt;string&gt;]
+                                  <br>Only the strings from the following list have influence on the settings otherwise the string is
+                                  ignored. This means that no event will be selected for an array of unknown strings.
+                                  <br>Be careful: these strings are case sensitive.
+                                  <p>
+                                  <ul>
+                                    <li>THUNDERSTORM</li>
+                                    <li>WIND</li>
+                                    <li>TORNADO</li>
+                                    <li>RAIN</li>
+                                    <li>HAIL</li>
+                                    <li>SNOWFALL</li>
+                                    <li>SNOWDRIFT</li>
+                                    <li>FOG</li>
+                                    <li>FROST</li>
+                                    <li>GLAZE</li>
+                                    <li>THAW</li>
+                                    <li>POWERLINEVIBRATION</li>
+                                    <li>UV</li>
+                                    <li>HEAT</li>
+                                  </ul>
+                                  </p>Example: <a id="host" class="host" target="_blank" href='http://?events=["WIND"]'>http://<host></host>?events=["WIND"]</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="ParameterTextFilter" data-toggle="collapse" data-target="#collapseParameterTextFilter"
+                                 aria-expanded="false" aria-controls="collapseParameterTextFilter">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the syntax of the "textfilter" parameter?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseParameterTextFilter" class="collapse" aria-labelledby="ParameterTextFilter" data-parent="#accordion">
+                                <div class="card-body">
+                                  The "textfilter" parameter expects an array of strings.
+                                  <br>Scheme: textfilter=[&lt;string&gt;, &lt;string&gt;]
+                                  <br>Be careful that some special characters are only valid in <a href="https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding" target="_blank">urlencoded syntax</a>, otherwise a syntax error is thrown and the default values are used.
+                                  <br>Example: <a id="host" class="host" target="_blank" href='http://?textfilter=["rain"]'>http://<host></host>?textfilter=["rain"]</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="SyntaxError" data-toggle="collapse" data-target="#collapseSyntaxError"
+                                 aria-expanded="false" aria-controls="collapseSyntaxError">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What happens if a syntax error occurs?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseSyntaxError" class="collapse" aria-labelledby="SyntaxError" data-parent="#accordion">
+                                <div class="card-body">
+                                  In case of a syntax error, your parameter in the URL is ignored
+                                  and the default value is taken.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 5px;">
+                            <div class="card-header" id="UrlAdvantage" data-toggle="collapse" data-target="#collapseUrlAdvantage"
+                                 aria-expanded="false" aria-controls="collapseUrlAdvantage">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link faq-link" style="padding-left: 0px;">
+                                        <span class="fa fa-plus" style="margin-right: 8px;"></span>
+                                        What is the advantage of a URL with attached parameters?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseUrlAdvantage" class="collapse" aria-labelledby="UrlAdvantage" data-parent="#accordion">
+                                <div class="card-body">
+                                  As soon as a "bbox", "events" or "textfilter" parameter is used, the parameter
+                                  values are preferred over the default values. Furthermore, a URL with
+                                  attached parameters allows you to share your settings with other users.
                                 </div>
                             </div>
                         </div>

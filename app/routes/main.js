@@ -18,7 +18,7 @@ const getMainPage = function(req, res){
       bbox = req.query.bbox;
     }
     else{
-      error.push('The syntax of the given parameter "bbox" was wrong, therefore the default BBOX were queried initially. More information...');
+      error.push(['The syntax of the given parameter "bbox" was wrong, therefore the default BBOX were queried initially.','/faq#ParameterBbox', 'More information', '.']);
     }
   }
 
@@ -28,7 +28,7 @@ const getMainPage = function(req, res){
       events = req.query.events;
     }
     else{
-      error.push('The syntax of the given parameter "events" was wrong, therefore the default events were queried initially. More information...');
+      error.push(['The syntax of the given parameter "events" was wrong, therefore the default events were queried initially.','/faq#ParameterEvents', 'More information', '.']);
     }
   }
 
@@ -38,7 +38,7 @@ const getMainPage = function(req, res){
       textfilter = req.query.textfilter;
     }
     else{
-      error.push('The syntax of the given parameter "textfilter" was wrong, therefore the default filter were queried initially. More information...');
+      error.push(['The syntax of the given parameter "textfilter" was wrong, therefore the default text filter were queried initially.','/faq#ParameterTextFilter', 'More information', '.']);
     }
   }
   demoRequest(false, function(){
@@ -68,7 +68,7 @@ const getDemoPage = function(req, res){
       bbox = req.query.bbox;
     }
     else{
-      error.push('The syntax of the given parameter "bbox" was wrong, therefore the default BBOX were queried initially. More information...');
+      error.push(['The syntax of the given parameter "bbox" was wrong, therefore the default BBOX were queried initially.','/faq#ParameterBbox', 'More information', '.']);
     }
   }
 
@@ -78,7 +78,7 @@ const getDemoPage = function(req, res){
       events = req.query.events;
     }
     else{
-      error.push('The syntax of the given parameter "events" was wrong, therefore the default events were queried initially. More information...');
+      error.push(['The syntax of the given parameter "events" was wrong, therefore the default events were queried initially.','/faq#ParameterEvents', 'More information', '.']);
     }
   }
 
@@ -88,7 +88,7 @@ const getDemoPage = function(req, res){
       textfilter = req.query.textfilter;
     }
     else{
-      error.push('The syntax of the given parameter "textfilter" was wrong, therefore the default filter were queried initially. More information...');
+      error.push(['The syntax of the given parameter "textfilter" was wrong, therefore the default text filter were queried initially.','/faq#ParameterTextFilter', 'More information', '.']);
     }
   }
   demoRequest(true, function(){
