@@ -374,6 +374,11 @@ function removeExistingLayer(layer) {
     }
 }
 
+/**
+ * convert ISO normed date to an user readable date
+ * @param ISODate
+ * @returns {string}
+ */
 function getDateTime(ISODate) {
     // example ISODate: 2020-01-23T10:35:00Z
     var DateTime;
@@ -383,7 +388,11 @@ function getDateTime(ISODate) {
     return DateTime;
 }
 
-
+/**
+ * get the color with which the area will be filled in dependence to the severity
+ * @param severity
+ * @returns {string}
+ */
 function getFillColor(severity) {
     var color;
     if(severity ==="Minor") {
@@ -432,11 +441,9 @@ function createLayer(data) {
     });
 }
 
-// legend.addTo(map);
-
 extremeWeatherGroup.addTo(map);
-/**
-*/
+
+
 // request percipitation radar wms from dwd and add it to the map
 var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
 radarlayer = L.tileLayer.wms(rootUrl, {
@@ -459,6 +466,11 @@ L.control.layers(baseLayers, overLayers).addTo(map);
 
 var legend = L.control({position: 'bottomleft'});
 
+/**
+ * create legend for the extreme weather events
+ * @param map
+ * @returns {div}
+ */
 legend.onAdd = function (map) {
 
         var div = L.DomUtil.create('div', 'info legend'),
@@ -467,12 +479,9 @@ legend.onAdd = function (map) {
         div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
 
         for (var i = 0; i < labels.length; i++) {
-            //console.log(severities);
-            //if (severities.includes(labels[i])) {
             div.innerHTML +=
                 '<i style="background:' + colors[i] + '"></i> ' +
                 labels[i] + '<br>';
-            //}
         }
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
@@ -485,6 +494,11 @@ legend.onAdd = function (map) {
 
 var radarLegend = L.control({position: 'bottomleft'});
 
+/**
+ * create legend for the precipitation radar
+ * @param map
+ * @returns {div}
+ */
 radarLegend.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info radarlegend');
@@ -495,7 +509,9 @@ radarLegend.onAdd = function (map) {
 
 };
 
-
+/**
+ * add legend if the respective layer is shown in the map
+ */
 map.on('overlayadd', function (eventLayer) {
     // Switch to the Population legend...
     if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
@@ -510,6 +526,9 @@ map.on('overlayadd', function (eventLayer) {
     }
 });
 
+/**
+ * remove legend if the respective layer is hidden from the map
+ */
 map.on('overlayremove', function (eventLayer) {
     // Switch to the Population legend...
     if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
