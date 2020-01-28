@@ -196,7 +196,7 @@ class TwitterList extends React.Component {
         var errText = [];
 
         if (!this.state.connected) {
-            errText.push(e("p", null, "Lost Connection to Twitter Stream. Reconnecting ..."));
+            errText.push(e("p", {style: {minHeight: '10vh', marginBottom: '0px'}}, "Lost Connection to Twitter Stream. Reconnecting ..."));
         }
 
         if (this.state.tweets.length !== 0) {
@@ -248,8 +248,8 @@ class TwitterList extends React.Component {
         } else {
             errText.push(e("p", null, "No tweets in extreme weather areas available!"));
         }
-
-        const list = e(Paper, {id: "list", style: {"max-height": "60vh"}}, cards);
+        const height = this.state.connected? {maxHeight: '60vh'}: {maxHeight: '50vh'};
+        const list = e(Paper, {id: "list", style: height}, cards);
         return e("div", null, errText, list);
     }
 }

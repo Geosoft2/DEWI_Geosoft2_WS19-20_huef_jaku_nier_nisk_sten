@@ -68,7 +68,7 @@ class Status extends React.Component {
             action: e(IconButton, {
                 onClick: () => hideStatus(),
                 style: {color: "black"}
-            }, e("i", {className: "fas fa-times", color: "black", style: {"font-size": "1.8em"}}))
+            }, e("i", {className: "fas fa-times", color: "black", style: {"fontSize": "1.8em"}}))
         });
 
         const tableRows = [];
