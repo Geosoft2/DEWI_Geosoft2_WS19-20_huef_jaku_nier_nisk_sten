@@ -34,11 +34,8 @@ const getPlaceInformation = function (placeInformation) {
     }
     return {
         "name": placeInformation.full_name,
-        "coordinates": {
-            "lat": ((placeInformation.geo.bbox[1] + placeInformation.geo.bbox[3]) / 2),
-            "lng": ((placeInformation.geo.bbox[0] + placeInformation.geo.bbox[2]) / 2)
-        },
-        accuracy: accuracy
+        "bbox": placeInformation.geo.bbox,
+        "accuracy": accuracy
     };
 };
 

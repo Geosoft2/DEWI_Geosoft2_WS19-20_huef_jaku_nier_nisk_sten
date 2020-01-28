@@ -184,7 +184,7 @@ const streamConnect = function () {
                       mongoDB.geometry.coordinates = tweet.geo.coordinates.coordinates;
                   } else {
                       const place = getPlaceInformation(tweetJSON.includes.places[0]);
-                      mongoDB.geometry.coordinates = [place.coordinates.lng, place.coordinates.lat];
+                      mongoDB.geometry.coordinates = [((place.bbox[0] + place.bbox[2]) / 2), ((place.bbox[1] + place.bbox[3]) / 2)];
                       mongoDB.place = place;
                       mongoDB.accuracy = (place.accuracy / 1000).toFixed(2);
                   }

@@ -293,7 +293,7 @@ function startSocket() {
         var bounds = map.getBounds();
         bounds = boundingbox(bounds);
         var filter = getTweetFilters();
-        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet.tweetId);
+        var twitterResponse = await twitterSearchOne(bounds, filter, wfsLayer, tweet.tweet.tweetId);
         if (!jQuery.isEmptyObject(twitterResponse)) {
             addTweets([twitterResponse]);
             var audio = new Audio('/media/audio/twitter-notification-sound.mp3');

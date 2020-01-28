@@ -47,7 +47,9 @@ const postTweet = async function (tweet) {
             var newTweet = new Tweet(tweetObject);
             try {
                 var savedTweet = await newTweet.save();
-                io.emit('tweet', savedTweet);
+                io.emit('tweet', {
+                  tweet: savedTweet
+                });
                 return "tweet stored in db.";
             } catch (e) {
                 return e;

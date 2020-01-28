@@ -62,8 +62,10 @@ const saveExtremeWeatherInMongo = async function (features) {
             deleted: deletedEvent.deletedCount
         };
         if (newEvent + deletedEvent.deletedCount > 0) {
+            var events = await ExtremeWeather.find({});
             io.emit('weatherchanges', {
-                stats: stats
+                stats: stats,
+                weatherEvents: makeGeoJSonFromFeatures(events)
             });
             emailNotification(stats);
             mattermostNotification(stats);
