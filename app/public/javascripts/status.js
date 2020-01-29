@@ -10,11 +10,11 @@ let setStatus = () => {
 let addRequest = () => {
 };
 
-showStatus = () => {
+let showStatus = () => {
     $('#status')[0].style.visibility = 'visible';
 };
 
-hideStatus = () => {
+let hideStatus = () => {
     $('#status')[0].style.visibility = 'hidden';
 };
 

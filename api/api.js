@@ -8,6 +8,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
 const path = require('path');
+const logger = require('morgan');
 
 const addRequestId = require('express-request-id')();
 
@@ -18,11 +19,13 @@ const api = express();
 api.set('views', path.join(__dirname, 'views'));
 api.set('view engine', 'ejs');
 
-api.use("/logo", express.static(__dirname + "/logo/"));
+api.use(logger('dev'));
 api.use(express.json({limit: '50mb'})); // for parsing application/json
 api.use(cookieParser());
 api.use(addRequestId);
 api.use(cors());
+
+api.use("/logo", express.static(__dirname + "/logo/"));
 
 // setup routes
 // @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491

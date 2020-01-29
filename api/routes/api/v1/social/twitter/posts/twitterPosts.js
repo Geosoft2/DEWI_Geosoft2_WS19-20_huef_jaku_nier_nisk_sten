@@ -38,7 +38,6 @@ const postMongoSearch = async function (req, res) {
         });
     } else {
         const result2 = {tweets: result};
-        console.log("sending result");
         res.status(200).json(result2);
     }
 
@@ -71,7 +70,6 @@ const postMongoSearchById = async function (req, res) {
             message: result.error.message
         });
     } else {
-        console.log("sending result");
         res.status(200).json({tweet: result});
     }
 };

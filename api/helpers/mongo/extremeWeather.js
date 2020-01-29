@@ -52,7 +52,7 @@ const saveExtremeWeatherInMongo = async function (features) {
                     newEvent += 1;
                 }
             } catch (err) {
-                console.log(chalk.red('Error while storing data in MongoDB.'));
+                console.log(chalk.red('Error while storing weather data in database.'));
             }
         }
         var deletedEvent = await ExtremeWeather.deleteMany({_id: {$not: {$in: id}}});
@@ -70,13 +70,12 @@ const saveExtremeWeatherInMongo = async function (features) {
             emailNotification(stats);
             mattermostNotification(stats);
         }
-        console.log(chalk.green(JSON.stringify({
-            message: 'Everything is updated or stored.',
+        console.log(chalk.green('Weather data successfully updated. '+JSON.stringify({
             stats: stats
         })));
     } else {
         await ExtremeWeather.deleteMany({});
-        console.log(chalk.green('No data - nothing to store.'));
+        console.log(chalk.green('No weather data - nothing to store.'));
     }
 };
 
@@ -114,7 +113,6 @@ const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
         // optional search-parameter events
         if (events) {
             const valid = stringArrayValid(events, 'events');
-            console.log(valid);
             if (valid.error) {
                 return {
                     error: {

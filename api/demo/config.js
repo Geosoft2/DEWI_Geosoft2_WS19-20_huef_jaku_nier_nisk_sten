@@ -35,7 +35,6 @@ const isDemo = function () {
     // watch isDemo.js file in process.cwd()
     gaze(path.join(__dirname, 'isDemo.json'), function (err, watcher) {
         this.on('changed', async function (filepath) {
-            console.log(filepath + ' was changed');
             requestExtremeWeather();
             await deleteDemoTweets(); // ensure that every demodata is deleted
             if (JSON.parse(fs.readFileSync(path.join(__dirname, 'isDemo.json'))).demo) {

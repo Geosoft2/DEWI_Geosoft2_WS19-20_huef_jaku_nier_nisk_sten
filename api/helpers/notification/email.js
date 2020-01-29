@@ -50,7 +50,6 @@ const emailNotification = function (weatherChanges) {
     if(!from){
       from = config.api.notification.email.from.address; // default email adress without any additions
     }
-    console.log(from);
     var mailOptions = {
         from: from, // sender address
         to: config.api.notification.email.to.receiver, // list of receivers

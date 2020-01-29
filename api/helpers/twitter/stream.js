@@ -170,7 +170,6 @@ const streamConnect = function () {
                   io.emit('twitterStatus', {
                     connected: true
                   });
-                  console.log("Tweet Received");
                   const tweet = tweetJSON.data;
                   const userData = tweetJSON.includes.users[0];
                   const author = getUserInformation(userData);
