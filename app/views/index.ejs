@@ -17,9 +17,15 @@
 
   </head>
 
-  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')">
+  <% if(cookie) { %>
 
+  <body id="body" onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')" style="overflow:auto;">
 
+  <% } else { %>
+
+  <body id="body" onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')">
+
+  <% } %>
 
   <div class="wrapper">
 

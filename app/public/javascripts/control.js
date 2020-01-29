@@ -64,6 +64,8 @@ function fade(element) {
 
     setCookie("acceptCookies", true, 100000);
     console.log("cookie is set");
+
+    document.getElementById("body").style.overflow="auto";
 }
 
 /**
