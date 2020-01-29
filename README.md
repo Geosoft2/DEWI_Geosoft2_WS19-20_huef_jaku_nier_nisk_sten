@@ -73,13 +73,7 @@ Eaxample Test Run with 100 iterations and an json response object.
 ```
 newman run <Folder> -n 100 -r json,cli --reporter-json-export <path>
 ```
-A result of this performance test, conducted by ourselves, is provided as ``result.json``.
-```
-DEWI_Geosoft2_WS19-20_huef_jaku_nier_nisk_sten
-└── api
-    └── test
-        └── result.json
-```
+A result of this performance test, conducted by ourselves, can be downloaded [here](https://uni-muenster.sciebo.de/s/2Y1jwnNJUjU7vzg/download).
 
 
 Further information about [newman](https://www.npmjs.com/package/newman).
@@ -101,4 +95,4 @@ A demo with test data supplied can be accessed via [localhost:3000/demo](http://
 * Nick Jakuschona
 * Tom Niers
 * Luc Niski
-* Jan Sgenkamp
+* Jan Stenkamp
