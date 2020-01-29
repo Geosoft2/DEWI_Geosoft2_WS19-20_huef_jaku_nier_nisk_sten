@@ -60,11 +60,11 @@ api:
     twitter:
       app:
         url:
-          protocol: https
-          hostname: twitter.com
+          protocol: # https
+          hostname: # twitter.com
           # always start with a slash (/)
           # tweet
-          path: /i/status
+          path: # /i/status
       api:
         url:
           protocol: # https
