@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/tnier01/Geosoft2_WS19-20_huef_jaku_nier_nisk_sten#readme",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
     "@material-ui/core": "^4.6.1",
     "@turf/turf": "^5.1.6",
     "bootstrap": "^4.3.1",
@@ -33,10 +34,8 @@
     "jquery": "^3.4.1",
     "jquery-ui-dist": "^1.12.1",
     "leaflet": "^1.5.1",
-    "leaflet-easybutton": "^2.4.0",
     "leaflet.pancontrol": "^1.0.0",
     "morgan": "~1.9.1",
-    "oauth": "^0.9.15",
     "popper.js": "^1.15.0",
     "push.js": "^1.0.12",
     "react": "^16.12.0",
@@ -46,7 +45,6 @@
     "util": "^0.12.1"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
     "nodemon": "^1.19.3"
   }
 }

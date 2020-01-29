@@ -12,8 +12,7 @@ const express = require('express');
 const TwitterRouter = express.Router();
 
 // Put route handels here;
-TwitterRouter.use('/posts', require('./posts'));
-TwitterRouter.use('/stream', require('./stream'));
+TwitterRouter.use('/post', require('./posts'));
 
 
 module.exports = TwitterRouter;

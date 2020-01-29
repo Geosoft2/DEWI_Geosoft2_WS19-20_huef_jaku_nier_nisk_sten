@@ -31,10 +31,8 @@
     "http-errors": "~1.6.3",
     "moment": "^2.24.0",
     "mongoose": "^5.7.11",
-    "morgan": "~1.9.1",
     "nodemailer": "^6.4.2",
     "oauth": "^0.9.15",
-    "popper.js": "^1.15.0",
     "request": "^2.88.0",
     "socket.io": "^2.3.0"
   },

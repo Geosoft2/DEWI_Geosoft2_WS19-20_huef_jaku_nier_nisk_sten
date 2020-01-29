@@ -313,7 +313,8 @@ function startSocket() {
     });
     socket.on('weatherStatus', (status) => {
         if(status.success){
-          setStatus("lastWeatherUpdate", new Date(status.timestamp).toUTCString());
+            document.getElementById("weatherTime").innerHTML = '<br>' + new Date(status.timestamp).toUTCString();
+          setStatus("lastWeatherUpdate", new Date(status.timestamp));
         }
         else {
           setStatus("lastWeatherUpdate", 'Weather-Update is currently not avalaible. Last update: '+ new Date(status.timestamp).toUTCString());

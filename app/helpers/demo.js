@@ -8,7 +8,7 @@ const request = require('request');
 const demoRequest = function(isDemo, cb){
   var options = {
     'method': 'POST',
-    'url': process.env.API_Domain+'/api/v1/demo',
+    'url': 'http://'+process.env.API_HOST+'/api/v1/demo',
     'headers': {
       'Content-Type': 'application/json'
     },
