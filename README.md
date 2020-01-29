@@ -19,7 +19,7 @@
 <!-- 2. ensure that the data folder is shared -->
 3. open shell and navigate to folder ``DEWI_Geosoft2_WS19-20_huef_jaku_nier_nisk_sten``
 4. run ``docker-compose up``
-5. open  [192.168.99.100:3000](http://192.168.99.100:3000/)
+5. open  [localhost:3000](http://localhost:3000/)
 
 
 ## Starting without Docker:
@@ -45,10 +45,24 @@ DEWI_Geosoft2_WS19-20_huef_jaku_nier_nisk_sten
  * run ``npm start``
 5. open  [localhost:3000](http://localhost:3000)
 
+## Test
+
+A Postman test script is provided under api/test/DEWITest.json. It can either be uploaded to [postman](https://www.getpostman.com/) or executed via [newman](https://www.npmjs.com/package/newman).
+
+If newman is already installed you just can use ```npm test```:
+1. start the Application wit npm or docker like explained above
+2. open another shell and navigate to folder ``api``
+3. run npm test an inspect result
+
+With newman it is also possible to inspect performance.
+Eaxample Test Run with 100 iterations and an json response object. An result of this performance Test, conducted by ourselves, is provided also under /api/test/result.json
+```newman run <Folder> -n 100 -r json,cli --reporter-json-export <path>```
+
+Further information about [newman](https://www.npmjs.com/package/newman)
 
 ## Authors
-* huef
-* jaku
-* nier
-* nisk
-* sten
+* Phil Hüffer
+* Nick Jakuschona
+* Tom Niers
+* Luc Niski
+* Jan Sgenkamp
