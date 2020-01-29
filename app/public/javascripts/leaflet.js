@@ -3,10 +3,11 @@
 // jshint jquery: true
 // jshint esversion: 6
 "use strict";
-let socket = io('http://' + location.hostname + ':3001');
+
+let socket = io('http://'+ apiHost);
 
 var greenIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-green.png',
+    iconUrl: '/media/images/marker-icon-blue-white.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -15,7 +16,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-blue.png',
+    iconUrl: '/media/images/marker-icon-white-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -55,7 +56,7 @@ osmlayer.on('loading', () => {
 function maploaded() {
     document.getElementById("progressbar").value += 25;
     isProgress();
-    snackbarWithText("map loaded");
+    snackbarWithText("Map loaded.");
 }
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -187,7 +188,7 @@ function removeTweets(wfsLayers, bounds) {
 }
 
 /**
- * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @desc adds the Tweets to the map that lay within the wfslayers and the current mapextend
  * @param {JSON} wfsLayers current data
  * @param {Array} tweets tweets deliverd by the API
  * @param {JSON} bounds bounds of the current map extend
@@ -232,12 +233,12 @@ function addTweets(tweets) {
     }
     isProgress();
     if (tweets.length > 1) {
-        snackbarWithText("tweets added to the map");
+        snackbarWithText("Tweets added to the map");
     }
 }
 
 /**
- * Hides the prograss bar, if she is fullfilled
+ * @desc Hides the prograss bar, if it is fullfilled
  */
 async function isProgress() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -336,7 +337,7 @@ function requestExtremeWeather(bbox, events) {
         addRequest({id: WID, send: date.toUTCString(), status: "Pending"});
         $.ajax({
             type: "post",
-            url: 'http://' + location.hostname + ':3001/api/v1/weather/events/dwd',
+            url: 'http://' + apiHost + '/api/v1/weather/events/dwd',
             headers: {
                 "Content-Type": "application/json",
                 'X-Request-Id': WID
@@ -353,8 +354,8 @@ function requestExtremeWeather(bbox, events) {
                 // create new layer
                 warnlayer = createLayer(response.weatherEvents);
                 // add layer to layerGroup and map
-                extremeWeatherGroup.addLayer(warnlayer).addTo(map);
-                document.getElementById("progressbar").value += 25;
+                extremeWeatherGroup.addLayer(warnlayer);
+                document.getElementById("progressbar").value +=25;
                 resolve(response.weatherEvents);
                 if (response.weatherEvents.features.length === 0) {
                     document.getElementById("progressbar").value += 100;
@@ -363,10 +364,13 @@ function requestExtremeWeather(bbox, events) {
                 } else {
                     document.getElementById("progressbar").value += 25;
                     isProgress();
-                    snackbarWithText("weather data loaded");
+                    snackbarWithText("Weather data loaded.");
                 }
             })
             .fail(function (err) {
+                document.getElementById("progressbar").value = 100;
+                isProgress();
+                snackbarWithText("Updated weather data is currently not available.");
                 addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err.message);
             });
@@ -385,6 +389,11 @@ function removeExistingLayer(layer) {
     }
 }
 
+/**
+ * convert ISO normed date to an user readable date
+ * @param ISODate
+ * @returns {string}
+ */
 function getDateTime(ISODate) {
     // example ISODate: 2020-01-23T10:35:00Z
     var DateTime;
@@ -394,22 +403,28 @@ function getDateTime(ISODate) {
     return DateTime;
 }
 
+/**
+ * get the color with which the area will be filled in dependence to the severity
+ * @param severity
+ * @returns {string}
+ */
 function getFillColor(severity) {
-    var color = "green";
-    if (severity === "Minor") {
+    var color;
+    if(severity ==="Minor") {
         color = "yellow";
     }
-    if (severity === "Moderate") {
+    else if(severity === "Moderate") {
         color = "orange";
     }
-    if (severity === "Severe") {
+    else if(severity === "Severe") {
         color = "#cc0000";
     }
-    if (severity === "Extreme") {
+    else if(severity === "Extreme") {
         color = "purple";
     }
     return color;
 }
+
 
 /**
  * @desc creates a layer from GeoJson
@@ -421,11 +436,10 @@ function createLayer(data) {
             return {
                 stroke: false,
                 fillColor: getFillColor(feature.properties.SEVERITY),
-                fillOpacity: 0.5
+                fillOpacity: 0.4
             };
         },
         onEachFeature: function (feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.HEADLINE + '</h1><p>' + feature.properties.NAME + '</p><p>' + feature.properties.DESCRIPTION + '</p><p>' + feature.properties.IDENTIFIER + '</p>');
             layer.bindPopup(('<h5>' + feature.properties.HEADLINE + '</h5>' +
                 '<p><b>' + "Description: " + '</b>' + feature.properties.DESCRIPTION + '</p>' +
                 '<p><b>' + "Severity: " + '</b>' + feature.properties.SEVERITY + '</p>' +
@@ -433,53 +447,114 @@ function createLayer(data) {
                 '<b>' + "to: " + '</b>' + getDateTime(feature.properties.EXPIRES) + '</br>' +
                 '<b>' + "created at : " + '</b>' + getDateTime(feature.properties.EFFECTIVE) + '</p>'),
                 {
-                    autoPan: false
+                    autoPan: false,
+                    autoClose: false
                 }
             );
         }
     });
 }
 
-var legend = L.control({position: 'bottomleft'});
+extremeWeatherGroup.addTo(map);
 
-legend.onAdd = function (map) {
 
-    var div = L.DomUtil.create('div', 'info legend'),
-        colors = ['yellow', 'orange', '#cc0000', 'purple'],
-        labels = ['Minor', 'Moderate', 'Severe', 'Extreme'];
-    div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
-
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < colors.length; i++) {
-        div.innerHTML +=
-            '<i style="background:' + colors[i] + '"></i> ' +
-            labels[i] + '<br>';
-    }
-    div.innerHTML += "(Colors might differ" + '<br>' + "at overlapping areas)";
-
-    return div;
-};
-
-legend.addTo(map);
-
-// request percipitation radar wms from dwd and add it to the map
-var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
-radarlayer = L.tileLayer.wms(rootUrl, {
-    layers: 'dwd:FX-Produkt',
-    // eigene Styled Layer Descriptor (SLD) können zur alternativen Anzeige der Warnungen genutzt werden (https://docs.geoserver.org/stable/en/user/styling/sld/reference/)
-    // sld: 'https://eigenerserver/alternativer.sld',
-    format: 'image/png',
-    transparent: true,
-    opacity: 0.8,
-    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | ESRI nennen wegen des Layers' // TODO
-}).addTo(map);
+// // request percipitation radar wms from dwd and add it to the map
+// var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
+// radarlayer = L.tileLayer.wms(rootUrl, {
+//     layers: 'dwd:FX-Produkt',
+//     // eigene Styled Layer Descriptor (SLD) können zur alternativen Anzeige der Warnungen genutzt werden (https://docs.geoserver.org/stable/en/user/styling/sld/reference/)
+//     // sld: 'https://eigenerserver/alternativer.sld',
+//     format: 'image/png',
+//     transparent: true,
+//     opacity: 0.5,
+//     attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
+// });
 
 var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,
-    "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
+    // "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
 };
-// Layercontrol-Element erstellen und hinzufügen
+
 L.control.layers(baseLayers, overLayers).addTo(map);
+
+var legend = L.control({position: 'bottomleft'});
+
+/**
+ * create legend for the extreme weather events
+ * @param map
+ * @returns {div}
+ */
+legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            colors = ['yellow', 'orange', '#cc0000', 'purple'],
+            labels = ["Minor", "Moderate", "Severe", "Extreme"];
+        div.innerHTML = '<b>' + "Weather Severity" + '</b><br>';
+
+        for (var i = 0; i < labels.length; i++) {
+            div.innerHTML +=
+                '<p style="margin-bottom: 1px">' +
+                '<i style="background:' + colors[i] + '"></i> ' +
+                labels[i] + '</p>';// + '<br>';
+        }
+        div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
+
+        div.innerHTML += "Source: <a href='https://www.dwd.de/DE/Home/home_node.html' target='_blank'>DWD</a>" + '<br>' +
+            "Accuracy: municipal level" + '<br>' +
+            "Last updated: " + '<var id="weatherTime">' + '<br>' + new Date(Date.now()).toUTCString() + '</var>';
+
+        return div;
+
+};
+
+// var radarLegend = L.control({position: 'bottomleft'});
+
+// /**
+//  * create legend for the precipitation radar
+//  * @param map
+//  * @returns {div}
+//  */
+// radarLegend.onAdd = function (map) {
+//
+//     var div = L.DomUtil.create('div', 'info radarlegend');
+//     div.innerHTML +=
+//         '<img src="media/images/radar_legend.png" alt="precipitation radar legend" width="300" height="50" style="opacity: 0.8">';
+//
+//     return div;
+//
+// };
+
+/**
+ * add legend if the respective layer is shown in the map
+ */
+map.on('overlayadd', function (eventLayer) {
+    // Switch to the Population legend...
+    if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
+        // map.removeControl(legend);
+        legend.addTo(this);
+    }
+    if (eventLayer.name === "<span title='show percipitation radar'>percipitation radar</span>") {
+        // map.removeControl(legend);
+        map.removeControl(radarLegend);
+        radarLegend.addTo(this);
+        legend.addTo(this);
+    }
+});
+
+/**
+ * remove legend if the respective layer is hidden from the map
+ */
+map.on('overlayremove', function (eventLayer) {
+    // Switch to the Population legend...
+    if (eventLayer.name === "<span title='show extreme weather events'>extreme weather events</span>") {
+        map.removeControl(legend);
+    }
+    if (eventLayer.name === "<span title='show percipitation radar'>percipitation radar</span>") {
+        map.removeControl(radarLegend);
+    }
+});
+
+
 
 /**
  * @desc function for creating a new cookie

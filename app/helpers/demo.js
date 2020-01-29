@@ -4,11 +4,16 @@
 
 const request = require('request');
 
-
-const demoRequest = function(isDemo, cb){
+/**
+ * @desc puts the demo-attribute at the api
+ * @param {boolean} isDemo indicates if it is a demo or not
+ * @param {callback} success callback that handles the success-response.
+ * @param {callback} error callback that handles the error-response.
+ */
+const demoRequest = function(isDemo, success, error){
   var options = {
-    'method': 'POST',
-    'url': process.env.API_Domain+'/api/v1/demo',
+    'method': 'PUT',
+    'url': 'http://'+process.env.API_HOST+'/api/v1/demo',
     'headers': {
       'Content-Type': 'application/json'
     },
@@ -23,11 +28,11 @@ const demoRequest = function(isDemo, cb){
         body += chunk;
     });
     response.on('end', function(){
-      cb();
+      success();
     });
   })
   .on('error', function(err){
-    cb();
+    error();
   });
 };
 

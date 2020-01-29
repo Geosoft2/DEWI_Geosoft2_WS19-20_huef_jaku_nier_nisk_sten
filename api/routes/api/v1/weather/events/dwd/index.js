@@ -3,7 +3,7 @@
 "use strict";
 
 /**
-* routes/api/v1/weather/events/index.js
+* routes/api/v1/weather/events/dwd/index.js
 * @see https://medium.com/@sesitamakloe/how-we-structure-our-express-js-routes-58933d02e491
 */
 

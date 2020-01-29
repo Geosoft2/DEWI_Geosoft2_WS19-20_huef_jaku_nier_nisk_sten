@@ -1,14 +1,20 @@
+// jshint node: true
+// jshint browser: true
+// jshint jquery: true
+// jshint esversion: 6
+"use strict";
+
 const e = React.createElement;
 let setStatus = () => {
 };
 let addRequest = () => {
 };
 
-showStatus = () => {
+let showStatus = () => {
     $('#status')[0].style.visibility = 'visible';
 };
 
-hideStatus = () => {
+let hideStatus = () => {
     $('#status')[0].style.visibility = 'hidden';
 };
 
@@ -19,12 +25,12 @@ $(function () {
 class Status extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {lastTweet: null, lastWeather: null, lastWeatherUpdate: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
-        setStatus = this.setStatus;
-        addRequest = this.addRequest;
+        this.state = {streamConnected: true, lastTweet: null, lastWeather: null, lastWeatherUpdate: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
+        setStatus = this.setStatus.bind(this);
+        addRequest = this.addRequest.bind(this);
     }
 
-    setStatus = (state, value) => {
+    setStatus(state, value) {
         const self = this;
         if (state === "lastUpdates") {
             const updates = self.state.lastUpdates;
@@ -38,8 +44,7 @@ class Status extends React.Component {
         }
     };
 
-
-    addRequest = (request) => {
+    addRequest(request) {
         const requests = this.state.lastRequests;
         for (var i in requests) {
             if (requests[i].id === request.id) {
@@ -64,31 +69,31 @@ class Status extends React.Component {
 
 
         const header = e(CardHeader, {
-            title: "Status Informations",
+            title: "Status Information",
             action: e(IconButton, {
                 onClick: () => hideStatus(),
                 style: {color: "black"}
-            }, e("i", {className: "fas fa-times", color: "black", style: {"font-size": "1.8em"}}))
+            }, e("i", {className: "fas fa-times", color: "black", style: {"fontSize": "1.8em"}}))
         });
 
         const tableRows = [];
-        const headerRow = e("thead", null, e("tr", null, e("th", null, "Request Id"), e("th", null, "Send"), e("th", null, "Status")));
+        const headerRow = e("thead", {key:"head"}, e("tr", null, e("th", null, "Request Id"), e("th", null, "Send"), e("th", null, "Status")));
         tableRows.push(headerRow);
 
-        self.state.lastRequests.map(function (item) {
-            const row = e("tbody", null, e("tr", null, e("td", null, item.id), e("td", null, item.send), e("td", null, item.status)));
+        self.state.lastRequests.map(function (item, i) {
+            const row = e("tbody", {key:i}, e("tr", null, e("td", null, item.id), e("td", null, item.send), e("td", null, item.status)));
             tableRows.push(row);
         });
 
         const updates = [];
 
-        self.state.lastUpdates.map((item) => {
+        self.state.lastUpdates.map((item, i) => {
             updates.push(item);
-            updates.push(e("br"));
+            updates.push(e("br", {key:i}));
         });
 
         const table = e("table", {className: "striped bordered hover"}, tableRows);
-        const content = e(CardContent, null, e("p", null, "Last weather update: " + self.state.lastWeatherUpdate), e("p", null, "Last weather change: " + self.state.lastWeather), e("p", null, "Twitter-Stream connected: " + self.state.streamConnected), e("p", null, "Last Tweet received: " + self.state.lastTweet), table, e("br"), e("h4", null, "Last Status recived from API"), updates);
+        const content = e(CardContent, null, e("p", null, "Last weather update: " + self.state.lastWeatherUpdate), e("p", null, "Last weather change: " + self.state.lastWeather), e("p", null, "Twitter-Stream connected: " + self.state.streamConnected), e("p", null, "Last Tweet received: " + self.state.lastTweet), table, e("br"), e("h4", null, "Last Status received from API"), updates);
 
         return e(Card, null, header, content);
     }

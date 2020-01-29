@@ -10,6 +10,6 @@
 const express = require('express');
 const DemoRouter = express.Router();
 
-DemoRouter.post('/', require('./demo').postDemo);
+DemoRouter.put('/', require('./demo').postDemo);
 
 module.exports = DemoRouter;

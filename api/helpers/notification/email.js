@@ -11,7 +11,7 @@ const chalk = require('chalk');
 /**
  * @desc function which sends an email if there is a change concerning the extrem weather events. Therefore the function
  * is called in the extremeWeather.js. The email is send from the DEWI gmx.de account and informs the user about new and
- * deleted extreme weather events. Parameters are customizable by the config.api.yml.
+ * deleted extreme weather events. Parameters are customizable by the config.yml.
  * @param weatherChanges
  */
 const emailNotification = function (weatherChanges) {
@@ -50,7 +50,6 @@ const emailNotification = function (weatherChanges) {
     if(!from){
       from = config.api.notification.email.from.address; // default email adress without any additions
     }
-    console.log(from);
     var mailOptions = {
         from: from, // sender address
         to: config.api.notification.email.to.receiver, // list of receivers

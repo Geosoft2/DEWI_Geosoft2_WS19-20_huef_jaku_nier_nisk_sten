@@ -57,7 +57,6 @@ const multiPolygonFeatureCollectionValid = function (geojson, parametername) {
         try {
             JSON.parse('"' + geojson.features[i].properties + '"');
         } catch (err) {
-            console.log(err);
             return {
                 error: 'Parameter \'' + parametername + '.features[' + i + '].properties\' must be a valid Json. ' + parametername + ' Schema: {\'type\': \'FeatureCollection\', ' +
                     '\'features\': [{\'type\': \'Feature\', \'geometry\': {\'type\': \'MultiPolygon\', \'coordinates\': [[[[<longitude>, <latitude>]]]]}, \'properties\': {}}]}'

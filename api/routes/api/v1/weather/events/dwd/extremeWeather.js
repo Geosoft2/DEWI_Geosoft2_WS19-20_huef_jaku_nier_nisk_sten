@@ -24,7 +24,6 @@ const getExtremeWeather = async function (req, res) {
             message: result.error.message
         });
     } else {
-        console.log("sending result");
         res.status(200).send({weatherEvents: result});
     }
 };

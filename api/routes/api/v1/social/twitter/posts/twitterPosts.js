@@ -11,6 +11,11 @@ const {
 const {getTweetFromMongo} = require('../../../../../../helpers/mongo/tweets');
 
 
+/**
+ * @desc retrieves tweets
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const postMongoSearch = async function (req, res) {
     io.emit("requestStatus", {
       id: req.id,
@@ -18,7 +23,7 @@ const postMongoSearch = async function (req, res) {
     });
     const filter = req.body.filter;
     const bbox = req.body.bbox;
-    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const extremeWeatherEvents = req.body.weatherEvents;
 
 
     const result = await mongoSearch(filter, bbox, extremeWeatherEvents);
@@ -33,13 +38,16 @@ const postMongoSearch = async function (req, res) {
         });
     } else {
         const result2 = {tweets: result};
-        console.log("sending result");
         res.status(200).json(result2);
     }
 
 };
 
-
+/**
+ * @desc retrieves one tweet by Twitter-Id
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const postMongoSearchById = async function (req, res) {
     io.emit("requestStatus", {
       id: req.id,
@@ -47,7 +55,7 @@ const postMongoSearchById = async function (req, res) {
     });
     const filter = req.body.filter;
     const bbox = req.body.bbox;
-    const extremeWeatherEvents = req.body.extremeWeatherEvents;
+    const extremeWeatherEvents = req.body.weatherEvents;
     const id = req.params.tweetId;
 
 
@@ -62,7 +70,6 @@ const postMongoSearchById = async function (req, res) {
             message: result.error.message
         });
     } else {
-        console.log("sending result");
         res.status(200).json({tweet: result});
     }
 };

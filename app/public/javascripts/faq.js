@@ -43,7 +43,9 @@ function collapseHash(){
   $('#collapse'+hash).collapse('show');
 }
 
-
+/**
+* @desc adds to every host-element the host of currently used page
+*/
 function host() {
   var host = location.host;
   $('host').text(host);

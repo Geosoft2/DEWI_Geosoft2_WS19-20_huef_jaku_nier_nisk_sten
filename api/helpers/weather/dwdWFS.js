@@ -14,7 +14,7 @@ const setIntervalPromise = util.promisify(setInterval);
 const {saveExtremeWeatherInMongo} = require('../../helpers/mongo/extremeWeather');
 const {weatherdata} = require('../../demo/weather.js');
 const {numberValid} = require('../../helpers/validation/number');
-
+var configuration;
 
 /**
  * @desc requests the WFS from the DWD and stores the result.
@@ -23,7 +23,6 @@ const requestExtremeWeather = function () {
     // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
     var demo = JSON.parse(fs.readFileSync('demo/isDemo.json')).demo;
     if (!demo) {
-        console.log('real');
         var rootUrl = config.api.weather.dwd.wfs.url.protocol + '://' + config.api.weather.dwd.wfs.url.hostname + config.api.weather.dwd.wfs.url.path;
         var defaultParameters = {
             service: 'WFS',
@@ -57,6 +56,7 @@ const requestExtremeWeather = function () {
               });
               response.on('end', function () {
                   try {
+                      configuration = true;
                       var features = JSON.parse(body).features;
                       io.emit('weatherStatus', {
                           timestamp: Date.now(),
@@ -82,15 +82,25 @@ const requestExtremeWeather = function () {
                 timestamp: Date.now(),
                 success: false
             });
-            console.log(chalk.red('DWD-Configuration is not complete respectively incorrect. More info:'));
-            console.log(err);
-            process.exit(-1);
+            if(!configuration){
+              console.log(chalk.red('DWD-Configuration is not complete respectively incorrect. More info:'));
+              console.log(err);
+              process.exit(-1);
+            }
+            console.log(chalk.red('Weather-Update was not successfull. Possible error: no internet-connection.'));
           });
         }
         catch(err){
-          console.log(chalk.red('DWD-Configuration is not complete respectively incorrect. More info:'));
-          console.log(err);
-          process.exit(-1);
+          io.emit('weatherStatus', {
+              timestamp: Date.now(),
+              success: false
+          });
+          if(!configuration){
+            console.log(chalk.red('DWD-Configuration is not complete respectively incorrect. More info:'));
+            console.log(err);
+            process.exit(-1);
+          }
+          console.log(chalk.red('Weather-Update was not successfull. Possible error: no internet-connection.'));
         }
     }
     else {

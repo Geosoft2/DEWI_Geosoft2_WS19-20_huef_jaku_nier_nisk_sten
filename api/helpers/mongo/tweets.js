@@ -19,7 +19,6 @@ const {multiPolygonFeatureCollectionValid} = require('../validation/geojson');
 const postTweet = async function (tweet) {
     var geometry = {};
     geometry['type'] = 'Point';
-    console.log("Storing Tweet..");
 
     if (tweet) {
         var tweetsWithId = await Tweet.find({tweetId: tweet.tweetId});
@@ -63,8 +62,8 @@ const postTweet = async function (tweet) {
 
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
- * @param filter: array with filter words
- * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
+ * @param {array} filter with search words
+ * @param {json} bbox with southWest: lat, lng and northEast: lat, lng
  * @param {geojson} extremeWeatherEvents
  * @returns {Promise<void>}
  */
@@ -147,9 +146,6 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
                 result = await Tweet.find({});
             }
         }
-
-        console.log("filtered Tweets: ");
-        console.log(result);
         return result;
     } catch (err) {
         if (err.errmsg && (/Loop must have at least 3 different vertices/).test(err.errmsg)) {
@@ -160,7 +156,6 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
                 }
             };
         }
-        console.log(err);
         return {
             error: {
                 code: 500,
@@ -175,8 +170,8 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
  * @param {array} filter array with filter words
  * @param {JSON} bbox with southWest: lat, lng and northEast: lat, lng
  * @param {geojson} extremeWeatherEvents
- * @param {string} tweetId mongoDB-ObjectID
- * @param {string} headerId
+ * @param {string} tweetId twitter-id
+ * @param {string} headerId id to have the possibility to assigne the emit of "requestStatus"
  * @returns {Promise<void>}
  */
 const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tweetId, headerId) {
@@ -277,12 +272,10 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                 }
             }
         }
-        console.log("filtered Tweet: ");
         if (result.length > 0) {
-            console.log(result[0]); // maximal length is 1 -> only one Document has the given ID.
+            // maximal length is 1 -> only one document has the given ID.
             return result[0];
         } else {
-            console.log({});
             return {};
         }
     } catch (err) {
@@ -294,7 +287,6 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
                 }
             };
         }
-        console.log(err);
         return {
             error: {
                 code: 500,
@@ -311,7 +303,7 @@ const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tw
 const deleteDemoTweets = async function () {
     try {
         await Tweet.deleteMany({demo: true});
-        console.log('all demo-tweets deleted');
+        console.log('All demo-tweets deleted');
     } catch (err) {
         console.log(err);
     }
