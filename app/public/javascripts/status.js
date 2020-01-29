@@ -19,7 +19,7 @@ $(function () {
 class Status extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {lastTweet: null, lastWeather: null, lastWeatherUpdate: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
+        this.state = {streamConnected: true, lastTweet: null, lastWeather: null, lastWeatherUpdate: null, lastTweetDisplayed: null, lastUpdates: [], lastRequests: []};
         setStatus = this.setStatus;
         addRequest = this.addRequest;
     }
