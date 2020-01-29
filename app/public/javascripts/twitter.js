@@ -195,24 +195,24 @@ class TwitterList extends React.Component {
         } = window['MaterialUI'];
 
         const cards = [];
-        cards.unshift(e("br"));
+        cards.unshift(e("br", {key:"br"}));
 
         var errText = [];
 
         if (!this.state.connected) {
-            errText.push(e("p", {style: {minHeight: '10vh', marginBottom: '0px'}}, "Lost Connection to Twitter Stream. Reconnecting ..."));
+            errText.push(e("p", {key:"p2"}, {style: {minHeight: '10vh', marginBottom: '0px'}}, "Lost Connection to Twitter Stream. Reconnecting ..."));
         }
 
         if (this.state.tweets.length !== 0) {
-            this.state.tweets.map(function (item) {
+            this.state.tweets.map(function (item, i) {
                 const media = [];
-                for (var mediaItem of item.media) {
-                    if (mediaItem.type === "photo") {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"));
+                for (var index in item.media) {
+                    if (item.media[index].type === "photo") {
+                        media.push(e("img", {src: item.media[index].url, width: 300, height: "auto", key:index*i}));
+                        media.push(e("br", {key:i+"br4"}));
                     } else {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"));
+                        media.push(e("img", {src: item.media[index].url, width: 300, height: "auto", key:index*i}));
+                        media.push(e("br", {key:i+"br3"}));
                     }
                 }
                 var place = e("span", null, "");
@@ -228,7 +228,7 @@ class TwitterList extends React.Component {
                     avatar: avatar,
                     className: "header",
                     title: e("a", {href: item.author.url, target: "_blank"}, item.author.name,),
-                    subheader: e("span", null, "Created at: " + new Date(item.createdAt).toUTCString(), e("br"), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
+                    subheader: e("span", null, "Created at: " + new Date(item.createdAt).toUTCString(), e("br", {key:i+"br2"}), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
                     action: e(IconButton, {onClick: () => self.goToTweet(item.url)}, e("i", {
                         className: "fab fa-twitter icon",
                         "aria-hidden": "true"
@@ -242,15 +242,15 @@ class TwitterList extends React.Component {
                 } else {
                     highlighted = "cards";
                 }
-                const card = e(Card, {id: "Card" + item.tweetId, className: highlighted}, header, media, content);
-                cards.unshift(e("div", null, e(ButtonBase, {
+                const card = e(Card, {id: "Card" + item.tweetId, key:i, className: highlighted}, header, media, content);
+                cards.unshift(e("div", {key: i}, e(ButtonBase, {
                     className: "cards",
                     onClick: () => self.tweetClicked(item)
                 }, card,)));
-                cards.unshift(e("br"));
+                cards.unshift(e("br", {key:i+"br1"}));
             });
         } else {
-            errText.push(e("p", null, "No tweets in extreme weather areas available!"));
+            errText.push(e("p", {key:"p1"}, "No tweets in extreme weather areas available!"));
         }
         const height = this.state.connected? {maxHeight: '60vh'}: {maxHeight: '50vh'};
         const list = e(Paper, {id: "list", style: height}, cards);
