@@ -13,7 +13,7 @@ const request = require('request');
 const demoRequest = function(isDemo, success, error){
   var options = {
     'method': 'PUT',
-    'url': 'http://'+process.env.API_HOST+'/api/v1/demo',
+    'url': 'http://'+process.env.API_HOSTDOCKER+'/api/v1/demo',
     'headers': {
       'Content-Type': 'application/json'
     },
@@ -32,6 +32,7 @@ const demoRequest = function(isDemo, success, error){
     });
   })
   .on('error', function(err){
+    console.log(err)
     error();
   });
 };
