@@ -468,7 +468,7 @@ radarlayer = L.tileLayer.wms(rootUrl, {
 
 var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,
-    "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
+    // "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
 };
 
 // Layercontrol-Element erstellen und hinzufügen
@@ -495,8 +495,9 @@ legend.onAdd = function (map) {
         }
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
-        div.innerHTML += "Source: DWD" + '<br>'
-            + "Accuracy: " + '<br>' + "communal level";
+        div.innerHTML += "Source: DWD" + '<br>' +
+            "Accuracy: communal level" + '<br>' +
+            "Last updated: " + '<var id="weatherTime">' + '<br>' + new Date(Date.now()).toUTCString() + '</var>';
 
         return div;
 
