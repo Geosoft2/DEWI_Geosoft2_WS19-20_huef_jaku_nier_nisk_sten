@@ -61,7 +61,7 @@ connectMongoDB(async function () {
         // requests the WFS service from the DWD at periodic intervals
         updateExtremeWeather();
         // starts Twitter-Stream
-        //stream();
+        stream();
         // checks if Demo-Mode is active (and pushes some example data)
         isDemo();
         console.log(chalk.green.inverse("API listening on port " + port + "!"));
