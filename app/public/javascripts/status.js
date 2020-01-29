@@ -69,7 +69,7 @@ class Status extends React.Component {
 
 
         const header = e(CardHeader, {
-            title: "Status Informations",
+            title: "Status Information",
             action: e(IconButton, {
                 onClick: () => hideStatus(),
                 style: {color: "black"}
@@ -93,7 +93,7 @@ class Status extends React.Component {
         });
 
         const table = e("table", {className: "striped bordered hover"}, tableRows);
-        const content = e(CardContent, null, e("p", null, "Last weather update: " + self.state.lastWeatherUpdate), e("p", null, "Last weather change: " + self.state.lastWeather), e("p", null, "Twitter-Stream connected: " + self.state.streamConnected), e("p", null, "Last Tweet received: " + self.state.lastTweet), table, e("br"), e("h4", null, "Last Status recived from API"), updates);
+        const content = e(CardContent, null, e("p", null, "Last weather update: " + self.state.lastWeatherUpdate), e("p", null, "Last weather change: " + self.state.lastWeather), e("p", null, "Twitter-Stream connected: " + self.state.streamConnected), e("p", null, "Last Tweet received: " + self.state.lastTweet), table, e("br"), e("h4", null, "Last Status received from API"), updates);
 
         return e(Card, null, header, content);
     }
