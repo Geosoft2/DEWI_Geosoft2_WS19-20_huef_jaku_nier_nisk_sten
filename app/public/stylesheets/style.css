@@ -54,7 +54,7 @@ html, body {
 }
 
 a {
-    color: #00B7FF;
+    color: rgb(41, 129, 202);
 }
 
 .faq-link, .faq-link:hover, a.imprint:link, a.imprint:visited, a.nav-link:link, a.nav-link:visited {
@@ -95,7 +95,7 @@ a {
 }
 
 .highlighted {
-    background-color: rgba(0, 128, 0, 0.3) !important;
+    background-color: rgb(41, 129, 202) !important;
     width: 100%;
 }
 
@@ -115,7 +115,7 @@ a {
 }
 
 .icon {
-    color: rgb(29, 161, 242);
+    color: rgb(41, 129, 202);
     font-size: 1.8em;
 }
 
@@ -257,7 +257,7 @@ th {
 }
 
 .badge-primary {
-    background-color: rgb(30, 93, 136);
+    background-color: rgb(41, 129, 202);
 }
 
 .MuiCardHeader-subheader {

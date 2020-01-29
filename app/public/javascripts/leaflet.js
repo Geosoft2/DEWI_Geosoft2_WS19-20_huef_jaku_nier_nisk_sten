@@ -7,7 +7,7 @@
 let socket = io('http://'+ apiHost);
 
 var greenIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-green.png',
+    iconUrl: '/media/images/marker-icon-blue-white.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -16,7 +16,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-blue.png',
+    iconUrl: '/media/images/marker-icon-white-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -370,7 +370,7 @@ function requestExtremeWeather(bbox, events) {
             .fail(function (err) {
                 document.getElementById("progressbar").value = 100;
                 isProgress();
-                snackbarWithText("Weather data is currently not available.");
+                snackbarWithText("Updated weather data is currently not available.");
                 addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err.message);
             });
