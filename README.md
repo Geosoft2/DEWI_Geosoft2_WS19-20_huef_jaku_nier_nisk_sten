@@ -95,4 +95,4 @@ A demo with test data supplied can be accessed via [localhost:3000/demo](http://
 * Nick Jakuschona
 * Tom Niers
 * Luc Niski
-* Jan Sgenkamp
+* Jan Stenkamp
