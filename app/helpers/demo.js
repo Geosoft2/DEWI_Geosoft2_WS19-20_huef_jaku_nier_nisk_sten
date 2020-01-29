@@ -32,8 +32,7 @@ const demoRequest = function(isDemo, success, error){
     });
   })
   .on('error', function(err){
-    console.log(err)
-    error();
+      error();
   });
 };
 
