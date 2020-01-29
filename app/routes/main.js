@@ -8,7 +8,7 @@ const {cookieExtractor} = require('../helpers/cookie');
 const getMainPage = function(req, res){
   console.log('real');
   // application with real data
-
+  
   var cookie = cookieExtractor(req,'acceptCookies');
   var bbox, events, textfilter;
   var error = [];
@@ -45,6 +45,16 @@ const getMainPage = function(req, res){
     }
   }
   demoRequest(false, function(){
+    res.render('index', {
+      title: 'Home',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      host: process.env.API_HOST,
+      cookie: cookie,
+      errormessage: error
+    });
+  }, function(){
     res.render('index', {
       title: 'Home',
       bbox: bbox,
@@ -105,7 +115,19 @@ const getDemoPage = function(req, res){
       textfilter: textfilter,
       cookie: cookie,
       host: process.env.API_HOST,
-      errormessage: error
+      errormessage: error,
+      demo: true
+    });
+  }, function(){
+    res.render('index', {
+      title: 'Demo',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      cookie: cookie,
+      host: process.env.API_HOST,
+      errormessage: error,
+      demo: false,
     });
   });
 };

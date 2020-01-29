@@ -36,6 +36,9 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
                 resolve(response.tweets);
             })
             .fail(function (err) {
+                document.getElementById("progressbar").value = 100;
+                isProgress();
+                snackbarWithText("Tweets are currently not available.");
                 addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });
@@ -72,6 +75,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
                 resolve(response.tweet);
             })
             .fail(function (err) {
+                snackbarWithText("Tweets are currently not available.");
                 addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });

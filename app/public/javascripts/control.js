@@ -14,7 +14,7 @@ let wfsLayer;
 async function initial(boundingbox, events, filter, cookie) {
 
 
-
+    $('.toast.demo').toast('show');
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -312,7 +312,7 @@ function startSocket() {
     socket.on('weatherStatus', (status) => {
         if(status.success){
             document.getElementById("weatherTime").innerHTML = '<br>' + new Date(status.timestamp).toUTCString();
-          setStatus("lastWeatherUpdate", new Date(status.timestamp));
+          setStatus("lastWeatherUpdate", new Date(status.timestamp).toUTCString());
         }
         else {
           setStatus("lastWeatherUpdate", 'Weather-Update is currently not avalaible. Last update: '+ new Date(status.timestamp).toUTCString());

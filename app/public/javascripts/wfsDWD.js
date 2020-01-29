@@ -55,7 +55,7 @@ osmlayer.on('loading', () => {
 function maploaded() {
     document.getElementById("progressbar").value += 25;
     isProgress();
-    snackbarWithText("map loaded");
+    snackbarWithText("Map loaded.");
 }
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -232,7 +232,7 @@ function addTweets(tweets) {
     }
     isProgress();
     if (tweets.length > 1) {
-        snackbarWithText("tweets added to the map");
+        snackbarWithText("Tweets added to the map");
     }
 }
 
@@ -363,10 +363,13 @@ function requestExtremeWeather(bbox, events) {
                 } else {
                     document.getElementById("progressbar").value += 25;
                     isProgress();
-                    snackbarWithText("weather data loaded");
+                    snackbarWithText("Weather data loaded.");
                 }
             })
             .fail(function (err) {
+                document.getElementById("progressbar").value = 100;
+                isProgress();
+                snackbarWithText("Weather data is currently not available.");
                 addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err.message);
             });
@@ -495,7 +498,7 @@ legend.onAdd = function (map) {
         }
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
-        div.innerHTML += "Source: DWD" + '<br>' +
+        div.innerHTML += "Source: <a href='https://www.dwd.de/DE/Home/home_node.html' target='_blank'>DWD</a>" + '<br>' +
             "Accuracy: communal level" + '<br>' +
             "Last updated: " + '<var id="weatherTime">' + '<br>' + new Date(Date.now()).toUTCString() + '</var>';
 
