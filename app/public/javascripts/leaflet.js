@@ -493,8 +493,9 @@ legend.onAdd = function (map) {
 
         for (var i = 0; i < labels.length; i++) {
             div.innerHTML +=
+                '<p style="margin-bottom: 1px">' +
                 '<i style="background:' + colors[i] + '"></i> ' +
-                labels[i] + '<br>';
+                labels[i] + '</p>';// + '<br>';
         }
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
