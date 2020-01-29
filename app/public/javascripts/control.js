@@ -10,6 +10,7 @@ let wfsLayer;
  * @param {*} boundingbox to set the map extend to
  * @param {*} events weather events to show in the map
  * @param {*} filter initial filter to search the tweets after
+ * @param {*} cookie cookie-value of "acceptCookies"
  */
 async function initial(boundingbox, events, filter, cookie) {
 
@@ -50,6 +51,11 @@ async function initial(boundingbox, events, filter, cookie) {
     // document.getElementById("loader-wrapper").style.visibility='hidden';
 }
 
+
+/**
+ * @desc fades out one delivered element
+ * @param {object} element a HTML-element
+ */
 function fade(element) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
@@ -72,8 +78,7 @@ function fade(element) {
  * @desc function which is called in the intitial function. If there is an event is the link it is used. If not
  * but there is a cookie with an event this is used. If there is no event in the link and in the cookie all events are
  * activated.
- * a cookie
- * @param {} events
+ * @param {*} events
  * @returns {string[]|any}
  */
 function getInitialEvents(events) {
@@ -86,8 +91,8 @@ function getInitialEvents(events) {
 
     if (newDefaultEvents !== "") {
         return JSON.parse(newDefaultEvents);
-    } else { // TODO Test??
-        events = ['TEST', 'HEAT', 'UV', 'POWERLINEVIBRATION', 'THAW', 'GLAZE', 'FROST', 'FOG', 'SNOWDRIFT', 'SNOWFALL', 'HAIL', 'RAIN', 'TORNADO', 'WIND', 'THUNDERSTORM'];
+    } else {
+        events = ['HEAT', 'UV', 'POWERLINEVIBRATION', 'THAW', 'GLAZE', 'FROST', 'FOG', 'SNOWDRIFT', 'SNOWFALL', 'HAIL', 'RAIN', 'TORNADO', 'WIND', 'THUNDERSTORM'];
         return events;
     }
 }
@@ -130,8 +135,8 @@ function getInitialFilter(filter) {
 
 /**
  * @desc Queries the extreme weather events with predefined bbox and add it to the map - if the page is reloaded. The
- * predefined map extent is about the area of germany. The user has in the settings the possibility to change
- *
+ * predefined map extent is about the area of germany. The user has in the settings the possibility to change the default map-extend.
+ * @param {json} bbox
  */
 function getInitialBbox(bbox) {
 
@@ -158,7 +163,8 @@ function getInitialBbox(bbox) {
 }
 
 /**
- * @desc Proofs if a Cookie with a Bbox set. If yes sets the Map Extent to this Bbox
+ * @desc Proofs if a Cookie with a Bbox is set. If yes, sets the Map Extent to this Bbox.
+ * @return {boolean}
  */
 function getBoundingBboxFromCookie() {
     var newDefaultBbox = getCookie("defaultBbox");
@@ -228,6 +234,10 @@ async function eventsOrFilterChanged() {
     addTweets(twitterResponse);
 }
 
+/**
+ * @desc get currently used tweet filters
+ * @return {array} string-array with textfilters
+ */
 function getTweetFilters() {
     var filters = [];
     $('.tweetFilter').each(function (index, filter) {
@@ -236,6 +246,9 @@ function getTweetFilters() {
     return filters;
 }
 
+/**
+ * @desc sets a new textfilter to query the tweets afterwards
+ */
 function searchTweets() {
     var input = $('#textFilter');
     if (input.val() !== "") {
@@ -250,6 +263,11 @@ function searchTweets() {
     }
 }
 
+
+/**
+ * @desc create a badge for delivered filter
+ * @param {string} filter filter word
+ */
 function createFilterBadge(filter) {
     var filterUrlEncoded = encodeURIComponent(filter.toLowerCase());
     $('#textFilters').append(
@@ -263,6 +281,11 @@ function createFilterBadge(filter) {
     );
 }
 
+
+/**
+ * @desc remove a HTML-element by its id
+ * @param {string} id element-id
+ */
 function removeElementById(id) {
     var elem = document.getElementById(id);
     elem.parentNode.removeChild(elem);
@@ -271,7 +294,7 @@ function removeElementById(id) {
 
 /**
  * @desc function for requesting a cookie which was stored before
- * @param {Sting} cname name of the cookie
+ * @param {string} cname name of the cookie
  * @returns {string} value of cookie
  * @source https://www.w3schools.com/js/js_cookies.asp
  */
@@ -340,6 +363,7 @@ function startSocket() {
 /**
  * @desc Creates a valid bbox out of a string which contains a bbox, sets the map extend to this bbox
  * @param {String} bbox
+ * @return {json} bbox
  */
 function getBoundingBoxFromUrl(bbox) {
     var splitBbox = bbox.split(',');
@@ -362,9 +386,9 @@ function getBoundingBoxFromUrl(bbox) {
 
 /**
  *  @desc Updates the URL to the user-specified data
- * @param {JSON} bbox chosen by the user
- * @param {Array} events chosen by the user
- * @param {Array} filter chosen by the user
+ * @param {json} bbox chosen by the user
+ * @param {array} events chosen by the user
+ * @param {array} filter chosen by the user
  */
 function updateURL(bbox, events, filter) {
 
@@ -393,7 +417,7 @@ function updateURL(bbox, events, filter) {
 }
 
 /**
- * Shows a snackbar on the Top Right
+ * Shows a snackbar on the bottom left
  * @param {String} text to show in the snackbar
  */
 function snackbarWithText(text) {
@@ -411,6 +435,11 @@ function snackbarWithText(text) {
     $('.toast.' + date).toast('show');
 }
 
+
+/**
+ * @desc generates a random id
+ * @return {number} id
+ */
 function idGenerator() {
     let id = "";
     for (var i = 0; i < 5; ++i) {

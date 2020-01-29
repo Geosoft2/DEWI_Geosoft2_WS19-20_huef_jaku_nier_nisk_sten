@@ -17,7 +17,7 @@ const mongoConnectionOption = {
 
 /**
  * @desc connects the MongoDB with docker-image or localhost
- * @param {function} cb callback, to execute something else afterwards
+ * @param {callback} cb callback, to execute something else afterwards
  */
 const connectMongoDB = async function (cb) {
     // set up default ("Docker") mongoose connection

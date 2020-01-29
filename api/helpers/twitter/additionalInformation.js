@@ -8,7 +8,7 @@ const config = require('config-yml');
 
 /**
  * Returns information of an specified user
- * @param userData deliverd by the TwitterAPI
+ * @param {json} userData deliverd by the TwitterAPI
  * @returns <user infromation>
  */
 const getUserInformation = function (userData) {
@@ -23,7 +23,7 @@ const getUserInformation = function (userData) {
 
 /**
  * Returns specific information about an place, calculatest the accuracy
- * @param placeInformation deliverd by the TwitterAPI
+ * @param {json} placeInformation deliverd by the TwitterAPI
  * @returns <place information>
  *
  */

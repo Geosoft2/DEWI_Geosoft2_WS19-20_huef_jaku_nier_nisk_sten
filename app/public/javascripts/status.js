@@ -1,3 +1,9 @@
+// jshint node: true
+// jshint browser: true
+// jshint jquery: true
+// jshint esversion: 6
+"use strict";
+
 const e = React.createElement;
 let setStatus = () => {
 };

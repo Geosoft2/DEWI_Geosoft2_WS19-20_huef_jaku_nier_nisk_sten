@@ -1,4 +1,9 @@
+// jshint node: true
+// jshint browser: true
+// jshint jquery: true
+// jshint esversion: 6
 "use strict";
+
 let setTweets;
 let getState = () => {
 };
@@ -9,7 +14,7 @@ let setHighlighted = () => {
 
 /**
  * Search for tweets and show them in the List
- * @param {JSON} bounds where the tweest must be in
+ * @param {json} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
 function twitterSearch(bounds, filter, extremeWeatherEvents) {
@@ -47,8 +52,8 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
 
 /**
- * Search for tweets and show them in the List
- * @param {JSON} bounds where the tweest must be in
+ * Search for one tweet and show it in the List
+ * @param {json} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
 function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {

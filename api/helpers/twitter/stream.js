@@ -74,7 +74,7 @@ const getAllRules = async function () {
 
 /**
  * Delete Rules of the twitter stream
- * @param rules to delete
+ * @param {json} rules to delete
  * @returns {Promise<*>}
  */
 const deleteAllRules = async function (rules) {
@@ -109,7 +109,7 @@ const deleteAllRules = async function (rules) {
 
 /**
  * Send additional Rules to the filter
- * @param rules to set
+ * @param {array} rules to set
  * @returns {Promise<*>}
  */
 const setTwitterRules = async function (rules) {
@@ -249,7 +249,10 @@ const streamConnect = function () {
 };
 
 
-const stream = async function (req, res) {
+/**
+ * sets stream
+ */
+const stream = async function () {
 
     let currentRules;
     const rules = [
@@ -281,6 +284,9 @@ const stream = async function (req, res) {
     });
 };
 
+/**
+ * Loop to reconnect after a connection error occured
+ */
 const loopStreamConnect = () => {
     console.log(chalk.blue('Next Connection try in 20 seconds'));
     setTimeout(() => {

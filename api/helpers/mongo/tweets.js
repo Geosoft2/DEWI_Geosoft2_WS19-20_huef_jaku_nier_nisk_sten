@@ -63,8 +63,8 @@ const postTweet = async function (tweet) {
 
 /**
  * get all Tweets from the database, fitting to the filter and boundingbox
- * @param filter: array with filter words
- * @param bbox: JSON with southWest: lat, lng and northEast: lat, lng
+ * @param {array} filter with search words
+ * @param {json} bbox with southWest: lat, lng and northEast: lat, lng
  * @param {geojson} extremeWeatherEvents
  * @returns {Promise<void>}
  */
@@ -175,8 +175,8 @@ const getTweetsFromMongo = async function (filter, bbox, extremeWeatherEvents) {
  * @param {array} filter array with filter words
  * @param {JSON} bbox with southWest: lat, lng and northEast: lat, lng
  * @param {geojson} extremeWeatherEvents
- * @param {string} tweetId mongoDB-ObjectID
- * @param {string} headerId
+ * @param {string} tweetId twitter-id
+ * @param {string} headerId id to have the possibility to assigne the emit of "requestStatus"
  * @returns {Promise<void>}
  */
 const getTweetFromMongo = async function (filter, bbox, extremeWeatherEvents, tweetId, headerId) {

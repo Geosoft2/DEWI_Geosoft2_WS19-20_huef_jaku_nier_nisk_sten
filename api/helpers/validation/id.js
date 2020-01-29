@@ -11,7 +11,7 @@
 const idValid = function (id, parametername) {
     var regEx = /^\d+$/;
     if (!regEx.test(id)) {
-        return {error: 'Parameter \'' + parametername + '\' must be an ObjectID. This identifier only contains digits.'};
+        return {error: 'Parameter \'' + parametername + '\' must be a Twitter-ID. This identifier only contains digits.'};
     } else {
         return true;
     }

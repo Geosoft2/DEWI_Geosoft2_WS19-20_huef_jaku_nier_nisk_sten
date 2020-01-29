@@ -86,6 +86,7 @@ const saveExtremeWeatherInMongo = async function (features) {
  * @param {json} bbox coordinates of a BBOX to query all features which intersects the BBOX.
  * @param {array} events events to query the MongoDB.
  * @param {object} res response, to send back the desired HTTP response
+ * @param {string} id id to have the possibility to assigne the emit of "requestStatus"
  */
 const getExtremeWeatherFromMongo = async function (bbox, events, res, id) {
     io.emit("requestStatus", {

@@ -11,6 +11,11 @@ const {
 const {getTweetFromMongo} = require('../../../../../../helpers/mongo/tweets');
 
 
+/**
+ * @desc retrieves tweets
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const postMongoSearch = async function (req, res) {
     io.emit("requestStatus", {
       id: req.id,
@@ -39,7 +44,11 @@ const postMongoSearch = async function (req, res) {
 
 };
 
-
+/**
+ * @desc retrieves one tweet by Twitter-Id
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const postMongoSearchById = async function (req, res) {
     io.emit("requestStatus", {
       id: req.id,
