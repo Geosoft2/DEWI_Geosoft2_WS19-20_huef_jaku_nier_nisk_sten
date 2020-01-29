@@ -500,7 +500,7 @@ legend.onAdd = function (map) {
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
         div.innerHTML += "Source: <a href='https://www.dwd.de/DE/Home/home_node.html' target='_blank'>DWD</a>" + '<br>' +
-            "Accuracy: communal level" + '<br>' +
+            "Accuracy: municipal level" + '<br>' +
             "Last updated: " + '<var id="weatherTime">' + '<br>' + new Date(Date.now()).toUTCString() + '</var>';
 
         return div;
