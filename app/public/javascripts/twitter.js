@@ -257,7 +257,7 @@ class TwitterList extends React.Component {
                 cards.unshift(e("br", {key:i+"br1"}));
             });
         } else {
-            errText.push(e("p", {key:"p1"}, "No tweets in extreme weather areas available!"));
+            errText.push(e("p", null, "No tweets in extreme weather areas available!"));
         }
         const height = this.state.connected? {maxHeight: '60vh'}: {maxHeight: '50vh'};
         const list = e(Paper, {id: "list", style: height}, cards);
