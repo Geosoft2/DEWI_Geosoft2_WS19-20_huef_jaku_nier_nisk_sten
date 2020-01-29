@@ -23,7 +23,6 @@ const requestExtremeWeather = function () {
     // https://maps.dwd.de/geoserver/dwd/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=dwd%3AWarnungen_Gemeinden&outputFormat=text/xml;%20subtype=gml/3.1.1
     var demo = JSON.parse(fs.readFileSync('demo/isDemo.json')).demo;
     if (!demo) {
-        console.log('real');
         var rootUrl = config.api.weather.dwd.wfs.url.protocol + '://' + config.api.weather.dwd.wfs.url.hostname + config.api.weather.dwd.wfs.url.path;
         var defaultParameters = {
             service: 'WFS',

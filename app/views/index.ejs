@@ -17,9 +17,15 @@
 
   </head>
 
-  <body onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')">
+  <% if(cookie) { %>
 
+  <body id="body" onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')" style="overflow:auto;">
 
+  <% } else { %>
+
+  <body id="body" onload="initial('<%= bbox %>', '<%= events %>', '<%= textfilter %>', '<%= cookie %>')">
+
+  <% } %>
 
   <div class="wrapper">
 
@@ -85,8 +91,7 @@
                   <option value="THAW">thaw</option>
                   <option value="POWERLINEVIBRATION">powerlinevibration</option>
                   <option value="UV">uv</option>
-                  <option value="HEAT">heat</option> <!-- TODO:  -->
-                  <option value="TEST">test</option> <!-- TODO:  -->
+                  <option value="HEAT">heat</option>
                 </select>
               </div>
               <div class="col-md-3" style="margin-top: 10px; margin-bottom: 10px;">
@@ -153,15 +158,34 @@
         </div>
 
         <!-- Status View -->
-        <div id="statusBox" style="width: 0px; height: 0px; position: relative; display: inline-grid;">
+        <div id="statusBox" style="width: 0px; height: 0px; position: absolute; display: inline-grid;">
             <div id="status"
-                 style="width: 500px; height:fit-content; max-height: 80vh; padding: 0.5em; z-index: 5002; visibility: hidden; left: 5%; top: -5vh; position: absolute; overflow: auto">
+                 style="max-width: 90vw; width: 500px; height:fit-content; max-height: 80vh; padding: 0.5em; z-index: 5002; visibility: hidden; left: 5%; top: -5vh; position: absolute; overflow: auto">
                 <p>Drag</p>
             </div>
         </div>
 
         <!-- Snackbar -->
         <div class="snackbar" style="position: fixed; bottom: calc(24.2px + 40px); left: 15px;">
+          <% if(typeof(demo) !== 'undefined' && demo){ %>
+            <div class="toast demo rounded-0" style="border: 1px solid rgb(30,93,136);" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
+              <div class="toast-header">
+                <strong class="mr-auto">Demo started successfully.</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            </div>
+          <% } else if (typeof(demo) !== 'undefined' && !demo){ %>
+            <div class="toast demo rounded-0" style="border: 1px solid rgb(30,93,136);" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
+              <div class="toast-header">
+                <strong class="mr-auto">Demo is currently not available.</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
 
@@ -206,7 +230,7 @@
     var apiHost = <%-JSON.stringify(host)%>;
 </script>
 <script src="/javascripts/status.js"></script>
-<script src="/javascripts/wfsDWD.js"></script>
+<script src="/javascripts/leaflet.js"></script>
 <script src="/javascripts/twitter.js"></script>
 <script src="/javascripts/notification.js"></script>
 <script src="/javascripts/control.js"></script>

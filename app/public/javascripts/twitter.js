@@ -1,4 +1,9 @@
+// jshint node: true
+// jshint browser: true
+// jshint jquery: true
+// jshint esversion: 6
 "use strict";
+
 let setTweets;
 let getState = () => {
 };
@@ -9,7 +14,7 @@ let setHighlighted = () => {
 
 /**
  * Search for tweets and show them in the List
- * @param {JSON} bounds where the tweest must be in
+ * @param {json} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
 function twitterSearch(bounds, filter, extremeWeatherEvents) {
@@ -36,6 +41,9 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
                 resolve(response.tweets);
             })
             .fail(function (err) {
+                document.getElementById("progressbar").value = 100;
+                isProgress();
+                snackbarWithText("New tweets are currently not available.");
                 addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });
@@ -44,8 +52,8 @@ function twitterSearch(bounds, filter, extremeWeatherEvents) {
 
 
 /**
- * Search for tweets and show them in the List
- * @param {JSON} bounds where the tweest must be in
+ * Search for one tweet and show it in the List
+ * @param {json} bounds where the tweest must be in
  * @param {array} filter array of keyword to filter the tweets after
  */
 function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
@@ -72,6 +80,7 @@ function twitterSearchOne(bounds, filter, extremeWeatherEvents, id) {
                 resolve(response.tweet);
             })
             .fail(function (err) {
+                snackbarWithText("New tweets are currently not available.");
                 addRequest({id: TID, send: date.toUTCString(), status: "Failed"});
                 console.log(err);
             });
@@ -191,24 +200,24 @@ class TwitterList extends React.Component {
         } = window['MaterialUI'];
 
         const cards = [];
-        cards.unshift(e("br"));
+        cards.unshift(e("br", {key:"br"}));
 
         var errText = [];
 
         if (!this.state.connected) {
-            errText.push(e("p", {style: {minHeight: '10vh', marginBottom: '0px'}}, "Lost Connection to Twitter Stream. Reconnecting ..."));
+            errText.push(e("p", {key:"p2"}, {style: {minHeight: '10vh', marginBottom: '0px'}}, "Lost Connection to Twitter Stream. Reconnecting ..."));
         }
 
         if (this.state.tweets.length !== 0) {
-            this.state.tweets.map(function (item) {
+            this.state.tweets.map(function (item, i) {
                 const media = [];
-                for (var mediaItem of item.media) {
-                    if (mediaItem.type === "photo") {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"));
+                for (var index in item.media) {
+                    if (item.media[index].type === "photo") {
+                        media.push(e("img", {src: item.media[index].url, width: 300, height: "auto", key:index*i}));
+                        media.push(e("br", {key:i+"br4"}));
                     } else {
-                        media.push(e("img", {src: mediaItem.url, width: 300, height: "auto"}));
-                        media.push(e("br"));
+                        media.push(e("img", {src: item.media[index].url, width: 300, height: "auto", key:index*i}));
+                        media.push(e("br", {key:i+"br3"}));
                     }
                 }
                 var place = e("span", null, "");
@@ -218,35 +227,37 @@ class TwitterList extends React.Component {
                     place = e("span", null, " Place: " + item.place.name);
                 }
 
-
+                let highlighted;
+                let styleHighlighted;
+                const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
+                if (JSON.stringify(coordinates) === JSON.stringify(self.state.highlighted)) {
+                    highlighted = "highlighted";
+                    styleHighlighted = {color: "white"};
+                } else {
+                    highlighted = "cards";
+                }
                 const avatar = e(Avatar, {src: item.author.profileImage, className: "avatar"});
                 const header = e(CardHeader, {
                     avatar: avatar,
                     className: "header",
-                    title: e("a", {href: item.author.url, target: "_blank"}, item.author.name,),
-                    subheader: e("span", null, "Created at: " + new Date(item.createdAt).toUTCString(), e("br"), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
+                    title: e("a", {href: item.author.url, target: "_blank", style: styleHighlighted}, item.author.name,),
+                    subheader: e("span", null, "Created at: " + new Date(item.createdAt).toUTCString(), e("br", {key:i+"br2"}), e("span", null, "Accuracy: " + item.accuracy + " km", place)),
                     action: e(IconButton, {onClick: () => self.goToTweet(item.url)}, e("i", {
                         className: "fab fa-twitter icon",
-                        "aria-hidden": "true"
+                        "aria-hidden": "true",
+                        style: styleHighlighted
                     }))
                 });
                 const content = e(CardContent, null, item.text);
-                let highlighted;
-                const coordinates = {lat: item.geometry.coordinates[1], lng: item.geometry.coordinates[0]};
-                if (JSON.stringify(coordinates) === JSON.stringify(self.state.highlighted)) {
-                    highlighted = "highlighted";
-                } else {
-                    highlighted = "cards";
-                }
-                const card = e(Card, {id: "Card" + item.tweetId, className: highlighted}, header, media, content);
-                cards.unshift(e("div", null, e(ButtonBase, {
+                const card = e(Card, {id: "Card" + item.tweetId, key:i, className: highlighted}, header, media, content);
+                cards.unshift(e("div", {key: i}, e(ButtonBase, {
                     className: "cards",
                     onClick: () => self.tweetClicked(item)
                 }, card,)));
-                cards.unshift(e("br"));
+                cards.unshift(e("br", {key:i+"br1"}));
             });
         } else {
-            errText.push(e("p", null, "No tweets in extreme weather areas available!"));
+            errText.push(e("p", {key:"p1"}, "No tweets in extreme weather areas available!"));
         }
         const height = this.state.connected? {maxHeight: '60vh'}: {maxHeight: '50vh'};
         const list = e(Paper, {id: "list", style: height}, cards);

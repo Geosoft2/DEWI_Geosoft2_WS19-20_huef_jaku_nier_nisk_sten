@@ -58,13 +58,6 @@ api:
 
   social:
     twitter:
-      app:
-        url:
-          protocol: # https
-          hostname: # twitter.com
-          # always start with a slash (/)
-          # tweet
-          path: # /i/status
       api:
         url:
           protocol: # https
@@ -74,16 +67,12 @@ api:
             # @see: https://developer.twitter.com/en/docs/basics/authentication/api-reference/token
             token: # /oauth2/token
             # @see: https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
-            stream:
-              filter: # /labs/1/tweets/stream/filter
-              rules: # /labs/1/tweets/stream/filter/rules
+            stream: # /labs/1/tweets/stream/filter
         parameter:
           # further information: @see https://developer.twitter.com/en/docs/labs/filtered-stream/api-reference/get-tweets-stream-filter-v1
           stream:
             format: # detailed
             expansions: # attachments.media_keys,geo.place_id,author_id
-            # if not specified or value is smaller than 20000, 20000 is used as default
-            # in milliseconds
             timeout: # 20000
             agent: # false
             pool:

@@ -1,3 +1,7 @@
+// jshint esversion: 8
+// jshint node: true
+"use strict";
+
 const OAuth = require('oauth');
 const OAuth2 = OAuth.OAuth2;
 const config = require('config-yml');
@@ -19,6 +23,8 @@ oauth2.getOAuthAccessToken('', {
  * Requestst a Mongo DB search
  * @param {string} filter keyword to filter after
  * @param {json} bbox where the tweet must be in
+ * @param {geojson} extremeWeatherEvents
+ * @param {string} id id to have the possibility to assigne the emit of "requestStatus"
  */
 const mongoSearch = async function (filter, bbox, extremeWeatherEvents, id) {
     return await getTweetsFromMongo(filter, bbox, extremeWeatherEvents, id);

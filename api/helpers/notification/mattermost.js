@@ -7,10 +7,10 @@ const config = require('config-yml');
 const chalk = require('chalk');
 
 /**
- * @desc function which sends an mattermost notification on the channel DEWI_service in the DEWI team,
+ * @desc function which sends a mattermost notification
  * if there is a change concerning the extrem weather events. Therefore the function
  * is called in the extremeWeather.js. The notification informs the user about new and
- * deleted extreme weather events. Parameters are customizable by the config.api.yml.
+ * deleted extreme weather events. Parameters are customizable by the config.yml.
  * @param weatherChanges
  */
 const mattermostNotification = function (weatherChanges) {

@@ -3,10 +3,11 @@
 // jshint jquery: true
 // jshint esversion: 6
 "use strict";
+
 let socket = io('http://'+ apiHost);
 
 var greenIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-green.png',
+    iconUrl: '/media/images/marker-icon-blue-white.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -15,7 +16,7 @@ var greenIcon = new L.Icon({
 });
 
 var blueIcon = new L.Icon({
-    iconUrl: '/media/images/marker-icon-blue.png',
+    iconUrl: '/media/images/marker-icon-white-blue.png',
     //shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -55,7 +56,7 @@ osmlayer.on('loading', () => {
 function maploaded() {
     document.getElementById("progressbar").value += 25;
     isProgress();
-    snackbarWithText("map loaded");
+    snackbarWithText("Map loaded.");
 }
 
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -187,7 +188,7 @@ function removeTweets(wfsLayers, bounds) {
 }
 
 /**
- * adds the Tweets to the map that lay within the wfslayers and the current mapextend
+ * @desc adds the Tweets to the map that lay within the wfslayers and the current mapextend
  * @param {JSON} wfsLayers current data
  * @param {Array} tweets tweets deliverd by the API
  * @param {JSON} bounds bounds of the current map extend
@@ -232,12 +233,12 @@ function addTweets(tweets) {
     }
     isProgress();
     if (tweets.length > 1) {
-        snackbarWithText("tweets added to the map");
+        snackbarWithText("Tweets added to the map");
     }
 }
 
 /**
- * Hides the prograss bar, if she is fullfilled
+ * @desc Hides the prograss bar, if it is fullfilled
  */
 async function isProgress() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -363,10 +364,13 @@ function requestExtremeWeather(bbox, events) {
                 } else {
                     document.getElementById("progressbar").value += 25;
                     isProgress();
-                    snackbarWithText("weather data loaded");
+                    snackbarWithText("Weather data loaded.");
                 }
             })
             .fail(function (err) {
+                document.getElementById("progressbar").value = 100;
+                isProgress();
+                snackbarWithText("Updated weather data is currently not available.");
                 addRequest({id: WID, send: date.toUTCString(), status: "Failed"});
                 console.log(err.message);
             });
@@ -409,14 +413,14 @@ function getFillColor(severity) {
     if(severity ==="Minor") {
         color = "yellow";
     }
-    if(severity === "Moderate") {
-        color = "orange"
+    else if(severity === "Moderate") {
+        color = "orange";
     }
-    if(severity === "Severe") {
-        color = "#cc0000"
+    else if(severity === "Severe") {
+        color = "#cc0000";
     }
-    if(severity === "Extreme") {
-        color = "purple"
+    else if(severity === "Extreme") {
+        color = "purple";
     }
     return color;
 }
@@ -454,24 +458,23 @@ function createLayer(data) {
 extremeWeatherGroup.addTo(map);
 
 
-// request percipitation radar wms from dwd and add it to the map
-var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
-radarlayer = L.tileLayer.wms(rootUrl, {
-    layers: 'dwd:FX-Produkt',
-    // eigene Styled Layer Descriptor (SLD) können zur alternativen Anzeige der Warnungen genutzt werden (https://docs.geoserver.org/stable/en/user/styling/sld/reference/)
-    // sld: 'https://eigenerserver/alternativer.sld',
-    format: 'image/png',
-    transparent: true,
-    opacity: 0.5,
-    attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
-});
+// // request percipitation radar wms from dwd and add it to the map
+// var rootUrl = 'https://maps.dwd.de/geoserver/dwd/ows';
+// radarlayer = L.tileLayer.wms(rootUrl, {
+//     layers: 'dwd:FX-Produkt',
+//     // eigene Styled Layer Descriptor (SLD) können zur alternativen Anzeige der Warnungen genutzt werden (https://docs.geoserver.org/stable/en/user/styling/sld/reference/)
+//     // sld: 'https://eigenerserver/alternativer.sld',
+//     format: 'image/png',
+//     transparent: true,
+//     opacity: 0.5,
+//     attribution: 'Percipitation radar: &copy; <a href="https://www.dwd.de">DWD</a> | resolution TODO' // TODO
+// });
 
 var overLayers = {
     "<span title='show extreme weather events'>extreme weather events</span>": extremeWeatherGroup,
     // "<span title='show percipitation radar'>percipitation radar</span>": radarlayer
 };
 
-// Layercontrol-Element erstellen und hinzufügen
 L.control.layers(baseLayers, overLayers).addTo(map);
 
 var legend = L.control({position: 'bottomleft'});
@@ -490,12 +493,13 @@ legend.onAdd = function (map) {
 
         for (var i = 0; i < labels.length; i++) {
             div.innerHTML +=
+                '<p style="margin-bottom: 1px">' +
                 '<i style="background:' + colors[i] + '"></i> ' +
-                labels[i] + '<br>';
+                labels[i] + '</p>';// + '<br>';
         }
         div.innerHTML += '<p>' + "(Colors might differ" + '<br>' + "at overlapping areas)" + '</p>';
 
-        div.innerHTML += "Source: DWD" + '<br>' +
+        div.innerHTML += "Source: <a href='https://www.dwd.de/DE/Home/home_node.html' target='_blank'>DWD</a>" + '<br>' +
             "Accuracy: communal level" + '<br>' +
             "Last updated: " + '<var id="weatherTime">' + '<br>' + new Date(Date.now()).toUTCString() + '</var>';
 
@@ -503,22 +507,22 @@ legend.onAdd = function (map) {
 
 };
 
-var radarLegend = L.control({position: 'bottomleft'});
+// var radarLegend = L.control({position: 'bottomleft'});
 
-/**
- * create legend for the precipitation radar
- * @param map
- * @returns {div}
- */
-radarLegend.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info radarlegend');
-    div.innerHTML +=
-        '<img src="media/images/radar_legend.png" alt="precipitation radar legend" width="300" height="50" style="opacity: 0.8">';
-
-    return div;
-
-};
+// /**
+//  * create legend for the precipitation radar
+//  * @param map
+//  * @returns {div}
+//  */
+// radarLegend.onAdd = function (map) {
+//
+//     var div = L.DomUtil.create('div', 'info radarlegend');
+//     div.innerHTML +=
+//         '<img src="media/images/radar_legend.png" alt="precipitation radar legend" width="300" height="50" style="opacity: 0.8">';
+//
+//     return div;
+//
+// };
 
 /**
  * add legend if the respective layer is shown in the map

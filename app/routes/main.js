@@ -5,6 +5,12 @@
 const {demoRequest} = require('../helpers/demo');
 const {cookieExtractor} = require('../helpers/cookie');
 
+
+/**
+ * @desc get the main page
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const getMainPage = function(req, res){
   console.log('real');
   // application with real data
@@ -54,10 +60,24 @@ const getMainPage = function(req, res){
       cookie: cookie,
       errormessage: error
     });
+  }, function(){
+    res.render('index', {
+      title: 'Home',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      host: process.env.API_HOST,
+      cookie: cookie,
+      errormessage: error
+    });
   });
 };
 
-
+/**
+ * @desc get the demo page
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const getDemoPage = function(req, res){
   console.log('demo');
   // application with demo data
@@ -105,18 +125,39 @@ const getDemoPage = function(req, res){
       textfilter: textfilter,
       cookie: cookie,
       host: process.env.API_HOST,
-      errormessage: error
+      errormessage: error,
+      demo: true
+    });
+  }, function(){
+    res.render('index', {
+      title: 'Demo',
+      bbox: bbox,
+      events: events,
+      textfilter: textfilter,
+      cookie: cookie,
+      host: process.env.API_HOST,
+      errormessage: error,
+      demo: false,
     });
   });
 };
 
-
+/**
+ * @desc get the faq page
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const getFaq = function(req, res){
   res.render('faq', {
     title: 'FAQ'
   });
 };
 
+/**
+ * @desc get the imprint page
+ * @param {object} req request, containing information about the HTTP request
+ * @param {object} res response, to send back the desired HTTP response
+ */
 const getImprint = function(req, res){
   res.render('imprint', {
     title: 'Imprint'
