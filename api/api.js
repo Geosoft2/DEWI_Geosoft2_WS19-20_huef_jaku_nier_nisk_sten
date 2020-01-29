@@ -15,10 +15,6 @@ const addRequestId = require('express-request-id')();
 
 const api = express();
 
-
-api.set('views', path.join(__dirname, 'views'));
-api.set('view engine', 'ejs');
-
 api.use(logger('dev'));
 api.use(express.json({limit: '50mb'})); // for parsing application/json
 api.use(cookieParser());
