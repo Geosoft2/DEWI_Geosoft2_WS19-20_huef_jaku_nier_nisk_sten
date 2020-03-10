@@ -82,6 +82,8 @@ api:
           stream:
             format: # detailed
             expansions: # attachments.media_keys,geo.place_id,author_id
+            # if not specified or value is smaller than 20000, 20000 is used as default
+            # in milliseconds
             timeout: # 20000
             agent: # false
             pool:

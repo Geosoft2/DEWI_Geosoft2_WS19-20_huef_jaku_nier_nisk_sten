@@ -58,12 +58,12 @@ connectMongoDB(async function () {
      * Listen on provided port, on all network interfaces.
      */
     server.listen(port, () => {
+        // checks if Demo-Mode is active (and pushes some example data)
+        isDemo();
         // requests the WFS service from the DWD at periodic intervals
         updateExtremeWeather();
         // starts Twitter-Stream
         stream();
-        // checks if Demo-Mode is active (and pushes some example data)
-        isDemo();
         console.log(chalk.green.inverse("API listening on port " + port + "!"));
     });
     io.attach(server);
